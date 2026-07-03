@@ -1,0 +1,159 @@
+---
+// On-brand form that posts to a Cloudflare Pages Function (/api/pco-form),
+// which writes into Planning Center. Progressive + graceful: if the endpoint
+// isn't available (local static preview, or not yet wired to a token), it
+// falls back to the church's Church Center form so nothing is ever a dead end.
+export interface Field {
+  name: string;
+  label: string;
+  type?: 'text' | 'email' | 'tel' | 'textarea';
+  required?: boolean;
+  autocomplete?: string;
+  placeholder?: string;
+  half?: boolean; // render two half-width fields on one row
+}
+interface Props {
+  formType: string; // routes to the right PCO form in the Function
+  fields: Field[];
+  submitLabel: string;
+  fallbackHref: string; // Church Center modal URL
+  fallbackLabel?: string;
+  successMsg?: string;
+  note?: string;
+}
+const {
+  formType,
+  fields,
+  submitLabel,
+  fallbackHref,
+  fallbackLabel = 'Prefer our Church Center form?',
+  successMsg = "Thank you — we've received your message and someone will be in touch.",
+  note,
+} = Astro.props;
+const id = `f-${formType}`;
+---
+<form class="cform" data-pco-form data-form-type={formType} novalidate>
+  <div class="cform__grid">
+    {fields.map((f) => (
+      <div class={`field${f.half ? ' field--half' : ''}`}>
+        <label for={`${id}-${f.name}`}>{f.label}{f.required && <span class="req" aria-hidden="true"> *</span>}</label>
+        {f.type === 'textarea' ? (
+          <textarea id={`${id}-${f.name}`} name={f.name} rows="4" required={f.required} placeholder={f.placeholder}></textarea>
+        ) : (
+          <input
+            id={`${id}-${f.name}`}
+            name={f.name}
+            type={f.type ?? 'text'}
+            required={f.required}
+            autocomplete={f.autocomplete}
+            placeholder={f.placeholder}
+          />
+        )}
+      </div>
+    ))}
+  </div>
+
+  {/* honeypot — real people never fill this; bots do */}
+  <div class="hp" aria-hidden="true">
+    <label>Company<input name="company" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <div class="cform__actions">
+    <button type="submit" class="btn btn--gold btn--lg">{submitLabel}</button>
+    <a class="cform__fallback" href={fallbackHref} data-fallback>{fallbackLabel}</a>
+  </div>
+
+  {note && <p class="cform__note">{note}</p>}
+
+  <p class="cform__status" role="status" aria-live="polite" data-status hidden></p>
+  <p class="cform__success" role="status" aria-live="polite" data-success hidden>{successMsg}</p>
+</form>
+
+<script is:inline>
+  (function () {
+    document.querySelectorAll('form[data-pco-form]').forEach(function (form) {
+      if (form.dataset.wired) return;
+      form.dataset.wired = '1';
+      var statusEl = form.querySelector('[data-status]');
+      var successEl = form.querySelector('[data-success]');
+      var btn = form.querySelector('button[type="submit"]');
+      var fallback = form.querySelector('[data-fallback]');
+
+      function fail(msg) {
+        statusEl.textContent = msg;
+        statusEl.hidden = false;
+        statusEl.classList.add('is-error');
+        if (fallback) fallback.classList.add('is-emph');
+      }
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        statusEl.hidden = true; statusEl.classList.remove('is-error');
+        // honeypot: silently accept (bot) without sending
+        if (form.company && form.company.value) { form.reset(); return; }
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+
+        var data = { formType: form.dataset.formType };
+        new FormData(form).forEach(function (v, k) { if (k !== 'company') data[k] = v; });
+
+        var label = btn.textContent;
+        btn.disabled = true; btn.textContent = 'Sending…';
+        try {
+          var res = await fetch('/api/pco-form', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+          if (!res.ok) throw new Error('bad status ' + res.status);
+          form.hidden = true;
+          successEl.hidden = false;
+          successEl.focus && successEl.focus();
+        } catch (err) {
+          fail('We couldn’t submit that just now. Please use our Church Center form below and we’ll get right back to you.');
+        } finally {
+          btn.disabled = false; btn.textContent = label;
+        }
+      });
+    });
+  })();
+</script>
+
+<style>
+  .cform { max-width: 40rem; }
+  .cform__grid { display: grid; gap: 1rem; }
+  @media (min-width: 560px) {
+    .cform__grid { grid-template-columns: 1fr 1fr; }
+    .field:not(.field--half) { grid-column: 1 / -1; }
+  }
+  .field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .field label { font-family: var(--display); font-weight: 600; font-size: 0.88rem; color: var(--navy); }
+  .req { color: var(--gold-deep); }
+  .field input, .field textarea {
+    font-family: var(--body);
+    font-size: 1rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--hair);
+    border-radius: 10px;
+    padding: 0.7rem 0.85rem;
+    width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 108px; }
+  .field input:focus-visible, .field textarea:focus-visible {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0, 82, 145, 0.16);
+  }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .cform__actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; margin-top: 1.25rem; }
+  .cform__fallback { font-family: var(--display); font-weight: 600; font-size: 0.92rem; }
+  .cform__fallback.is-emph { color: var(--blue-deep); text-decoration: underline; }
+  .cform__note { margin-top: 1rem; font-size: 0.9rem; color: var(--mid); }
+  .cform__status { margin-top: 1rem; font-size: 0.95rem; }
+  .cform__status.is-error { color: #b0463a; }
+  .cform__success {
+    font-family: var(--display); font-weight: 600; font-size: 1.1rem; color: var(--navy);
+    background: rgba(240, 195, 52, 0.14); border: 1px solid rgba(214, 164, 25, 0.4);
+    border-radius: var(--r); padding: 1.1rem 1.25rem;
+  }
+</style>

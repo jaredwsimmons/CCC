@@ -2,20 +2,41 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
+import ContactForm from '../components/ContactForm.astro';
 import { prayer } from '../data/content';
 import { site } from '../data/site';
 const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
 ---
 <Base title="Prayer" description="We want to pray for you — share your prayer concerns with Chelsea Community Church, or join the Prayer Team.">
   <PageHero eyebrow="Prayer" title="We want to pray for you" lead={prayer.cta}>
-    <a class="btn btn--gold btn--lg" href={prayerForm}>How can we pray with you?</a>
+    <a class="btn btn--gold btn--lg" href="#prayer-form">Share a prayer request</a>
   </PageHero>
 
-  <Section eyebrow="Our prayer ministry" title="A church where prayer is central">
+  <Section id="prayer-form" eyebrow="Share a request" title="How can we pray with you?">
+    <p class="measure" data-reveal style="margin-bottom:1.75rem">Whatever you're carrying — a burden or a blessing — we'd be honored to pray with you. Share as much or as little as you'd like.</p>
+    <div data-reveal>
+      <ContactForm
+        formType="prayer"
+        submitLabel="Send prayer request"
+        fallbackHref={prayerForm}
+        fallbackLabel="Prefer our Church Center form?"
+        successMsg="Thank you for trusting us with this. Our prayer team will be praying for you."
+        note="Prayer requests are shared only with our pastoral and prayer team."
+        fields={[
+          { name: 'name', label: 'Your name', required: true, autocomplete: 'name', half: true },
+          { name: 'email', label: 'Email', type: 'email', autocomplete: 'email', half: true },
+          { name: 'phone', label: 'Phone (optional)', type: 'tel', autocomplete: 'tel', half: true },
+          { name: 'request', label: 'How can we pray for you?', type: 'textarea', required: true },
+        ]}
+      />
+    </div>
+  </Section>
+
+  <Section variant="alt" eyebrow="Our prayer ministry" title="A church where prayer is central">
     <p class="measure" data-reveal>{prayer.ministry}</p>
   </Section>
 
-  <Section variant="alt" eyebrow="Join the prayer team" title="How to get involved">
+  <Section eyebrow="Join the prayer team" title="How to get involved">
     <ol class="steps" data-reveal>
       {prayer.joinSteps.map((s) => <li>{s}</li>)}
     </ol>

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import ContactForm from '../components/ContactForm.astro';
 import { site } from '../data/site';
 import { imnew } from '../data/content';
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
@@ -14,7 +15,7 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
     image={imnew.hero.image}
     imageAlt={imnew.hero.imageAlt}
   >
-    <a class="btn btn--gold btn--lg" href={planVisit}>Let Us Know You're Coming!</a>
+    <a class="btn btn--gold btn--lg" href="#visit-form">Let Us Know You're Coming!</a>
   </PageHero>
 
   <Section>
@@ -48,11 +49,30 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
       <div data-reveal>
         <p class="measure">{imnew.coming.body}</p>
         <p class="measure" style="margin-top:0.9rem">{imnew.coming.desk}</p>
-        <a class="btn btn--blue mt-1" href={planVisit}>Let Us Know You're Coming!</a>
       </div>
       <div class="photo" data-reveal>
         <img src={imnew.coming.image} alt={imnew.coming.imageAlt} loading="lazy" />
       </div>
+    </div>
+  </Section>
+
+  <Section id="visit-form" variant="alt" eyebrow="Plan your visit" title="Let us know you're coming">
+    <p class="measure" data-reveal style="margin-bottom:1.75rem">Tell us a little about yourself and we'll be ready to welcome you — with a gift waiting at the Connections Desk. We'll only use this to say hello and share what you'd like to know.</p>
+    <div data-reveal>
+      <ContactForm
+        formType="visit"
+        submitLabel="Let us know you're coming"
+        fallbackHref={planVisit}
+        fallbackLabel="Prefer our Church Center form?"
+        successMsg="We can't wait to meet you! Look for us at the Connections Desk — we'll have something for you."
+        fields={[
+          { name: 'name', label: 'Your name', required: true, autocomplete: 'name', half: true },
+          { name: 'email', label: 'Email', type: 'email', required: true, autocomplete: 'email', half: true },
+          { name: 'phone', label: 'Phone (optional)', type: 'tel', autocomplete: 'tel', half: true },
+          { name: 'visit_date', label: 'Which Sunday are you thinking?', type: 'text', placeholder: 'e.g. this Sunday, or a date', half: true },
+          { name: 'message', label: 'Anything we should know? (kids’ ages, questions…)', type: 'textarea' },
+        ]}
+      />
     </div>
   </Section>
 
