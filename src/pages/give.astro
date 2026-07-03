@@ -1,32 +1,45 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
 import { site } from '../data/site';
 const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+const ways = [
+  { icon: 'sparkle', title: 'Online', text: 'Give a one-time gift or set up recurring giving in seconds — securely through Church Center.' },
+  { icon: 'phone', title: 'In the app', text: 'Download the Church Center app to give and stay connected from anywhere.' },
+  { icon: 'heart', title: 'In person', text: 'Give during either Sunday gathering as an act of worship together.' },
+];
 ---
 <Base title="Give" description="Give to Chelsea Community Church securely through Church Center.">
-  <section class="give">
-    <div class="container">
-      <p class="eyebrow">Generosity</p>
-      <h1>Give</h1>
-      <p class="lead">
-        Thank you for partnering in the mission of our church. Giving is secure and handled through
-        Church Center — you can give once or set up recurring gifts.
-      </p>
-      <div class="cta-row">
-        <a class="btn btn--gold" href={giveHref}>Give now</a>
-        <a class="btn btn--ghost" href={site.churchCenter.giving} target="_blank" rel="noopener noreferrer">Open in a new tab</a>
-      </div>
-      <p class="fine">
-        Prefer the app? <a href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Get the Church Center app</a>
-        to give and stay connected from your phone.
-      </p>
+  <PageHero eyebrow="Generosity" title="Give"
+    lead="Thank you for partnering in the mission of our church. Every gift helps people near and far meet Jesus.">
+    <a class="btn btn--gold btn--lg" href={giveHref}>Give now</a>
+    <a class="btn btn--on-dark" href={site.churchCenter.giving} target="_blank" rel="noopener noreferrer">Open in a new tab</a>
+  </PageHero>
+
+  <Section eyebrow="Simple & secure" title="Ways to give" center>
+    <div class="grid cols-3">
+      {ways.map((w, i) => (
+        <div class="card center" data-reveal data-delay={String(i + 1)}>
+          <div class="chip chip--gold" style="margin-inline:auto"><Icon name={w.icon} /></div>
+          <h3>{w.title}</h3>
+          <p>{w.text}</p>
+        </div>
+      ))}
     </div>
-  </section>
+  </Section>
+
+  <Section variant="deep">
+    <figure class="give-quote container--narrow" data-reveal>
+      <blockquote>"Each one must give as he has decided in his heart, not reluctantly or under compulsion, for God loves a cheerful giver."</blockquote>
+      <figcaption>2 Corinthians 9:7</figcaption>
+    </figure>
+  </Section>
 </Base>
 
 <style>
-  .give { background: linear-gradient(180deg, var(--blue-tint), #fff); padding-block: clamp(3rem, 8vw, 6rem); }
-  .give .lead { font-size: 1.2rem; max-width: 54ch; color: var(--muted); }
-  .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
-  .fine { margin-top: 1.5rem; color: var(--muted); font-size: 0.95rem; }
+  .give-quote { margin-inline: auto; text-align: center; }
+  .give-quote blockquote { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 2rem); color: #fff; line-height: 1.35; font-style: italic; }
+  .give-quote figcaption { margin-top: 1.25rem; color: var(--gold-300); font-family: var(--font-display); font-weight: 600; letter-spacing: 0.05em; }
 </style>

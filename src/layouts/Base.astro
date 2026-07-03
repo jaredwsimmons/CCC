@@ -20,33 +20,63 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#005291" />
     <link rel="canonical" href={canonical} />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
 
-    <!-- Fonts: Poppins (headings) + Nunito (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
-
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Progressive-enhancement flag: set BEFORE paint so reveal styles apply without FOUC. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
 
     <ChurchCenterScript />
   </head>
   <body>
-    <a href="#main" class="visually-hidden">Skip to content</a>
+    <a href="#main" class="skip">Skip to content</a>
     <Header />
     <main id="main">
       <slot />
     </main>
     <Footer />
+
+    <!-- Scroll-reveal + header shadow. Progressive: content is fully visible if this never runs. -->
+    <script is:inline>
+      (function () {
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var els = document.querySelectorAll('[data-reveal]');
+        if (reduce || !('IntersectionObserver' in window)) {
+          els.forEach(function (el) { el.classList.add('in'); });
+        } else {
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+            });
+          }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+          els.forEach(function (el) { io.observe(el); });
+        }
+        var header = document.querySelector('[data-header]');
+        if (header) {
+          var onScroll = function () { header.classList.toggle('is-scrolled', window.scrollY > 12); };
+          onScroll();
+          window.addEventListener('scroll', onScroll, { passive: true });
+        }
+      })();
+    </script>
+
+    <style is:global>
+      .skip { position: absolute; left: -999px; top: 0; background: var(--navy); color: #fff; padding: 0.75rem 1rem; z-index: 100; border-radius: 0 0 8px 0; }
+      .skip:focus { left: 0; }
+    </style>
   </body>
 </html>

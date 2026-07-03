@@ -1,63 +1,89 @@
 ---
-import { site } from '../data/site';
+import { site, nav } from '../data/site';
+import Quatrefoil from './Quatrefoil.astro';
+import Icon from './Icon.astro';
 const year = new Date().getFullYear();
 const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
-const socials = Object.entries(site.social).filter(([, url]) => url);
+const socials = Object.entries(site.social).filter(([, url]) => url) as [string, string][];
+const exploreLinks = nav.flatMap((n) => (n.children ? n.children : [n]));
 ---
-<footer class="site-footer">
-  <div class="container grid cols-3">
-    <div>
-      <p class="brand"><span aria-hidden="true">✚</span> {site.name}</p>
-      <p class="tagline">{site.tagline}</p>
-      {(site.address.line1 || site.address.city) && (
-        <p class="muted">
-          {site.address.line1 && <>{site.address.line1}<br /></>}
-          {site.address.city}{site.address.city && site.address.state ? ', ' : ''}{site.address.state} {site.address.zip}
-        </p>
-      )}
-    </div>
-
-    <div>
-      <h3>Sundays</h3>
-      <ul class="plain">
-        {site.serviceTimes.map((t) => <li>{t}</li>)}
-      </ul>
-      <p><a class="btn btn--ghost" href="/imnew">Plan a visit</a></p>
-    </div>
-
-    <div>
-      <h3>Connect</h3>
-      <ul class="plain">
-        <li><a href={giveHref}>Give</a></li>
-        <li><a href="/calendar">Calendar</a></li>
-        <li><a href="/prayer">Prayer requests</a></li>
-        <li><a href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Get the Church Center app</a></li>
-      </ul>
+<footer class="ftr">
+  <Quatrefoil size={520} class="ftr__watermark" />
+  <div class="container ftr__grid">
+    <div class="ftr__brand">
+      <a href="/" class="ftr__logo">
+        <Quatrefoil size={38} />
+        <span>Chelsea Community Church</span>
+      </a>
+      <p class="ftr__tag">{site.tagline}</p>
       {socials.length > 0 && (
-        <p class="socials">
+        <div class="ftr__social">
           {socials.map(([name, url]) => (
-            <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
+            <a href={url} target="_blank" rel="noopener noreferrer" aria-label={name}>
+              <Icon name={name} size={20} />
+            </a>
           ))}
-        </p>
+        </div>
       )}
+    </div>
+
+    <div>
+      <h4>Join us Sunday</h4>
+      <ul class="plain-list ftr__links">
+        {site.serviceTimes.map((t) => <li><strong>{t}</strong></li>)}
+        {(site.address.city) && (
+          <li class="ftr__addr">
+            {site.address.line1 && <>{site.address.line1}<br /></>}
+            {site.address.city}{site.address.state ? `, ${site.address.state}` : ''} {site.address.zip}
+          </li>
+        )}
+      </ul>
+      <a class="btn btn--gold btn--sm" href="/imnew">Plan your visit</a>
+    </div>
+
+    <div>
+      <h4>Explore</h4>
+      <ul class="plain-list ftr__links">
+        {exploreLinks.slice(0, 8).map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+
+    <div>
+      <h4>Connect</h4>
+      <ul class="plain-list ftr__links">
+        <li><a href={giveHref}>Give</a></li>
+        <li><a href="/prayer">Prayer requests</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+        <li><a href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Church Center app</a></li>
+        <li><a href="/leaders">Our leaders</a></li>
+      </ul>
     </div>
   </div>
 
-  <div class="container copyright">
-    <p>© {year} {site.name}. All rights reserved.</p>
+  <div class="container ftr__bottom">
+    <p>© {year} {site.name}</p>
+    <p class="ftr__verse">“Pursuing God. Pursuing others.”</p>
   </div>
 </footer>
 
 <style>
-  .site-footer { background: var(--blue-dark); color: #d7e4f0; margin-top: 3rem; padding-block: 2.5rem 1rem; }
-  .site-footer h3 { color: #fff; font-size: 1.05rem; }
-  .site-footer a { color: #fff; }
-  .brand { font-family: var(--font-head); font-weight: 700; color: #fff; font-size: 1.1rem; margin: 0 0 0.25rem; }
-  .brand span { color: var(--gold); }
-  .tagline { color: var(--gold); font-family: var(--font-head); margin: 0 0 0.75rem; }
-  .muted { color: #a9c2d8; font-size: 0.9rem; }
-  .plain { list-style: none; margin: 0 0 1rem; padding: 0; }
-  .plain li { margin-bottom: 0.35rem; }
-  .socials { display: flex; gap: 1rem; text-transform: capitalize; }
-  .copyright { border-top: 1px solid rgba(255,255,255,0.15); margin-top: 1.5rem; padding-top: 1rem; font-size: 0.85rem; color: #a9c2d8; }
+  .ftr { position: relative; overflow: hidden; background: var(--grad-deep); color: #b9cee1; padding-block: clamp(3rem, 6vw, 4.5rem) 1.5rem; }
+  .ftr__watermark { position: absolute; right: -140px; bottom: -160px; color: rgba(255,255,255,0.03); pointer-events: none; }
+  .ftr__grid { position: relative; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 2.5rem; }
+  .ftr h4 { color: #fff; font-size: 1rem; margin-bottom: 1rem; letter-spacing: 0.01em; }
+  .ftr__logo { display: inline-flex; align-items: center; gap: 0.6rem; color: #fff; text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
+  .ftr__logo :global(svg) { color: var(--gold); }
+  .ftr__tag { color: var(--gold-300); font-family: var(--font-display); font-weight: 600; margin-top: 0.6rem; }
+  .ftr__social { display: flex; gap: 0.6rem; margin-top: 1.25rem; }
+  .ftr__social a { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: rgba(255,255,255,0.08); color: #fff; transition: background 0.2s, transform 0.2s; }
+  .ftr__social a:hover { background: var(--gold); color: var(--navy); transform: translateY(-2px); }
+  .ftr__links li { margin-bottom: 0.55rem; }
+  .ftr__links a { color: #b9cee1; text-decoration: none; }
+  .ftr__links a:hover { color: #fff; text-decoration: underline; }
+  .ftr__links strong { color: #fff; font-family: var(--font-display); }
+  .ftr__addr { color: #90a9c2; font-size: 0.92rem; margin-top: 0.5rem; margin-bottom: 1rem; }
+  .ftr__bottom { position: relative; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.12); font-size: 0.9rem; color: #90a9c2; }
+  .ftr__verse { font-family: var(--font-display); font-style: italic; color: var(--gold-300); }
+  @media (max-width: 860px) { .ftr__grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+  @media (max-width: 520px) { .ftr__grid { grid-template-columns: 1fr; } }
 </style>

@@ -1,101 +1,213 @@
 ---
 import Base from '../layouts/Base.astro';
-import PortableText from '../components/PortableText.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import Quatrefoil from '../components/Quatrefoil.astro';
+import CTABand from '../components/CTABand.astro';
 import { site } from '../data/site';
+import { pillars, welcome, stats, ministries, currentSeries, groups, missions } from '../data/content';
 import { sanityFetch } from '../lib/sanity';
 import { siteSettingsQuery } from '../lib/queries';
 
 const settings = await sanityFetch<any>(siteSettingsQuery);
 const announcement: string | undefined = settings?.announcement;
-const series = settings?.series;
+const series = settings?.series?.title
+  ? settings.series
+  : { title: currentSeries.title, description: currentSeries.text, subtitle: currentSeries.subtitle };
 const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
 ---
 <Base>
-  {announcement && (
-    <div class="announce"><div class="container">{announcement}</div></div>
-  )}
+  {announcement && <div class="announce"><div class="container">✦ {announcement}</div></div>}
 
-  <!-- HERO -->
+  <!-- ===== HERO ===== -->
   <section class="hero">
-    <div class="container">
-      <p class="eyebrow">Chelsea, Alabama</p>
-      <h1>{site.tagline}</h1>
-      <p class="lead">
-        We gather every Sunday at {site.serviceTimes.join(' & ')}. Whether you're exploring faith or
-        looking for a church home, there's a place for you here.
-      </p>
-      <div class="cta-row">
-        <a class="btn btn--primary" href="/imnew">Plan your visit</a>
-        <a class="btn btn--gold" href={giveHref}>Give</a>
-        <a class="btn btn--ghost" href="/media">Watch a message</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- CURRENT SERIES -->
-  {series?.title && (
-    <section class="section section--alt">
-      <div class="container series">
-        <div>
-          <p class="eyebrow">Current series</p>
-          <h2>{series.title}</h2>
-          {series.description && <p>{series.description}</p>}
-          <div class="cta-row">
-            {series.youtubeUrl && <a class="btn btn--primary" href={series.youtubeUrl} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>}
-            {series.spotifyUrl && <a class="btn btn--ghost" href={series.spotifyUrl} target="_blank" rel="noopener noreferrer">Listen on Spotify</a>}
-          </div>
+    <Quatrefoil size={640} class="hero__wm" />
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow on-dark" data-reveal>A church family in Chelsea, Alabama</p>
+        <h1 data-reveal data-delay="1">Pursuing God.<br /><span>Pursuing others.</span></h1>
+        <p class="lead hero__lead" data-reveal data-delay="2">
+          You don't have to have it all figured out to belong here. Come as you are and
+          discover a church that's real, warm, and centered on Jesus.
+        </p>
+        <div class="cta-row" data-reveal data-delay="2">
+          <a class="btn btn--gold btn--lg" href="/imnew">Plan your visit <Icon name="arrow" size={18} /></a>
+          <a class="btn btn--on-dark btn--lg" href="/media"><Icon name="play" size={18} /> Watch a message</a>
         </div>
       </div>
-    </section>
-  )}
 
-  <!-- NEXT STEPS -->
-  <section class="section">
-    <div class="container">
-      <p class="eyebrow center">Get connected</p>
-      <h2 class="center">Your next step</h2>
-      <div class="grid cols-3 steps">
-        <a class="card" href="/imnew">
-          <h3>I'm new</h3>
-          <p>What to expect on a Sunday, where to park, and how to find us.</p>
-        </a>
-        <a class="card" href="/groups">
-          <h3>Join a group</h3>
-          <p>Community groups are where church life happens the rest of the week.</p>
-        </a>
-        <a class="card" href="/serve">
-          <h3>Serve</h3>
-          <p>Use your gifts to build up the body and reach our community.</p>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- WEEKLY RHYTHM -->
-  <section class="section section--alt">
-    <div class="container times">
-      <div>
-        <p class="eyebrow">Join us Sunday</p>
-        <h2>Two gatherings, one church</h2>
-        <ul class="plain">
-          {site.serviceTimes.map((t) => <li><strong>{t}</strong> — Worship service</li>)}
+      <aside class="hero__card" data-reveal data-delay="3">
+        <p class="pill pill--gold">This Sunday</p>
+        <h3>Two gatherings</h3>
+        <ul class="hero__times">
+          {site.serviceTimes.map((t) => (
+            <li><Icon name="check" size={20} /> <strong>{t}</strong> Worship</li>
+          ))}
         </ul>
-        <p><a class="btn btn--ghost" href="/calendar">See the full calendar →</a></p>
+        <p class="hero__loc"><Icon name="pin" size={18} /> {site.address.city}, {site.address.state}</p>
+        <div class="hero__card-actions">
+          <a class="btn btn--primary" href="/imnew">Plan a visit</a>
+          <a class="btn btn--ghost" href={giveHref}>Give</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===== PILLARS ===== -->
+  <Section variant="cloud">
+    <div class="grid cols-3">
+      {pillars.map((p, i) => (
+        <div class="card" data-reveal data-delay={String(i + 1)}>
+          <div class={`chip ${i === 0 ? 'chip--gold' : ''}`}><Icon name={p.icon} /></div>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <!-- ===== WELCOME ===== -->
+  <Section>
+    <div class="welcome">
+      <div data-reveal>
+        <p class="eyebrow">{welcome.eyebrow}</p>
+        <h2 class="mt-1">{welcome.title}</h2>
+      </div>
+      <div class="welcome__body" data-reveal data-delay="1">
+        {welcome.body.map((para) => <p class="lead">{para}</p>)}
+        <a class="btn btn--ghost mt-1" href="/imnew">What to expect <Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ===== CURRENT SERIES ===== -->
+  <section class="series section">
+    <div class="container series__grid">
+      <div class="series__art" aria-hidden="true">
+        <Quatrefoil size={220} />
+        <span>Current Series</span>
+      </div>
+      <div class="series__copy" data-reveal>
+        <p class="eyebrow on-dark">Now teaching</p>
+        <h2>{series.title}</h2>
+        {series.subtitle && <p class="series__sub">{series.subtitle}</p>}
+        <p class="lead">{series.description}</p>
+        <div class="cta-row mt-1">
+          <a class="btn btn--gold" href="/media">Watch the series</a>
+          <a class="btn btn--on-dark" href="/media">All messages</a>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- ===== MINISTRIES ===== -->
+  <Section variant="cloud" eyebrow="For every age & stage" title="Find your place" center
+    lead="From your youngest to your oldest, there's a place to belong and grow.">
+    <div class="grid cols-3 min-grid">
+      {ministries.map((m, i) => (
+        <a class="card card--link min-card" href={`/${m.slug}`} data-reveal data-delay={String((i % 3) + 1)}>
+          <div class={`chip ${m.color === 'gold' ? 'chip--gold' : ''}`}><Icon name={m.icon} /></div>
+          <h3>{m.name}</h3>
+          <p>{m.tagline}</p>
+          <span class="card__arrow">Learn more <Icon name="arrow" size={16} /></span>
+        </a>
+      ))}
+    </div>
+  </Section>
+
+  <!-- ===== COMMUNITY GROUPS (split) ===== -->
+  <Section>
+    <div class="split">
+      <div class="split__visual dotgrid" aria-hidden="true">
+        <div class="split__badge"><Icon name="users" size={30} /></div>
+      </div>
+      <div data-reveal>
+        <p class="eyebrow">Community groups</p>
+        <h2 class="mt-1">Real life happens in circles, not rows</h2>
+        <p class="lead">{groups.intro}</p>
+        <a class="btn btn--primary mt-1" href="/groups">Find a group <Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ===== STATS ===== -->
+  <Section variant="deep">
+    <div class="grid cols-4">
+      {stats.map((s, i) => (
+        <div class="center" data-reveal data-delay={String((i % 4) + 1)}>
+          <div class="stat__num">{s.num}</div>
+          <div class="stat__label">{s.label}</div>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <!-- ===== MISSIONS TEASER ===== -->
+  <Section eyebrow="On mission together" title="From Chelsea to the nations" center lead={missions.intro}>
+    <div class="grid cols-3">
+      {missions.focus.map((f, i) => (
+        <div class="card center" data-reveal data-delay={String(i + 1)}>
+          <div class="chip chip--gold" style="margin-inline:auto"><Icon name={f.icon} /></div>
+          <h3>{f.title}</h3>
+          <p>{f.text}</p>
+        </div>
+      ))}
+    </div>
+    <div class="center mt-2"><a class="btn btn--ghost" href="/missions">Explore missions <Icon name="arrow" size={18} /></a></div>
+  </Section>
+
+  <!-- ===== CTA ===== -->
+  <CTABand title="We'd love to meet you this Sunday" text="Whatever your story, there's a seat with your name on it. Let us know you're coming." variant="gold">
+    <a class="btn btn--dark btn--lg" href="/imnew">Plan your visit</a>
+    <a class="btn btn--ghost btn--lg" href="/calendar" style="border-color:rgba(6,42,74,.25);color:var(--navy)">See what's happening</a>
+  </CTABand>
 </Base>
 
 <style>
-  .announce { background: var(--gold); color: var(--blue-dark); font-family: var(--font-head); font-weight: 600; text-align: center; padding: 0.6rem 0; }
-  .hero { background: linear-gradient(180deg, var(--blue-tint), #fff); padding-block: clamp(3rem, 8vw, 6rem); }
-  .hero .lead { font-size: 1.2rem; max-width: 54ch; color: var(--muted); }
-  .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
-  .series h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); }
-  .steps { margin-top: 2rem; }
-  .card { display: block; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.5rem; text-decoration: none; color: inherit; box-shadow: var(--shadow); transition: transform 0.12s ease; }
-  .card:hover { transform: translateY(-3px); }
-  .card h3 { color: var(--blue); }
-  .plain { list-style: none; padding: 0; }
-  .plain li { padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+  .announce { background: var(--grad-gold); color: var(--navy); font-family: var(--font-display); font-weight: 600; text-align: center; padding: 0.65rem 0; font-size: 0.95rem; }
+
+  /* Hero */
+  .hero { position: relative; overflow: hidden; background: var(--grad-hero); color: #dbe8f4; padding-block: clamp(3.5rem, 9vw, 7rem); }
+  .hero::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.06) 1.3px, transparent 1.3px); background-size: 28px 28px; opacity: 0.7; pointer-events: none; }
+  .hero__wm { position: absolute; right: -160px; top: -180px; color: rgba(255,255,255,0.045); pointer-events: none; }
+  .hero__grid { position: relative; display: grid; grid-template-columns: 1.5fr 0.9fr; gap: 3rem; align-items: center; }
+  .hero__copy h1 { color: #fff; font-size: clamp(2.6rem, 6.5vw, 5rem); }
+  .hero__copy h1 span { color: var(--gold-300); }
+  .hero__lead { color: #cddced; max-width: 48ch; margin-top: 1.25rem; }
+  .hero .cta-row { margin-top: 1.75rem; }
+
+  .hero__card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(14px); border-radius: var(--r-lg); padding: 1.75rem; box-shadow: var(--shadow-lg); }
+  .hero__card h3 { color: #fff; margin: 0.75rem 0 1rem; }
+  .hero__times { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.6rem; }
+  .hero__times li { display: flex; align-items: center; gap: 0.6rem; color: #eaf2fa; }
+  .hero__times li :global(svg) { color: var(--gold-300); }
+  .hero__times strong { color: #fff; font-family: var(--font-display); }
+  .hero__loc { display: flex; align-items: center; gap: 0.5rem; color: #b9cee1; margin-bottom: 1.25rem; }
+  .hero__card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .hero__card-actions .btn--ghost { color: #fff; border-color: rgba(255,255,255,0.3); }
+  .hero__card-actions .btn--ghost:hover { background: rgba(255,255,255,0.12); }
+
+  /* Welcome */
+  .welcome { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 2.5rem; align-items: start; }
+  .welcome__body .lead + .lead { margin-top: 1rem; }
+
+  /* Series */
+  .series { background: var(--grad-deep); color: #cddced; position: relative; overflow: hidden; }
+  .series__grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 3rem; align-items: center; }
+  .series__art { display: grid; place-items: center; aspect-ratio: 4/3; border-radius: var(--r-lg); background: radial-gradient(circle at 50% 40%, rgba(240,195,52,0.18), transparent 60%); border: 1px solid rgba(255,255,255,0.12); position: relative; color: var(--gold-300); }
+  .series__art span { position: absolute; bottom: 1.25rem; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.75rem; color: #9fb6cc; }
+  .series__copy h2 { color: #fff; }
+  .series__sub { font-family: var(--font-display); color: var(--gold-300); font-weight: 600; margin: 0.25rem 0 0.75rem; font-size: 1.15rem; }
+
+  /* Split */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+  .split__visual { position: relative; aspect-ratio: 5/4; border-radius: var(--r-lg); background: linear-gradient(135deg, var(--blue-50), #fff); border: 1px solid var(--line); display: grid; place-items: center; }
+  .split__badge { width: 92px; height: 92px; border-radius: 26px; background: var(--grad-gold); color: var(--navy); display: grid; place-items: center; box-shadow: var(--shadow); }
+
+  @media (max-width: 900px) {
+    .hero__grid, .welcome, .series__grid, .split { grid-template-columns: 1fr; }
+    .hero__card { max-width: 460px; }
+    .series__art { display: none; }
+    .split__visual { order: 2; }
+  }
 </style>

@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import CTABand from '../components/CTABand.astro';
+import { beliefs, values } from '../data/content';
+import { site } from '../data/site';
+const connect = `https://${site.churchCenter.subdomain}`;
+---
+<Base title="What We Believe" description="The heart of what Chelsea Community Church believes and why.">
+  <PageHero eyebrow="What we believe" title="Firm on the essentials. Gracious on the rest."
+    lead={beliefs.intro} />
+
+  <!-- Statement of faith -->
+  <Section eyebrow="Statement of faith" title="What we hold to" center>
+    <div class="grid cols-3">
+      {beliefs.statement.map((b, i) => (
+        <div class="card belief" data-reveal data-delay={String((i % 3) + 1)}>
+          <span class="belief__no">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{b.title}</h3>
+          <p>{b.text}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <!-- Values -->
+  <Section variant="cloud" eyebrow="Our values" title="What shapes us" center
+    lead="Beliefs on paper become a way of life. These are the values that guide how we love God and people.">
+    <div class="grid cols-3">
+      {values.map((v, i) => (
+        <div class="card" data-reveal data-delay={String((i % 3) + 1)}>
+          <div class={`chip ${i % 2 ? 'chip--gold' : ''}`}><Icon name={v.icon} /></div>
+          <h3>{v.title}</h3>
+          <p>{v.text}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <!-- Distinctives -->
+  <Section eyebrow="Common questions" title="A few distinctives" width="narrow">
+    <div class="accordion" data-reveal>
+      {beliefs.distinctives.map((d) => (
+        <details>
+          <summary>{d.q}</summary>
+          <div class="answer">{d.a}</div>
+        </details>
+      ))}
+    </div>
+  </Section>
+
+  <CTABand title="Questions about faith?" text="Our pastors and elders would love to talk — no pressure, no judgment." variant="gold">
+    <a class="btn btn--dark btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Reach out</a>
+  </CTABand>
+</Base>
+
+<style>
+  .belief { position: relative; }
+  .belief__no { font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: var(--gold); letter-spacing: 0.05em; }
+  .belief h3 { margin: 0.35rem 0 0.5rem; }
+</style>

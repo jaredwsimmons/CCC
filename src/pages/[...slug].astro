@@ -1,67 +1,104 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import CTABand from '../components/CTABand.astro';
 import PortableText from '../components/PortableText.astro';
 import { urlForImage } from '../lib/image';
 import { sanityFetch } from '../lib/sanity';
 import { allPagesQuery } from '../lib/queries';
-import { contentPages, site } from '../data/site';
+import { ministries, infoPages } from '../data/content';
+import { site } from '../data/site';
 
 export async function getStaticPaths() {
-  const pages = await sanityFetch<any[]>(allPagesQuery);
-  if (pages && pages.length) {
-    return pages.map((p) => ({ params: { slug: p.slug }, props: { page: p, fromCMS: true } }));
-  }
-  // Pre-CMS fallback: a placeholder page for every known nav slug so the whole site is navigable now.
-  return contentPages.map((p) => ({
-    params: { slug: p.slug },
-    props: { page: { slug: p.slug, title: p.title, body: null, hero: null, tagline: null, cta: null }, fromCMS: false },
-  }));
+  const cms = await sanityFetch<any[]>(allPagesQuery);
+  const cmsSlugs = new Set((cms || []).map((p) => p.slug));
+  const paths: any[] = [];
+  for (const m of ministries) if (!cmsSlugs.has(m.slug)) paths.push({ params: { slug: m.slug }, props: { kind: 'ministry', ministry: m } });
+  for (const [slug, page] of Object.entries(infoPages)) if (!cmsSlugs.has(slug)) paths.push({ params: { slug }, props: { kind: 'info', info: { slug, ...page } } });
+  for (const p of cms || []) paths.push({ params: { slug: p.slug }, props: { kind: 'cms', page: p } });
+  return paths;
 }
 
-const { page, fromCMS } = Astro.props as { page: any; fromCMS: boolean };
-const heroUrl = fromCMS ? urlForImage(page.hero)?.width(1600).height(560).url() ?? null : null;
-
-// CTA can point at a Church Center link (giving/form/registration) and open in the modal.
-const ctaHref = page.cta?.url
-  ? page.cta.openInModal ? `${page.cta.url}?open-in-church-center-modal=true` : page.cta.url
-  : null;
+const props = Astro.props as any;
+const connect = `https://${site.churchCenter.subdomain}`;
 ---
-<Base title={page.title} description={page.tagline ?? undefined}>
-  <section class="page-hero" style={heroUrl ? `background-image:linear-gradient(rgba(0,40,80,.55),rgba(0,40,80,.55)),url('${heroUrl}')` : ''} data-has-image={heroUrl ? 'true' : 'false'}>
-    <div class="container">
-      <h1>{page.title}</h1>
-      {page.tagline && <p class="lead">{page.tagline}</p>}
-      {ctaHref && <a class="btn btn--gold" href={ctaHref}>{page.cta.label ?? 'Learn more'}</a>}
-    </div>
-  </section>
+{props.kind === 'ministry' && (() => {
+  const m = props.ministry;
+  return (
+    <Base title={m.name} description={m.tagline}>
+      <PageHero eyebrow="Ministries" title={m.name} lead={m.tagline}>
+        <a class="btn btn--gold btn--lg" href={connect} target="_blank" rel="noopener noreferrer">{m.cta?.label ?? 'Get connected'}</a>
+      </PageHero>
 
-  <section class="section">
-    <div class="container">
-      {page.body ? (
-        <PortableText value={page.body} />
-      ) : (
-        <div class="prose placeholder">
-          <p class="eyebrow">Coming soon</p>
-          <p>
-            This page is ready to fill in. Once the site's content is added in the CMS, this is where
-            the <strong>{page.title}</strong> details will live.
-          </p>
-          <p>
-            In the meantime, you can <a href="/calendar">see what's happening</a>, or
-            <a href={`https://${site.churchCenter.subdomain}`} target="_blank" rel="noopener noreferrer"> open Church Center</a> to
-            connect, give, or register for an event.
-          </p>
+      <Section>
+        <div class="mintro" data-reveal>
+          <div class="mintro__meta">
+            <span class="pill"><Icon name="users" size={16} /> {m.forWho}</span>
+            <span class="pill pill--gold"><Icon name="calendar" size={16} /> {m.meets}</span>
+          </div>
+          <p class="lead">{m.intro}</p>
         </div>
-      )}
-    </div>
-  </section>
-</Base>
+        <div class="grid cols-3 mt-2">
+          {m.points.map((pt: any, i: number) => (
+            <div class="card" data-reveal data-delay={String((i % 3) + 1)}>
+              <div class={`chip ${i === 1 ? 'chip--gold' : ''}`}><Icon name="check" /></div>
+              <h3>{pt.title}</h3>
+              <p>{pt.text}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <CTABand title={`Ready to get connected with ${m.name}?`} text="We'd love to help you take the next step." variant="deep">
+        <a class="btn btn--gold btn--lg" href={connect} target="_blank" rel="noopener noreferrer">{m.cta?.label ?? 'Get connected'}</a>
+      </CTABand>
+    </Base>
+  );
+})()}
+
+{props.kind === 'info' && (() => {
+  const p = props.info;
+  return (
+    <Base title={p.title} description={p.tagline}>
+      <PageHero eyebrow="Chelsea Community Church" title={p.title} lead={p.tagline} />
+      <Section width="narrow">
+        <p class="lead" data-reveal>{p.intro}</p>
+        {p.sections && (
+          <div class="grid cols-2 mt-2">
+            {p.sections.map((s: any, i: number) => (
+              <div class="card" data-reveal data-delay={String((i % 2) + 1)}>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+      <CTABand title="Let's connect" text="However you'd like to take a step, we're here." variant="gold">
+        <a class="btn btn--dark btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Reach out</a>
+      </CTABand>
+    </Base>
+  );
+})()}
+
+{props.kind === 'cms' && (() => {
+  const page = props.page;
+  const heroUrl = urlForImage(page.hero)?.width(1600).height(560).url() ?? null;
+  const ctaHref = page.cta?.url ? (page.cta.openInModal ? `${page.cta.url}?open-in-church-center-modal=true` : page.cta.url) : null;
+  return (
+    <Base title={page.title} description={page.tagline ?? undefined}>
+      <PageHero eyebrow="Chelsea Community Church" title={page.title} lead={page.tagline ?? undefined}>
+        {ctaHref && <a class="btn btn--gold btn--lg" href={ctaHref}>{page.cta.label ?? 'Learn more'}</a>}
+      </PageHero>
+      <Section width="narrow">
+        {page.body ? <div data-reveal><PortableText value={page.body} /></div> : <p class="lead">More details coming soon.</p>}
+      </Section>
+    </Base>
+  );
+})()}
 
 <style>
-  .page-hero { background: var(--blue); color: #fff; background-size: cover; background-position: center; padding-block: clamp(3rem, 8vw, 5.5rem); }
-  .page-hero[data-has-image='false'] { background: linear-gradient(120deg, var(--blue), var(--blue-dark)); }
-  .page-hero h1 { color: #fff; }
-  .page-hero .lead { font-size: 1.2rem; max-width: 54ch; color: #e6eef5; }
-  .page-hero .btn { margin-top: 1rem; }
-  .placeholder { color: var(--muted); }
+  .mintro__meta { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.25rem; }
 </style>

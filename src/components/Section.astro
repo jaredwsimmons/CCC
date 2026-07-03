@@ -1,0 +1,30 @@
+---
+interface Props {
+  variant?: 'default' | 'cloud' | 'cream' | 'sky' | 'deep';
+  width?: 'default' | 'wide' | 'narrow';
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  center?: boolean;
+  id?: string;
+  class?: string;
+}
+const {
+  variant = 'default', width = 'default', eyebrow, title, lead, center = false, id, class: cls = '',
+} = Astro.props;
+const sectionClass = ['section', variant !== 'default' ? `section--${variant}` : '', cls].filter(Boolean).join(' ');
+const containerClass = ['container', width === 'wide' ? 'container--wide' : '', width === 'narrow' ? 'container--narrow' : ''].filter(Boolean).join(' ');
+const hasHead = eyebrow || title || lead;
+---
+<section class={sectionClass} id={id}>
+  <div class={containerClass}>
+    {hasHead && (
+      <div class={`section-head ${center ? 'section-head--center' : ''}`} data-reveal>
+        {eyebrow && <p class={`eyebrow ${center ? 'eyebrow--center' : ''}`}>{eyebrow}</p>}
+        {title && <h2 class="mt-1">{title}</h2>}
+        {lead && <p class="lead mt-1">{lead}</p>}
+      </div>
+    )}
+    <slot />
+  </div>
+</section>

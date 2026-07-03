@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import Quatrefoil from '../components/Quatrefoil.astro';
+import { currentSeries, sampleSermons } from '../data/content';
+import { site } from '../data/site';
+
+// Media hub from the site crawl (Subsplash). YouTube/Spotify fall back to it until set in site.ts.
+const media = {
+  hub: 'https://subsplash.com/+ppht/media',
+  youtube: site.social.youtube,
+  spotify: site.social.spotify,
+};
+const watch = media.youtube || media.hub;
+const listen = media.spotify || media.hub;
+---
+<Base title="Media" description="Watch and listen to messages from Chelsea Community Church.">
+  <PageHero eyebrow="Messages" title="Watch & listen"
+    lead="Missed a Sunday, or want to revisit a message? Catch every sermon on demand — anytime, anywhere.">
+    <a class="btn btn--gold btn--lg" href={watch} target="_blank" rel="noopener noreferrer"><Icon name="play" size={18} /> Watch latest</a>
+    <a class="btn btn--on-dark" href={listen} target="_blank" rel="noopener noreferrer">Listen to audio</a>
+  </PageHero>
+
+  <!-- Current series feature -->
+  <Section variant="deep">
+    <div class="feature" data-reveal>
+      <div class="feature__art" aria-hidden="true"><Quatrefoil size={180} /></div>
+      <div>
+        <p class="eyebrow on-dark">Current series</p>
+        <h2>{currentSeries.title}</h2>
+        <p class="feature__sub">{currentSeries.subtitle}</p>
+        <p class="lead">{currentSeries.text}</p>
+        <div class="cta-row mt-1">
+          <a class="btn btn--gold" href={watch} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+          <a class="btn btn--on-dark" href={listen} target="_blank" rel="noopener noreferrer">Listen on Spotify</a>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Messages grid -->
+  <Section eyebrow="Recent messages" title="Catch up on a message" center>
+    <div class="grid cols-3">
+      {sampleSermons.map((s, i) => (
+        <a class="card card--link sermon" href={media.hub} target="_blank" rel="noopener noreferrer" data-reveal data-delay={String((i % 3) + 1)}>
+          <div class="sermon__thumb"><Icon name="play" size={30} /></div>
+          <span class="card__kicker">{s.scripture}</span>
+          <h3>{s.title}</h3>
+          <p class="sermon__meta">{s.speaker} · {s.date}</p>
+        </a>
+      ))}
+    </div>
+    <p class="center text-muted mt-2" style="font-size:.9rem">Full sermon archive lives in Church Center &amp; on our media hub.</p>
+  </Section>
+</Base>
+
+<style>
+  .feature { display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 3rem; align-items: center; }
+  .feature__art { display: grid; place-items: center; aspect-ratio: 1; border-radius: var(--r-lg); background: radial-gradient(circle at 50% 40%, rgba(240,195,52,0.2), transparent 62%); border: 1px solid rgba(255,255,255,0.12); color: var(--gold-300); }
+  .feature h2 { color: #fff; }
+  .feature__sub { font-family: var(--font-display); color: var(--gold-300); font-weight: 600; margin: 0.25rem 0 0.75rem; font-size: 1.15rem; }
+  .sermon__thumb { aspect-ratio: 16/9; border-radius: var(--r); background: linear-gradient(135deg, var(--blue-50), var(--blue-100)); display: grid; place-items: center; color: var(--blue); margin-bottom: 1rem; }
+  .card--link:hover .sermon__thumb { background: var(--grad-gold); color: var(--navy); }
+  .sermon__meta { color: var(--muted); font-size: 0.9rem; }
+  @media (max-width: 820px) { .feature { grid-template-columns: 1fr; } .feature__art { display: none; } }
+</style>

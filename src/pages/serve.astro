@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import CTABand from '../components/CTABand.astro';
+import { serveOps } from '../data/content';
+import { site } from '../data/site';
+const connect = `https://${site.churchCenter.subdomain}`;
+---
+<Base title="Serve" description="Find your place to serve at Chelsea Community Church.">
+  <PageHero eyebrow="Serve" title="You were made for more than a seat"
+    lead="God has gifted every one of us to build up the church and bless our community. There's a place for your gifts — and a team that would love to have you.">
+    <a class="btn btn--gold btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Find your spot</a>
+  </PageHero>
+
+  <Section eyebrow="Where to jump in" title="Ways to serve" center>
+    <div class="grid cols-3">
+      {serveOps.map((s, i) => (
+        <div class="card serve-card" data-reveal data-delay={String((i % 3) + 1)}>
+          <div class={`chip ${i % 2 ? 'chip--gold' : ''}`}><Icon name={s.icon} /></div>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <Section variant="deep" width="narrow">
+    <div class="center" data-reveal>
+      <p class="eyebrow on-dark eyebrow--center">Why it matters</p>
+      <h2>When everyone plays their part, the whole body grows</h2>
+      <p class="lead">Serving isn't about filling slots — it's how we love one another and reach our city. You don't need to be an expert. You just need to be willing.</p>
+      <a class="btn btn--gold btn--lg mt-1" href={connect} target="_blank" rel="noopener noreferrer">Start serving</a>
+    </div>
+  </Section>
+</Base>
+
+<style>
+  .serve-card { transition: transform 0.2s, box-shadow 0.2s; }
+  .serve-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+</style>

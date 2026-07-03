@@ -1,24 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
 import ChurchCenterCalendar from '../components/ChurchCenterCalendar.astro';
 ---
 <Base title="Calendar" description="What's happening at Chelsea Community Church.">
-  <section class="page-hero">
-    <div class="container">
-      <h1>Calendar</h1>
-      <p class="lead">Everything happening across the life of our church — powered by Church Center.</p>
-    </div>
-  </section>
-
+  <PageHero eyebrow="What's happening" title="Church Calendar"
+    lead="Services, groups, studies, and events across the life of our church — kept up to date in Church Center.">
+    <a class="btn btn--gold" href="/imnew">Plan a visit</a>
+  </PageHero>
   <section class="section">
-    <div class="container">
+    <div class="container" data-reveal>
       <ChurchCenterCalendar />
     </div>
   </section>
 </Base>
-
-<style>
-  .page-hero { background: linear-gradient(120deg, var(--blue), var(--blue-dark)); color: #fff; padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-  .page-hero h1 { color: #fff; }
-  .page-hero .lead { color: #e6eef5; max-width: 54ch; }
-</style>

@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { leadership } from '../data/content';
+import { site } from '../data/site';
+const connect = `https://${site.churchCenter.subdomain}`;
+const initials = (n: string) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+
+const groupsList = [
+  { key: 'Elders', tagline: 'Shepherding the spiritual life of our church.', people: leadership.elders },
+  { key: 'Pastoral Staff', tagline: 'Leading and caring for our ministries day to day.', people: leadership.staff },
+  { key: 'Deacons', tagline: 'Serving the practical needs of our church family.', people: leadership.deacons },
+];
+---
+<Base title="Our Leaders" description="Meet the elders, pastors, and deacons who serve Chelsea Community Church.">
+  <PageHero eyebrow="Our team" title="Meet our leaders"
+    lead="Chelsea Community Church is led by a team of elders, pastors, and deacons — ordinary people devoted to loving God and shepherding His people." />
+
+  {groupsList.map((g, gi) => (
+    <Section variant={gi % 2 ? 'cloud' : 'default'} eyebrow={g.key} title={g.tagline} center={false}>
+      <div class="grid cols-3">
+        {g.people.map((p, i) => (
+          <div class="card person" data-reveal data-delay={String((i % 3) + 1)}>
+            <div class="person__avatar" aria-hidden="true">{initials(p.name)}</div>
+            <div>
+              <h3>{p.name}</h3>
+              <p class="person__role">{p.role}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Section>
+  ))}
+
+  <Section variant="deep" width="narrow">
+    <div class="center" data-reveal>
+      <p class="eyebrow on-dark eyebrow--center">How we're led</p>
+      <h2>Elder-led. Congregationally accountable.</h2>
+      <p class="lead">A plurality of elders shepherds the church, deacons serve its needs, and our congregation shares in the major decisions — shared, prayerful, servant leadership under the authority of Christ and His Word.</p>
+    </div>
+  </Section>
+
+  <CTABand title="Need to reach a pastor?" text="Our team is here for you — for prayer, questions, or just to talk." variant="gold">
+    <a class="btn btn--dark btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Contact us</a>
+  </CTABand>
+</Base>
+
+<style>
+  .person { display: flex; align-items: center; gap: 1.1rem; }
+  .person__avatar { width: 66px; height: 66px; flex-shrink: 0; border-radius: 20px; background: var(--grad-deep); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: 0.02em; box-shadow: var(--shadow-sm); }
+  .person h3 { margin: 0; font-size: 1.15rem; }
+  .person__role { color: var(--blue); font-family: var(--font-display); font-weight: 600; font-size: 0.92rem; margin: 0.15rem 0 0; }
+</style>

@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import Quatrefoil from '../components/Quatrefoil.astro';
+import CTABand from '../components/CTABand.astro';
+import { missions } from '../data/content';
+import { site } from '../data/site';
+const connect = `https://${site.churchCenter.subdomain}`;
+---
+<Base title="Missions" description="From Chelsea to the nations — how Chelsea Community Church takes the gospel to the world.">
+  <PageHero eyebrow="Missions" title="From Chelsea to the nations"
+    lead={missions.intro} />
+
+  <Section eyebrow="Where we focus" title="Near and far" center>
+    <div class="grid cols-3">
+      {missions.focus.map((f, i) => (
+        <div class="card center" data-reveal data-delay={String(i + 1)}>
+          <div class="chip chip--gold" style="margin-inline:auto"><Icon name={f.icon} /></div>
+          <h3>{f.title}</h3>
+          <p>{f.text}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <!-- Romania highlight -->
+  <Section variant="deep">
+    <div class="romania" data-reveal>
+      <div class="romania__art" aria-hidden="true"><Quatrefoil size={150} /><span>Romania</span></div>
+      <div>
+        <p class="eyebrow on-dark">Global partnership</p>
+        <h2>Our friends in Romania</h2>
+        <p class="lead">We're honored to partner with gospel work in Romania — sending teams, building relationships, and coming alongside the local church. It's a picture of what missions is all about: ordinary believers, extraordinary God, real lives changed.</p>
+        <a class="btn btn--gold mt-1" href={connect} target="_blank" rel="noopener noreferrer">Get involved</a>
+      </div>
+    </div>
+  </Section>
+
+  <Section eyebrow="How to engage" title="Pray. Give. Go." center
+    lead="Every believer has a part to play in the Great Commission — right where you are, and to the ends of the earth.">
+    <div class="grid cols-3">
+      {missions.ways.map((w, i) => (
+        <div class="card" data-reveal data-delay={String(i + 1)}>
+          <span class="way-no">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{w.title}</h3>
+          <p>{w.text}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <CTABand title="Say yes to the mission" text="Pray for the nations, give to gospel work, or take your first trip. We'll help you take the step." variant="gold">
+    <a class="btn btn--dark btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Get involved</a>
+    <a class="btn btn--ghost btn--lg" href="/give" style="border-color:rgba(6,42,74,.25);color:var(--navy)">Give to missions</a>
+  </CTABand>
+</Base>
+
+<style>
+  .romania { display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 3rem; align-items: center; }
+  .romania__art { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: var(--r-lg); background: radial-gradient(circle at 50% 40%, rgba(240,195,52,0.18), transparent 62%); border: 1px solid rgba(255,255,255,0.12); color: var(--gold-300); }
+  .romania__art span { position: absolute; bottom: 1.1rem; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.72rem; color: #9fb6cc; }
+  .romania h2 { color: #fff; }
+  .way-no { font-family: var(--font-display); font-weight: 800; color: var(--gold); font-size: 1rem; }
+  @media (max-width: 820px) { .romania { grid-template-columns: 1fr; } .romania__art { display: none; } }
+</style>
