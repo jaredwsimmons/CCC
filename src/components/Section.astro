@@ -21,8 +21,8 @@ const hasHead = eyebrow || title || lead;
     {hasHead && (
       <div class={`section-head ${center ? 'section-head--center' : ''}`} data-reveal>
         {eyebrow && <p class={`eyebrow ${center ? 'eyebrow--center' : ''}`}>{eyebrow}</p>}
-        {title && <h2 class="mt-1">{title}</h2>}
-        {lead && <p class="lead mt-1">{lead}</p>}
+        {title && <h2>{title}</h2>}
+        {lead && <p class="lead">{lead}</p>}
       </div>
     )}
     <slot />

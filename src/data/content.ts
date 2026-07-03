@@ -17,16 +17,16 @@ export const welcome = {
 };
 
 export const stats = [
-  { num: '2', label: 'Sunday gatherings — 9:00 & 10:30 AM' },
-  { num: 'All ages', label: 'From nursery to students to adults' },
-  { num: 'Chelsea, AL', label: 'Our home in the heart of Shelby County' },
-  { num: 'Romania →', label: 'Local roots, global mission' },
+  { num: '2', label: 'Sunday gatherings, 9:00 & 10:30 AM' },
+  { num: 'All ages', label: 'Nursery, kids, students & adults' },
+  { num: 'Chelsea, AL', label: 'Our home in Shelby County' },
+  { num: 'Romania', label: 'Our global mission partner' },
 ];
 
 export const values = [
   { icon: 'cross', title: 'The gospel at the center', text: 'The good news of Jesus — His life, death, and resurrection — is not just how we begin the Christian life; it is what we build everything on.' },
   { icon: 'book', title: 'The authority of Scripture', text: "We believe the Bible is God's Word — trustworthy, sufficient, and alive. So we teach it plainly and follow where it leads." },
-  { icon: 'users', title: 'Everyone in community', text: 'The Christian life is a team sport. We pursue real relationships where we are known, encouraged, and spurred on.' },
+  { icon: 'users', title: 'Everyone in community', text: 'The Christian life is a team sport. We pursue genuine relationships where we are known, encouraged, and spurred on.' },
   { icon: 'hand_heart', title: 'Every member a minister', text: 'Ministry is not just for the paid staff. God has gifted every believer to serve and build up the body.' },
   { icon: 'globe', title: 'A heart for the nations', text: 'We give, go, and send so that people near and far can hear about Jesus for the first time.' },
   { icon: 'hands', title: 'Dependent on prayer', text: 'We cannot manufacture what only God can do, so we ask Him — together and often.' },
@@ -38,10 +38,12 @@ export const beliefs = {
   statement: [
     { title: 'The Bible', text: 'The sixty-six books of Scripture are the inspired, inerrant Word of God — our final authority for faith and life.' },
     { title: 'God', text: 'There is one God, eternally existing in three persons: Father, Son, and Holy Spirit — perfect in holiness, wisdom, and love.' },
+    { title: 'Humanity & Sin', text: 'Made in God’s image and deeply loved, every person has turned away from Him. Sin separates us from God and is something we cannot fix on our own — which is exactly why we need a Savior.' },
     { title: 'Jesus Christ', text: 'Fully God and fully man, Jesus lived a sinless life, died in our place, rose bodily from the grave, and reigns as Lord.' },
-    { title: 'Salvation', text: 'We are saved by grace alone, through faith alone, in Christ alone — not by our own works, so that no one can boast.' },
+    { title: 'Salvation', text: 'We are saved by grace alone, through faith alone, in Christ alone — not by our own works, so that no one can boast (Ephesians 2:8–9).' },
     { title: 'The Holy Spirit', text: 'The Spirit indwells every believer, giving new life, producing fruit, and empowering us for love and mission.' },
-    { title: 'The Church', text: 'The church is the family of God, gathered to worship, grow, and go — the hope of the world because it carries the message of Jesus.' },
+    { title: 'The Church', text: 'The church is the family of God — gathered to worship and grow, and sent to carry the world’s only true hope: the good news of Jesus.' },
+    { title: 'Our Hope', text: 'Jesus will return to make all things new. We live today in the light of that certain hope — and invite everyone to be ready.' },
   ],
   distinctives: [
     { q: 'What kind of church are you?', a: 'A gospel-centered, non-denominational community church. We are led by a plurality of elders and remain accountable to our congregation. Our aim is to be biblically faithful and warmly welcoming at the same time.' },
@@ -202,13 +204,14 @@ export const currentSeries = {
   text: 'Jesus often taught the deepest truths through the simplest stories. In this series we walk through His parables — and discover how the Kingdom of God turns our expectations upside down.',
 };
 
+// Sample messages (illustrative). Real sermons come from the CMS / media feed before launch.
 export const sampleSermons = [
-  { title: 'The Sower', speaker: 'Drew Blake', scripture: 'Matthew 13', date: 'Recent' },
-  { title: 'The Prodigal Son', speaker: 'Guest Speaker', scripture: 'Luke 15', date: 'Recent' },
-  { title: 'The Good Samaritan', speaker: 'Drew Blake', scripture: 'Luke 10', date: 'Recent' },
-  { title: 'The Hidden Treasure', speaker: 'Guest Speaker', scripture: 'Matthew 13', date: 'Recent' },
-  { title: 'The Lost Sheep', speaker: 'Drew Blake', scripture: 'Luke 15', date: 'Recent' },
-  { title: 'The Mustard Seed', speaker: 'Guest Speaker', scripture: 'Mark 4', date: 'Recent' },
+  { title: 'The Sower', speaker: 'CCC Teaching Team', scripture: 'Matthew 13' },
+  { title: 'The Prodigal Son', speaker: 'CCC Teaching Team', scripture: 'Luke 15' },
+  { title: 'The Good Samaritan', speaker: 'CCC Teaching Team', scripture: 'Luke 10' },
+  { title: 'The Hidden Treasure', speaker: 'CCC Teaching Team', scripture: 'Matthew 13' },
+  { title: 'The Lost Sheep', speaker: 'CCC Teaching Team', scripture: 'Luke 15' },
+  { title: 'The Mustard Seed', speaker: 'CCC Teaching Team', scripture: 'Mark 4' },
 ];
 
 export const sampleEvents = [

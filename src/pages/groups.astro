@@ -28,7 +28,7 @@ const connect = `https://${site.churchCenter.subdomain}/groups`;
 
   <Section variant="cloud">
     <div class="split">
-      <div class="split__visual dotgrid" aria-hidden="true"><div class="split__badge"><Icon name="users" size={30} /></div></div>
+      <div class="split__visual qf-pattern-blue" aria-hidden="true"><div class="split__badge"><Icon name="users" size={30} /></div></div>
       <div data-reveal>
         <p class="eyebrow">Getting started</p>
         <h2 class="mt-1">Your next step is a conversation, not a commitment</h2>
@@ -47,5 +47,5 @@ const connect = `https://${site.churchCenter.subdomain}/groups`;
   .split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
   .split__visual { position: relative; aspect-ratio: 5/4; border-radius: var(--r-lg); background: linear-gradient(135deg, var(--blue-50), #fff); border: 1px solid var(--line); display: grid; place-items: center; }
   .split__badge { width: 92px; height: 92px; border-radius: 26px; background: var(--grad-gold); color: var(--navy); display: grid; place-items: center; box-shadow: var(--shadow); }
-  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split__visual { order: 2; } }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split__visual { order: 2; min-height: 220px; } }
 </style>

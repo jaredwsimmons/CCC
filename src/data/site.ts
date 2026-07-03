@@ -16,11 +16,13 @@ export const site = {
   email: '', // TODO
   phone: '', // TODO
 
+  // Leave blank until the real handles/URLs are verified — the footer hides empty ones,
+  // and media buttons fall back to generic labels. Do NOT ship guessed social URLs.
   social: {
-    facebook: 'https://www.facebook.com/chelseachurch', // TODO verify handle
-    instagram: 'https://www.instagram.com/chelseachurch', // TODO verify handle
-    youtube: '', // TODO
-    spotify: '', // TODO
+    facebook: '', // TODO verify + paste exact URL
+    instagram: '', // TODO verify + paste exact URL
+    youtube: '', // TODO channel URL
+    spotify: '', // TODO show/podcast URL
   },
 
   // Planning Center Church Center — the live engine behind calendar/giving/forms/registration/app.

@@ -9,6 +9,7 @@ const exploreLinks = nav.flatMap((n) => (n.children ? n.children : [n]));
 ---
 <footer class="ftr">
   <Quatrefoil size={520} class="ftr__watermark" />
+  <h2 class="visually-hidden">Site footer</h2>
   <div class="container ftr__grid">
     <div class="ftr__brand">
       <a href="/" class="ftr__logo">
@@ -28,7 +29,7 @@ const exploreLinks = nav.flatMap((n) => (n.children ? n.children : [n]));
     </div>
 
     <div>
-      <h4>Join us Sunday</h4>
+      <h3>Join us Sunday</h3>
       <ul class="plain-list ftr__links">
         {site.serviceTimes.map((t) => <li><strong>{t}</strong></li>)}
         {(site.address.city) && (
@@ -42,14 +43,16 @@ const exploreLinks = nav.flatMap((n) => (n.children ? n.children : [n]));
     </div>
 
     <div>
-      <h4>Explore</h4>
+      <h3>Explore</h3>
       <ul class="plain-list ftr__links">
-        {exploreLinks.slice(0, 8).map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        {exploreLinks.slice(0, 7).map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        <li><a href="/history">Our Story</a></li>
+        <li><a href="/connections">Connect</a></li>
       </ul>
     </div>
 
     <div>
-      <h4>Connect</h4>
+      <h3>Connect</h3>
       <ul class="plain-list ftr__links">
         <li><a href={giveHref}>Give</a></li>
         <li><a href="/prayer">Prayer requests</a></li>
@@ -68,9 +71,9 @@ const exploreLinks = nav.flatMap((n) => (n.children ? n.children : [n]));
 
 <style>
   .ftr { position: relative; overflow: hidden; background: var(--grad-deep); color: #b9cee1; padding-block: clamp(3rem, 6vw, 4.5rem) 1.5rem; }
-  .ftr__watermark { position: absolute; right: -140px; bottom: -160px; color: rgba(255,255,255,0.03); pointer-events: none; }
+  .ftr__watermark { position: absolute; right: -130px; bottom: -150px; color: rgba(255,255,255,0.055); pointer-events: none; transform: rotate(-8deg); }
   .ftr__grid { position: relative; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 2.5rem; }
-  .ftr h4 { color: #fff; font-size: 1rem; margin-bottom: 1rem; letter-spacing: 0.01em; }
+  .ftr h3 { color: #fff; font-size: 1rem; margin-bottom: 1rem; letter-spacing: 0.01em; }
   .ftr__logo { display: inline-flex; align-items: center; gap: 0.6rem; color: #fff; text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
   .ftr__logo :global(svg) { color: var(--gold); }
   .ftr__tag { color: var(--gold-300); font-family: var(--font-display); font-weight: 600; margin-top: 0.6rem; }
