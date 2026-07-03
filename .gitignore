@@ -1,0 +1,22 @@
+# build output
+dist/
+.astro/
+studio/dist/
+
+# dependencies
+node_modules/
+studio/node_modules/
+
+# env / secrets
+.env
+.env.production
+.env.*.local
+
+# sanity
+studio/.sanity/
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*

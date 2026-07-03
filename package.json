@@ -1,0 +1,24 @@
+{
+  "name": "chelsea-church-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chelsea Community Church website — Astro (static) + Sanity (CMS) + Church Center embeds. Hosted free on Cloudflare Pages.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@portabletext/to-html": "^2.0.13",
+    "@sanity/client": "^6.22.5",
+    "@sanity/image-url": "^1.1.0",
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,0 +1,90 @@
+---
+import { site, nav } from '../data/site';
+const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+---
+<header class="site-header">
+  <div class="container bar">
+    <a href="/" class="brand" aria-label={`${site.name} home`}>
+      <span class="brand__mark" aria-hidden="true">✚</span>
+      <span class="brand__name">{site.name}</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="desktop-nav" aria-label="Primary">
+      <ul>
+        {nav.map((item) =>
+          item.children ? (
+            <li class="has-children">
+              <a href={item.href}>{item.label} <span aria-hidden="true">▾</span></a>
+              <ul class="submenu">
+                {item.children.map((c) => (
+                  <li><a href={c.href}>{c.label}</a></li>
+                ))}
+              </ul>
+            </li>
+          ) : (
+            <li><a href={item.href}>{item.label}</a></li>
+          )
+        )}
+      </ul>
+    </nav>
+
+    <a class="btn btn--gold give-cta" href={giveHref}>Give</a>
+
+    <!-- Mobile nav (zero-JS disclosure) -->
+    <details class="mobile-nav">
+      <summary aria-label="Menu"><span aria-hidden="true">☰</span></summary>
+      <div class="mobile-panel">
+        <ul>
+          <li><a href="/">Home</a></li>
+          {nav.map((item) => (
+            <>
+              <li><a href={item.href}>{item.label}</a></li>
+              {item.children?.map((c) => (
+                <li class="indent"><a href={c.href}>{c.label}</a></li>
+              ))}
+            </>
+          ))}
+          <li><a class="btn btn--gold" href={giveHref}>Give</a></li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</header>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 1px solid var(--line); }
+  .bar { display: flex; align-items: center; gap: 1rem; min-height: 68px; }
+  .brand { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; margin-right: auto; }
+  .brand__mark { color: var(--gold); font-size: 1.4rem; }
+  .brand__name { font-family: var(--font-head); font-weight: 700; color: var(--blue-dark); font-size: 1.05rem; }
+
+  .desktop-nav ul { list-style: none; display: flex; gap: 0.25rem; margin: 0; padding: 0; }
+  .desktop-nav a { display: block; padding: 0.5rem 0.75rem; text-decoration: none; color: var(--ink); font-family: var(--font-head); font-weight: 500; border-radius: 8px; }
+  .desktop-nav a:hover { background: var(--blue-tint); color: var(--blue-dark); }
+  .has-children { position: relative; }
+  .submenu {
+    position: absolute; left: 0; top: 100%; min-width: 190px;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: var(--shadow); padding: 0.35rem; flex-direction: column;
+    opacity: 0; visibility: hidden; transform: translateY(4px); transition: all 0.12s ease;
+  }
+  .has-children:hover .submenu,
+  .has-children:focus-within .submenu { opacity: 1; visibility: visible; transform: translateY(0); }
+
+  .give-cta { flex-shrink: 0; }
+  .mobile-nav { display: none; }
+
+  @media (max-width: 860px) {
+    .desktop-nav, .give-cta { display: none; }
+    .mobile-nav { display: block; position: relative; }
+    .mobile-nav summary { list-style: none; cursor: pointer; font-size: 1.5rem; padding: 0.25rem 0.5rem; color: var(--blue-dark); }
+    .mobile-nav summary::-webkit-details-marker { display: none; }
+    .mobile-panel { position: absolute; right: 0; top: calc(100% + 8px); width: min(80vw, 280px);
+      background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 0.5rem; }
+    .mobile-panel ul { list-style: none; margin: 0; padding: 0; }
+    .mobile-panel a { display: block; padding: 0.6rem 0.75rem; text-decoration: none; color: var(--ink); font-family: var(--font-head); border-radius: 8px; }
+    .mobile-panel a:hover { background: var(--blue-tint); }
+    .mobile-panel .indent a { padding-left: 1.5rem; font-weight: 400; color: var(--muted); }
+  }
+</style>

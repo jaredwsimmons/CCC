@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro';
+import PortableText from '../components/PortableText.astro';
+import { site } from '../data/site';
+import { sanityFetch } from '../lib/sanity';
+import { siteSettingsQuery } from '../lib/queries';
+
+const settings = await sanityFetch<any>(siteSettingsQuery);
+const announcement: string | undefined = settings?.announcement;
+const series = settings?.series;
+const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+---
+<Base>
+  {announcement && (
+    <div class="announce"><div class="container">{announcement}</div></div>
+  )}
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">Chelsea, Alabama</p>
+      <h1>{site.tagline}</h1>
+      <p class="lead">
+        We gather every Sunday at {site.serviceTimes.join(' & ')}. Whether you're exploring faith or
+        looking for a church home, there's a place for you here.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn--primary" href="/imnew">Plan your visit</a>
+        <a class="btn btn--gold" href={giveHref}>Give</a>
+        <a class="btn btn--ghost" href="/media">Watch a message</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CURRENT SERIES -->
+  {series?.title && (
+    <section class="section section--alt">
+      <div class="container series">
+        <div>
+          <p class="eyebrow">Current series</p>
+          <h2>{series.title}</h2>
+          {series.description && <p>{series.description}</p>}
+          <div class="cta-row">
+            {series.youtubeUrl && <a class="btn btn--primary" href={series.youtubeUrl} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>}
+            {series.spotifyUrl && <a class="btn btn--ghost" href={series.spotifyUrl} target="_blank" rel="noopener noreferrer">Listen on Spotify</a>}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- NEXT STEPS -->
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow center">Get connected</p>
+      <h2 class="center">Your next step</h2>
+      <div class="grid cols-3 steps">
+        <a class="card" href="/imnew">
+          <h3>I'm new</h3>
+          <p>What to expect on a Sunday, where to park, and how to find us.</p>
+        </a>
+        <a class="card" href="/groups">
+          <h3>Join a group</h3>
+          <p>Community groups are where church life happens the rest of the week.</p>
+        </a>
+        <a class="card" href="/serve">
+          <h3>Serve</h3>
+          <p>Use your gifts to build up the body and reach our community.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WEEKLY RHYTHM -->
+  <section class="section section--alt">
+    <div class="container times">
+      <div>
+        <p class="eyebrow">Join us Sunday</p>
+        <h2>Two gatherings, one church</h2>
+        <ul class="plain">
+          {site.serviceTimes.map((t) => <li><strong>{t}</strong> — Worship service</li>)}
+        </ul>
+        <p><a class="btn btn--ghost" href="/calendar">See the full calendar →</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .announce { background: var(--gold); color: var(--blue-dark); font-family: var(--font-head); font-weight: 600; text-align: center; padding: 0.6rem 0; }
+  .hero { background: linear-gradient(180deg, var(--blue-tint), #fff); padding-block: clamp(3rem, 8vw, 6rem); }
+  .hero .lead { font-size: 1.2rem; max-width: 54ch; color: var(--muted); }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+  .series h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); }
+  .steps { margin-top: 2rem; }
+  .card { display: block; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.5rem; text-decoration: none; color: inherit; box-shadow: var(--shadow); transition: transform 0.12s ease; }
+  .card:hover { transform: translateY(-3px); }
+  .card h3 { color: var(--blue); }
+  .plain { list-style: none; padding: 0; }
+  .plain li { padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+</style>

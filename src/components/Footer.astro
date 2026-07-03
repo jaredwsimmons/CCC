@@ -1,0 +1,63 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+const socials = Object.entries(site.social).filter(([, url]) => url);
+---
+<footer class="site-footer">
+  <div class="container grid cols-3">
+    <div>
+      <p class="brand"><span aria-hidden="true">✚</span> {site.name}</p>
+      <p class="tagline">{site.tagline}</p>
+      {(site.address.line1 || site.address.city) && (
+        <p class="muted">
+          {site.address.line1 && <>{site.address.line1}<br /></>}
+          {site.address.city}{site.address.city && site.address.state ? ', ' : ''}{site.address.state} {site.address.zip}
+        </p>
+      )}
+    </div>
+
+    <div>
+      <h3>Sundays</h3>
+      <ul class="plain">
+        {site.serviceTimes.map((t) => <li>{t}</li>)}
+      </ul>
+      <p><a class="btn btn--ghost" href="/imnew">Plan a visit</a></p>
+    </div>
+
+    <div>
+      <h3>Connect</h3>
+      <ul class="plain">
+        <li><a href={giveHref}>Give</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+        <li><a href="/prayer">Prayer requests</a></li>
+        <li><a href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Get the Church Center app</a></li>
+      </ul>
+      {socials.length > 0 && (
+        <p class="socials">
+          {socials.map(([name, url]) => (
+            <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
+          ))}
+        </p>
+      )}
+    </div>
+  </div>
+
+  <div class="container copyright">
+    <p>© {year} {site.name}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--blue-dark); color: #d7e4f0; margin-top: 3rem; padding-block: 2.5rem 1rem; }
+  .site-footer h3 { color: #fff; font-size: 1.05rem; }
+  .site-footer a { color: #fff; }
+  .brand { font-family: var(--font-head); font-weight: 700; color: #fff; font-size: 1.1rem; margin: 0 0 0.25rem; }
+  .brand span { color: var(--gold); }
+  .tagline { color: var(--gold); font-family: var(--font-head); margin: 0 0 0.75rem; }
+  .muted { color: #a9c2d8; font-size: 0.9rem; }
+  .plain { list-style: none; margin: 0 0 1rem; padding: 0; }
+  .plain li { margin-bottom: 0.35rem; }
+  .socials { display: flex; gap: 1rem; text-transform: capitalize; }
+  .copyright { border-top: 1px solid rgba(255,255,255,0.15); margin-top: 1.5rem; padding-top: 1rem; font-size: 0.85rem; color: #a9c2d8; }
+</style>

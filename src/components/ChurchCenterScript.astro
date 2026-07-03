@@ -1,0 +1,7 @@
+---
+// Loads the Church Center modal runtime. Any link whose href ends with
+// `?open-in-church-center-modal=true` will open giving/forms/registration in an overlay.
+// Requires the site to be served over HTTPS (Cloudflare Pages does this automatically).
+// `is:inline` keeps Astro from bundling it — it must load as the external script it is.
+---
+<script is:inline src="https://js.churchcenter.com/modal/v1"></script>

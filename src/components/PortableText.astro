@@ -1,0 +1,29 @@
+---
+import { toHTML } from '@portabletext/to-html';
+import { urlForImage } from '../lib/image';
+
+interface Props { value: unknown; }
+const { value } = Astro.props;
+
+const components = {
+  types: {
+    image: ({ value }: any) => {
+      const url = urlForImage(value)?.width(1200).url();
+      if (!url) return '';
+      const alt = (value?.alt as string) || '';
+      return `<img src="${url}" alt="${alt}" loading="lazy" />`;
+    },
+  },
+  marks: {
+    link: ({ children, value }: any) => {
+      const href = (value?.href as string) || '#';
+      const external = href.startsWith('http');
+      const attrs = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+      return `<a href="${href}"${attrs}>${children}</a>`;
+    },
+  },
+};
+
+const html = value ? toHTML(value as any, { components }) : '';
+---
+{html && <div class="prose" set:html={html} />}

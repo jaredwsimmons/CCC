@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import ChurchCenterCalendar from '../components/ChurchCenterCalendar.astro';
+---
+<Base title="Calendar" description="What's happening at Chelsea Community Church.">
+  <section class="page-hero">
+    <div class="container">
+      <h1>Calendar</h1>
+      <p class="lead">Everything happening across the life of our church — powered by Church Center.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <ChurchCenterCalendar />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-hero { background: linear-gradient(120deg, var(--blue), var(--blue-dark)); color: #fff; padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+  .page-hero h1 { color: #fff; }
+  .page-hero .lead { color: #e6eef5; max-width: 54ch; }
+</style>

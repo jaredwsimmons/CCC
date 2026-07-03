@@ -1,0 +1,10 @@
+# Cloudflare Pages redirects (https://developers.cloudflare.com/pages/configuration/redirects/)
+# Most GoHighLevel slugs are preserved 1:1 (/beliefs, /groups, /kids, ...), so no redirect needed for those.
+# Add entries here ONLY for old URLs whose path changed. Examples:
+#
+# /old-path            /new-path            301
+# /home                /                    301
+#
+# Keep this file — it's the right tool for old-URL redirects on Pages
+# (do NOT use Cloudflare's zone-level Bulk Redirects; the free-plan quota there is unreliable).
+/home    /    301

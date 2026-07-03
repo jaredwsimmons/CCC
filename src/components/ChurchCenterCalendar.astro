@@ -1,0 +1,24 @@
+---
+import { site } from '../data/site';
+interface Props { title?: string; minHeight?: number; }
+const { title = 'Church Calendar', minHeight = 820 } = Astro.props;
+---
+<div class="cc-calendar">
+  <iframe
+    src={site.churchCenter.calendarEmbed}
+    title={title}
+    loading="lazy"
+    style={`width:100%;min-height:${minHeight}px;border:0;`}
+  ></iframe>
+  <p class="cc-calendar__fallback">
+    Trouble seeing the calendar?
+    <a href={`https://${site.churchCenter.subdomain}/calendar`} target="_blank" rel="noopener noreferrer">
+      Open it in Church Center →
+    </a>
+  </p>
+</div>
+
+<style>
+  .cc-calendar { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .cc-calendar__fallback { padding: 0.75rem 1rem; margin: 0; font-size: 0.9rem; color: var(--muted); border-top: 1px solid var(--line); }
+</style>

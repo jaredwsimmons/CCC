@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import PortableText from '../components/PortableText.astro';
+import { urlForImage } from '../lib/image';
+import { sanityFetch } from '../lib/sanity';
+import { allPagesQuery } from '../lib/queries';
+import { contentPages, site } from '../data/site';
+
+export async function getStaticPaths() {
+  const pages = await sanityFetch<any[]>(allPagesQuery);
+  if (pages && pages.length) {
+    return pages.map((p) => ({ params: { slug: p.slug }, props: { page: p, fromCMS: true } }));
+  }
+  // Pre-CMS fallback: a placeholder page for every known nav slug so the whole site is navigable now.
+  return contentPages.map((p) => ({
+    params: { slug: p.slug },
+    props: { page: { slug: p.slug, title: p.title, body: null, hero: null, tagline: null, cta: null }, fromCMS: false },
+  }));
+}
+
+const { page, fromCMS } = Astro.props as { page: any; fromCMS: boolean };
+const heroUrl = fromCMS ? urlForImage(page.hero)?.width(1600).height(560).url() ?? null : null;
+
+// CTA can point at a Church Center link (giving/form/registration) and open in the modal.
+const ctaHref = page.cta?.url
+  ? page.cta.openInModal ? `${page.cta.url}?open-in-church-center-modal=true` : page.cta.url
+  : null;
+---
+<Base title={page.title} description={page.tagline ?? undefined}>
+  <section class="page-hero" style={heroUrl ? `background-image:linear-gradient(rgba(0,40,80,.55),rgba(0,40,80,.55)),url('${heroUrl}')` : ''} data-has-image={heroUrl ? 'true' : 'false'}>
+    <div class="container">
+      <h1>{page.title}</h1>
+      {page.tagline && <p class="lead">{page.tagline}</p>}
+      {ctaHref && <a class="btn btn--gold" href={ctaHref}>{page.cta.label ?? 'Learn more'}</a>}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {page.body ? (
+        <PortableText value={page.body} />
+      ) : (
+        <div class="prose placeholder">
+          <p class="eyebrow">Coming soon</p>
+          <p>
+            This page is ready to fill in. Once the site's content is added in the CMS, this is where
+            the <strong>{page.title}</strong> details will live.
+          </p>
+          <p>
+            In the meantime, you can <a href="/calendar">see what's happening</a>, or
+            <a href={`https://${site.churchCenter.subdomain}`} target="_blank" rel="noopener noreferrer"> open Church Center</a> to
+            connect, give, or register for an event.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-hero { background: var(--blue); color: #fff; background-size: cover; background-position: center; padding-block: clamp(3rem, 8vw, 5.5rem); }
+  .page-hero[data-has-image='false'] { background: linear-gradient(120deg, var(--blue), var(--blue-dark)); }
+  .page-hero h1 { color: #fff; }
+  .page-hero .lead { font-size: 1.2rem; max-width: 54ch; color: #e6eef5; }
+  .page-hero .btn { margin-top: 1rem; }
+  .placeholder { color: var(--muted); }
+</style>
