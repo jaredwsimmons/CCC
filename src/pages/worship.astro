@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import DeaconNote from '../components/DeaconNote.astro';
 import { worship } from '../data/content';
 ---
 <Base title="Worship" description="Blended worship — traditional and contemporary — reflecting a congregation of all generations at Chelsea Community Church.">
@@ -22,6 +23,10 @@ import { worship } from '../data/content';
         ))}
       </div>
     </div>
+  </Section>
+
+  <Section tight>
+    <DeaconNote area="Worship" />
   </Section>
 
   <CTABand title="Serve with music or tech" text="Musicians, vocalists, and behind-the-scenes hands all help make Sunday distraction-free.">

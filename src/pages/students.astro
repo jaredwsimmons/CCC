@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import DeaconNote from '../components/DeaconNote.astro';
 import { students } from '../data/content';
 import { site } from '../data/site';
 const coming = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
@@ -30,6 +31,10 @@ const coming = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal
         </div>
       </div>
     </div>
+  </Section>
+
+  <Section tight>
+    <DeaconNote area="Students" />
   </Section>
 
   <CTABand title="Questions about C3SM?" text="Drew Blake, our Pastor of Students & Worship, would love to connect.">

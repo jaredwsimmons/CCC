@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import DeaconNote from '../components/DeaconNote.astro';
 import { men } from '../data/content';
 ---
 <Base title="Men" description="Men's ministry at Chelsea Community Church — discipleship, Men On Fire around the fire pit, relationships, and service alongside our mission partners.">
@@ -45,6 +46,10 @@ import { men } from '../data/content';
         <p>{men.service.body}</p>
       </div>
     </div>
+  </Section>
+
+  <Section tight>
+    <DeaconNote area="Men" />
   </Section>
 
   <CTABand title="Join the brotherhood" text="Studies, the fire pit, serving shoulder-to-shoulder — there's a seat for you.">

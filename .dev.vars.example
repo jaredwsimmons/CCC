@@ -1,0 +1,8 @@
+# Local secrets for `wrangler pages dev` (the Cloudflare function runtime).
+# Copy this file to  .dev.vars  and paste your real Planning Center
+# Personal Access Token values. .dev.vars is gitignored — it never gets committed.
+#
+# Get these at: https://api.planningcenteronline.com/oauth/applications
+#   → Personal Access Tokens → New Personal Access Token
+PCO_APP_ID=PCO_APP_ID
+PCO_SECRET=PCO_SECRET

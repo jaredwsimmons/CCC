@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import DeaconNote from '../components/DeaconNote.astro';
 import { preschool } from '../data/content';
 import { site } from '../data/site';
 const preRegister = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
@@ -45,6 +46,10 @@ const preRegister = `${site.churchCenter.forms.planVisit}?open-in-church-center-
         <div class="photo"><img src={src} alt={`Preschool ministry at Chelsea Community Church — photo ${i + 1}`} loading="lazy" /></div>
       ))}
     </div>
+  </Section>
+
+  <Section tight>
+    <DeaconNote area="Preschool" />
   </Section>
 
   <CTABand title="Questions about Preschool?" text="We'd love to help your family feel at home.">

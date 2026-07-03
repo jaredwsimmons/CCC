@@ -1,0 +1,56 @@
+---
+// Small on-brand card naming the deacon(s) who serve a given ministry.
+// Data comes from the real deacon roster in content.ts (no API needed).
+import { leaders } from '../data/content';
+interface Props { area: string; blurb?: string; }
+const { area, blurb } = Astro.props;
+const d = leaders.deacons.find((x) => x.area === area);
+const plural = d ? d.names.includes(',') : false;
+---
+{d && (
+  <div class="deacon" data-reveal>
+    <div class="deacon__mark" aria-hidden="true">
+      <img src="/images/icon-gold.png" alt="" width="30" height="30" />
+    </div>
+    <div>
+      <p class="deacon__label">{plural ? 'Deacons' : 'Deacon'}</p>
+      <p class="deacon__names">{d.names}</p>
+      <p class="deacon__blurb">{blurb ?? 'Serving and praying over this ministry — reach out anytime.'}</p>
+    </div>
+  </div>
+)}
+
+<style>
+  .deacon {
+    display: flex;
+    gap: 1.1rem;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--hair);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--r);
+    padding: 1.05rem 1.4rem;
+    box-shadow: var(--shadow);
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+  .deacon__mark {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--navy);
+    display: grid;
+    place-items: center;
+  }
+  .deacon__label {
+    font-family: var(--display);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .deacon__names { font-family: var(--display); font-weight: 600; color: var(--navy); font-size: 1.1rem; margin-top: 0.05rem; }
+  .deacon__blurb { font-size: 0.9rem; color: var(--mid); margin-top: 0.2rem; }
+</style>

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import DeaconNote from '../components/DeaconNote.astro';
 import { kids } from '../data/content';
 import { site } from '../data/site';
 const preRegister = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
@@ -56,6 +57,10 @@ const serveReg = `${site.churchCenter.registrations.kidsServe}?open-in-church-ce
         <a class="btn btn--blue mt-1" href={serveReg}>Find out about serving in the Kids Ministry</a>
       </div>
     </div>
+  </Section>
+
+  <Section tight>
+    <DeaconNote area="Kids" />
   </Section>
 
   <CTABand title="Questions about Kids Ministry?" text="Ben Stephenson, our Family Pastor, would love to talk.">

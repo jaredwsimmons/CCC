@@ -12,6 +12,10 @@ studio/node_modules/
 .env.production
 .env.*.local
 
+# cloudflare local dev secrets (PCO token) — NEVER commit; .example is safe
+.dev.vars
+.wrangler/
+
 # sanity
 studio/.sanity/
 

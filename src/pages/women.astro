@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import DeaconNote from '../components/DeaconNote.astro';
 import { women } from '../data/content';
 const bingo = women.events.find((e) => e.rsvp);
 ---
@@ -53,6 +54,10 @@ const bingo = women.events.find((e) => e.rsvp);
       </div>
     </Section>
   )}
+
+  <Section tight>
+    <DeaconNote area="Women" />
+  </Section>
 
   <CTABand title="Questions about Women's Ministry?" text="Tammy would love to hear from you.">
     <a class="btn btn--gold btn--lg" href={`mailto:${women.contact}`}>Email Tammy for more information!</a>

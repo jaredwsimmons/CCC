@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import DeaconNote from '../components/DeaconNote.astro';
 import { connections } from '../data/content';
 ---
 <Base title="Connections" description="The Connections team helps every guest and member find their place at Chelsea Community Church — ministries, community groups, and events.">
@@ -20,6 +21,10 @@ import { connections } from '../data/content';
         <img src={connections.image.src} alt={connections.image.alt} loading="lazy" />
       </div>
     </div>
+  </Section>
+
+  <Section tight>
+    <DeaconNote area="Connections" />
   </Section>
 
   <CTABand title="Stop by the Connections Desk" text="Just past the Worship Room every Sunday morning — we'll help you find your place.">
