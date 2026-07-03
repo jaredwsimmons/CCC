@@ -78,9 +78,14 @@ export const site = {
     android: 'https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter',
   },
 
-  // Sunday worship livestream + sermon archive
+  // Sunday worship livestream + sermon archive.
+  // Feeds are PUBLIC (no token) — parsed at build time in src/lib/feeds.ts.
   media: {
     youtubeChannel: 'https://www.youtube.com/@chelsea_community_church',
+    youtubeChannelId: 'UCp-U4UoiyeroDpOyrygy5YA',
+    youtubeFeed:
+      'https://www.youtube.com/feeds/videos.xml?channel_id=UCp-U4UoiyeroDpOyrygy5YA',
+    podcastFeed: 'https://anchor.fm/s/10452dab4/podcast/rss',
     seriesPlaylist:
       'https://youtube.com/playlist?list=PLcnuF3joGnBHLhefAXRk4zswRf2Ti73Hx&si=bEs8rxO9QK1nLbbv',
   },

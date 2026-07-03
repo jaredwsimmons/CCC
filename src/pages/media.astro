@@ -4,44 +4,146 @@ import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import { media, home } from '../data/content';
 import { site } from '../data/site';
+import { getYouTubeVideos, getPodcastEpisodes, fmtDuration } from '../lib/feeds';
+
+// Built from PUBLIC feeds — no token. (Live PCO Publishing API swaps in here later.)
+const [videos, episodes] = await Promise.all([getYouTubeVideos(6), getPodcastEpisodes(7)]);
+const latest = episodes[0];
+const rest = episodes.slice(1);
+const fmtDate = (d: Date | null) =>
+  d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 ---
-<Base title="Media" description="Watch Chelsea Community Church worship services on YouTube or listen to the sermon podcast on Spotify, Apple Podcasts, and Amazon Music.">
+<Base title="Media" description="Watch Chelsea Community Church worship services and listen to the sermon podcast — recent messages, updated automatically.">
   <PageHero eyebrow="Media" title="Watch & Listen" lead={media.intro[0]} />
 
-  <Section>
-    <div class="grid cols-2">
-      <div class="card" data-reveal>
-        <h3>Watch our worship service</h3>
-        <p>{media.intro[1]}</p>
-        <a class="btn btn--blue mt-1" href={site.social.youtube} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
-      </div>
-      <div class="card" data-reveal>
-        <h3>Listen to our sermon podcast</h3>
-        <p>{media.intro[2]}</p>
-        <div class="pods">
-          <a class="btn btn--outline" href={site.social.spotify} target="_blank" rel="noopener noreferrer">Spotify</a>
-          <a class="btn btn--outline" href={site.social.applePodcasts} target="_blank" rel="noopener noreferrer">Apple Podcasts</a>
-          <a class="btn btn--outline" href={site.social.amazonMusic} target="_blank" rel="noopener noreferrer">Amazon Music</a>
+  <!-- Latest message -->
+  {latest && (
+    <Section variant="navy" tight>
+      <div class="latest" data-reveal>
+        <div class="latest__art">
+          <img src={latest.image || home.series.art} alt={latest.title} loading="eager" />
+        </div>
+        <div class="latest__body">
+          <p class="eyebrow on-dark">Latest message</p>
+          <h2>{latest.title}</h2>
+          {latest.subtitle && <p class="latest__sub">{latest.subtitle}</p>}
+          <p class="latest__meta">{fmtDate(latest.date)}{latest.duration && ` · ${fmtDuration(latest.duration)}`}</p>
+          {latest.audioUrl && (
+            <audio class="latest__audio" controls preload="none" src={latest.audioUrl}></audio>
+          )}
+          <div class="latest__cta">
+            <a class="btn btn--gold" href={site.social.youtube} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+            {latest.link && <a class="btn btn--outline-light" href={latest.link} target="_blank" rel="noopener noreferrer">Listen</a>}
+          </div>
         </div>
       </div>
-    </div>
-  </Section>
+    </Section>
+  )}
 
-  <Section variant="navy">
-    <div class="split">
-      <div class="photo" data-reveal>
-        <img src={home.series.art} alt={home.series.artAlt} loading="lazy" />
+  <!-- Watch (YouTube) -->
+  {videos.length > 0 && (
+    <Section eyebrow="Watch" title="Recent services">
+      <div class="grid cols-3 vids">
+        {videos.map((v) => (
+          <a class="vid" href={v.url} target="_blank" rel="noopener noreferrer" data-reveal>
+            <div class="vid__thumb">
+              <img src={v.thumbnail} alt={v.title} loading="lazy" />
+              <span class="vid__play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <h3>{v.title}</h3>
+            <p class="vid__date">{fmtDate(v.date)}</p>
+          </a>
+        ))}
       </div>
-      <div data-reveal>
-        <p class="eyebrow on-dark">Current sermon series</p>
-        <h2>Jesus Storyteller</h2>
-        <p style="margin-top:0.9rem">{home.series.body}</p>
-        <a class="btn btn--gold mt-1" href={site.media.seriesPlaylist} target="_blank" rel="noopener noreferrer">Watch the series</a>
+      <p class="mt-2" data-reveal>
+        <a class="btn btn--outline" href={site.social.youtube} target="_blank" rel="noopener noreferrer">See all on YouTube</a>
+      </p>
+    </Section>
+  )}
+
+  <!-- Listen (podcast) -->
+  {rest.length > 0 && (
+    <Section variant="alt" eyebrow="Listen" title="Sermon podcast">
+      <div class="eps">
+        {rest.map((e) => (
+          <a class="ep" href={e.link} target="_blank" rel="noopener noreferrer" data-reveal>
+            <img class="ep__art" src={e.image || home.series.art} alt="" loading="lazy" />
+            <div class="ep__body">
+              <h3>{e.title}</h3>
+              {e.subtitle && <p class="ep__sub">{e.subtitle}</p>}
+              <p class="ep__meta">{fmtDate(e.date)}{e.duration && ` · ${fmtDuration(e.duration)}`}</p>
+            </div>
+          </a>
+        ))}
       </div>
-    </div>
-  </Section>
+      <div class="pods mt-2" data-reveal>
+        <a class="btn btn--outline" href={site.social.spotify} target="_blank" rel="noopener noreferrer">Spotify</a>
+        <a class="btn btn--outline" href={site.social.applePodcasts} target="_blank" rel="noopener noreferrer">Apple Podcasts</a>
+        <a class="btn btn--outline" href={site.social.amazonMusic} target="_blank" rel="noopener noreferrer">Amazon Music</a>
+      </div>
+    </Section>
+  )}
+
+  <!-- Fallback if both feeds are unavailable at build -->
+  {videos.length === 0 && episodes.length === 0 && (
+    <Section>
+      <div class="grid cols-2">
+        <div class="card" data-reveal>
+          <h3>Watch our worship service</h3>
+          <p>{media.intro[1]}</p>
+          <a class="btn btn--blue mt-1" href={site.social.youtube} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+        </div>
+        <div class="card" data-reveal>
+          <h3>Listen to our sermon podcast</h3>
+          <p>{media.intro[2]}</p>
+          <a class="btn btn--outline mt-1" href={site.social.spotify} target="_blank" rel="noopener noreferrer">Listen on Spotify</a>
+        </div>
+      </div>
+    </Section>
+  )}
 </Base>
 
 <style>
-  .pods { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+  /* latest */
+  .latest { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+  .latest__art { border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 16/9; }
+  .latest__art img { width: 100%; height: 100%; object-fit: cover; }
+  .latest__sub { margin-top: 0.6rem; color: rgba(251,249,244,0.9); font-weight: 600; }
+  .latest__meta { margin-top: 0.3rem; color: rgba(251,249,244,0.6); font-size: 0.9rem; }
+  .latest__audio { margin-top: 1rem; width: 100%; max-width: 460px; height: 40px; }
+  .latest__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.2rem; }
+  @media (max-width: 800px) { .latest { grid-template-columns: 1fr; } }
+
+  /* watch grid */
+  .vid { text-decoration: none; display: block; }
+  .vid__thumb { position: relative; aspect-ratio: 16/9; border-radius: var(--r); overflow: hidden; border: 1px solid var(--hair); box-shadow: var(--shadow); }
+  .vid__thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .vid:hover .vid__thumb img { transform: scale(1.04); }
+  .vid__play {
+    position: absolute; inset: 0; margin: auto; width: 54px; height: 54px;
+    display: grid; place-items: center; border-radius: 50%;
+    background: rgba(0,82,145,0.9); color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .vid h3 { font-size: 1rem; margin-top: 0.8rem; color: var(--navy); }
+  .vid:hover h3 { color: var(--blue); }
+  .vid__date { font-size: 0.85rem; color: var(--mid); margin-top: 0.2rem; }
+
+  /* listen list */
+  .eps { display: grid; gap: 0.9rem; }
+  .ep {
+    display: grid; grid-template-columns: 84px 1fr; gap: 1.1rem; align-items: center;
+    background: #fff; border: 1px solid var(--hair); border-radius: var(--r);
+    padding: 0.9rem 1.1rem; text-decoration: none; box-shadow: var(--shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .ep:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(25,55,79,0.06), 0 14px 30px -12px rgba(25,55,79,0.18); }
+  .ep__art { width: 84px; height: 84px; border-radius: 10px; object-fit: cover; }
+  .ep__body h3 { font-size: 1.05rem; color: var(--navy); }
+  .ep:hover .ep__body h3 { color: var(--blue); }
+  .ep__sub { font-size: 0.92rem; color: var(--mid); margin-top: 0.15rem; }
+  .ep__meta { font-size: 0.82rem; color: var(--mid); margin-top: 0.3rem; }
+  .pods { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  @media (max-width: 480px) { .ep { grid-template-columns: 60px 1fr; gap: 0.85rem; } .ep__art { width: 60px; height: 60px; } }
 </style>

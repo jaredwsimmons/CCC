@@ -16,7 +16,8 @@
     "@portabletext/to-html": "^2.0.13",
     "@sanity/client": "^6.22.5",
     "@sanity/image-url": "^1.1.0",
-    "astro": "^5.0.0"
+    "astro": "^5.0.0",
+    "fast-xml-parser": "^5.9.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

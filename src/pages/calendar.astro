@@ -1,17 +1,111 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import ChurchCenterCalendar from '../components/ChurchCenterCalendar.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
 import { site } from '../data/site';
+import { weekly, getUpcomingEvents, groupByMonth, dateParts } from '../lib/calendar';
+
+const months = groupByMonth(getUpcomingEvents());
+const catLabel: Record<string, string> = {
+  service: 'Worship', women: 'Women', men: 'Men', groups: 'Groups', 'all-church': 'All Church',
+};
 ---
-<Base title="Calendar" description="What's happening at Chelsea Community Church — services, groups, studies, and events, kept up to date in Church Center.">
+<Base title="Calendar" description="What's happening at Chelsea Community Church — weekly worship and community groups, plus upcoming events.">
   <PageHero eyebrow="What's happening" title="Calendar"
-    lead="Services, groups, studies, and events across the life of our church — kept up to date in Church Center.">
-    <a class="btn btn--outline" href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Click to View Calendar</a>
+    lead="The rhythms of our week and what's coming up. See something you'd like to be part of? You're always welcome.">
+    <a class="btn btn--outline" href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Full calendar in Church Center</a>
   </PageHero>
-  <section class="section section--tight">
-    <div class="wrap" data-reveal>
-      <ChurchCenterCalendar />
+
+  <!-- Weekly rhythm -->
+  <Section eyebrow="Every week" title="The rhythm of our week">
+    <div class="grid cols-3">
+      {weekly.map((e) => (
+        <div class="card weekly" data-reveal>
+          <span class="tag-cat">{catLabel[e.category]}</span>
+          <h3>{e.title}</h3>
+          <p class="weekly__time">{e.time}</p>
+          <p class="weekly__loc">{e.location}</p>
+          {e.description && <p>{e.description}</p>}
+        </div>
+      ))}
     </div>
-  </section>
+  </Section>
+
+  <!-- Upcoming dated events -->
+  <Section variant="alt" eyebrow="Upcoming" title="On the calendar">
+    {months.map((m) => (
+      <div class="month" data-reveal>
+        <h3 class="month__label">{m.month}</h3>
+        <ul class="events">
+          {m.events.map((e) => {
+            const d = dateParts(e.date!);
+            return (
+              <li class="event">
+                <div class="event__date" aria-hidden="true">
+                  <span class="event__wd">{d.weekday}</span>
+                  <span class="event__day">{d.day}</span>
+                  <span class="event__mo">{d.month}</span>
+                </div>
+                <div class="event__body">
+                  <div class="event__head">
+                    <h4>{e.title}</h4>
+                    <span class="tag-cat">{catLabel[e.category]}</span>
+                  </div>
+                  <p class="event__meta">{e.time} · {e.location}</p>
+                  {e.description && <p class="event__desc">{e.description}</p>}
+                  {e.register && (
+                    <a class="event__rsvp" href={`${e.register}?open-in-church-center-modal=true`}>Register →</a>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))}
+    <p class="note" data-reveal>
+      Showing our published highlights. The full, always-current calendar lives in
+      <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer"> Church Center</a>.
+    </p>
+  </Section>
+
+  <CTABand title="Plan your visit" text="New here? Let us know you're coming and we'll have a gift waiting.">
+    <a class="btn btn--gold btn--lg" href={`${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`}>Plan a Visit</a>
+  </CTABand>
 </Base>
+
+<style>
+  .tag-cat {
+    display: inline-block; font-family: var(--display); font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue);
+    background: var(--blue-50, #eef4fa); background: rgba(0,82,145,0.08);
+    padding: 0.22rem 0.6rem; border-radius: 999px;
+  }
+  .weekly .tag-cat { margin-bottom: 0.6rem; }
+  .weekly__time { font-family: var(--display); font-weight: 600; color: var(--navy); margin-top: 0.1rem; }
+  .weekly__loc { font-size: 0.9rem; color: var(--mid); margin-bottom: 0.5rem; }
+
+  .month + .month { margin-top: 2rem; }
+  .month__label { font-size: 1.1rem; color: var(--navy); margin-bottom: 0.9rem; }
+  .events { list-style: none; display: grid; gap: 0.9rem; }
+  .event {
+    display: grid; grid-template-columns: 76px 1fr; gap: 1.25rem; align-items: start;
+    background: #fff; border: 1px solid var(--hair); border-radius: var(--r);
+    padding: 1.1rem 1.3rem; box-shadow: var(--shadow);
+  }
+  .event__date {
+    display: grid; place-items: center; text-align: center;
+    background: var(--navy); color: var(--cream); border-radius: 10px; padding: 0.5rem 0.3rem;
+  }
+  .event__wd { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); font-family: var(--display); font-weight: 600; }
+  .event__day { font-family: var(--display); font-weight: 700; font-size: 1.5rem; line-height: 1; }
+  .event__mo { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(251,249,244,0.7); font-family: var(--display); }
+  .event__head { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+  .event__head h4 { font-size: 1.1rem; }
+  .event__meta { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.9rem; margin-top: 0.25rem; }
+  .event__desc { font-size: 0.95rem; color: var(--mid); margin-top: 0.4rem; }
+  .event__rsvp { display: inline-block; margin-top: 0.6rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+  .note { margin-top: 1.75rem; font-size: 0.95rem; color: var(--mid); }
+  @media (max-width: 480px) { .event { grid-template-columns: 60px 1fr; gap: 1rem; padding: 1rem; } }
+</style>
