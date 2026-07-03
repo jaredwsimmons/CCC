@@ -1,55 +1,117 @@
-// Calendar data layer.
+// Calendar data layer — LIVE from Church Center's PUBLIC calendar API.
 //
-// TODAY: seeded from the real events published on chelseachurch.com (the
-// dated one-offs and the stated recurring rhythms). No token, no embed.
-//
-// SWAP LATER (one function, no page changes): once a PCO Personal Access
-// Token is set as a build/server secret, replace the body of getUpcomingEvents()
-// with a fetch of  /calendar/v2/events?filter=future&include=event_instances
-// (Cloudflare build secret via astro:env/server). Confirm the "visible in
-// Church Center" filter attribute before shipping — see the vault note
-// "Church Website — Planning Center API Integration".
+// This is the exact public API the church's own calendar embed uses (the data
+// any visitor already sees), reached with NO Planning Center credentials:
+//   1) POST https://{org}.churchcenter.com/sessions/tokens  -> anonymous org bearer (ort_…)
+//   2) GET  https://api.churchcenter.com/calendar/v2/events  with that bearer
+// Fetched at BUILD time; if anything fails we fall back to the seeded events
+// below so the page never breaks. (Undocumented app API — hence the fallback.)
+
+const ORG_SUB = 'chelseachurch.churchcenter.com';
+const CC_API = 'https://api.churchcenter.com/calendar/v2';
+const TZ = 'America/Chicago';
+const UA = 'ChelseaCommunityChurch-site/1.0';
 
 export interface ChurchEvent {
+  id: string;
   title: string;
-  /** ISO date (YYYY-MM-DD) for one-offs; omitted for weekly rhythms */
-  date?: string;
-  time: string;
-  location: string;
+  date: string; // YYYY-MM-DD in church-local time
+  timeLabel: string; // "9:00 AM – 10:30 AM" | "All day"
+  recurrence?: string;
+  location?: string;
   description?: string;
-  /** optional Church Center registration/RSVP link */
   register?: string;
-  category: 'service' | 'women' | 'men' | 'groups' | 'all-church';
+  publicUrl?: string;
 }
 
-// Weekly rhythms (shown as a "Every week" panel, not dated instances)
-export const weekly: ChurchEvent[] = [
-  { title: 'Sunday Worship', time: 'Sundays · 9:00 & 10:30 AM', location: 'Worship Room', category: 'service',
+const stripHtml = (s: string) =>
+  (s || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const localDate = (iso: string) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(iso));
+const localTime = (iso: string) =>
+  new Date(iso).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
+
+async function fetchLive(timeoutMs = 9000): Promise<ChurchEvent[]> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), timeoutMs);
+    const opts = { signal: ctrl.signal, headers: { 'User-Agent': UA } };
+
+    const tokRes = await fetch(`https://${ORG_SUB}/sessions/tokens`, { ...opts, method: 'POST', headers: { ...opts.headers, 'Content-Type': 'application/json' } });
+    if (!tokRes.ok) { clearTimeout(t); return []; }
+    const token = (await tokRes.json())?.data?.attributes?.token;
+    if (!token) { clearTimeout(t); return []; }
+
+    const url = `${CC_API}/events?filter=upcoming,first_occurrence&order=visible_starts_at&per_page=100&include=event_registration_url,location`;
+    const res = await fetch(url, { ...opts, headers: { ...opts.headers, Authorization: `Bearer ${token}` } });
+    clearTimeout(t);
+    if (!res.ok) return [];
+    const body = await res.json();
+
+    const inc: Record<string, any> = {};
+    for (const i of body.included ?? []) inc[`${i.type}:${i.id}`] = i;
+    const rel = (e: any, key: string) => {
+      const d = e.relationships?.[key]?.data;
+      return d ? inc[`${d.type}:${d.id}`] : null;
+    };
+
+    return (body.data ?? []).map((e: any): ChurchEvent => {
+      const a = e.attributes;
+      const reg = rel(e, 'event_registration_url')?.attributes?.url;
+      const loc = rel(e, 'location')?.attributes?.name;
+      let timeLabel = 'All day';
+      if (!a.all_day_event && a.starts_at) {
+        timeLabel = localTime(a.starts_at);
+        if (a.ends_at && localDate(a.ends_at) === localDate(a.starts_at)) timeLabel += ` – ${localTime(a.ends_at)}`;
+      }
+      return {
+        id: String(e.id),
+        title: a.name?.trim() ?? 'Event',
+        date: localDate(a.starts_at),
+        timeLabel,
+        recurrence: a.recurring ? stripHtml(a.recurrence_description || '') || 'Recurring' : undefined,
+        location: loc || undefined,
+        description: stripHtml(a.description || '') || undefined,
+        register: reg || undefined,
+        publicUrl: a.public_url || undefined,
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
+// ── Seeded fallback (used only if the live fetch fails) ──────────────────────
+const SEED: ChurchEvent[] = [
+  { id: 's1', title: 'Sundae Funday Bingo', date: '2026-07-13', timeLabel: '6:00 – 7:30 PM', location: 'Community Room', description: 'Women’s ministry night of bingo, prizes, and ice cream sundaes.', register: 'https://chelseachurch.churchcenter.com/registrations/events/3694679' },
+  { id: 's2', title: 'Men On Fire', date: '2026-08-02', timeLabel: '6:00 PM', location: 'The fire pit', recurrence: 'First Sunday monthly', description: 'Brotherhood, Scripture, and prayer around the fire pit.' },
+  { id: 's3', title: 'Ladies Breakfast', date: '2026-08-22', timeLabel: '8:00 AM', location: 'Community Room', description: 'Breakfast and fellowship for the women of the church.' },
+];
+
+export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
+  const live = await fetchLive();
+  // The Sunday-morning service breakouts (Worship/Preschool/K-5, all "Every
+  // Sunday") are covered by the weekly-rhythm cards — drop them so the upcoming
+  // list highlights special + non-weekly-Sunday events.
+  const events = (live.length ? live : SEED).filter((e) => !/^every sunday$/i.test(e.recurrence || ''));
+  return events.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+// Weekly rhythms — curated (an at-a-glance summary above the live list)
+export const weekly = [
+  { title: 'Sunday Worship', time: 'Sundays · 9:00 & 10:30 AM', location: 'Worship Room', category: 'service' as const,
     description: 'Two identical gatherings with programming for kids and students at both hours.' },
-  { title: 'Community Groups', time: 'Wednesdays · 6:00 PM', location: 'On campus & in homes', category: 'groups',
+  { title: 'Community Groups', time: 'Wednesdays · 6:00 PM', location: 'On campus & in homes', category: 'groups' as const,
     description: 'exHIMplify, Stringfellowship, and the Allgood group meet mid-week.' },
-  { title: "Men's Bible Study", time: 'Mon 6:00 AM · Thu 6:30 AM/PM · Fri 6:30 AM', location: 'Bojangles, O’Henry’s & the Church Commons', category: 'men',
-    description: 'Four weekly gatherings around town — come to whichever fits your week.' },
+  { title: "Men's Bible Study", time: 'Mon 6:00 AM · Thu 6:30 AM/PM · Fri 6:30 AM', location: 'Around town & the Church Commons', category: 'men' as const,
+    description: 'Four weekly gatherings — come to whichever fits your week.' },
 ];
-
-// Dated upcoming events (from the current site). Newest sources of truth are the
-// women's ministry + all-church announcements.
-const upcoming: ChurchEvent[] = [
-  { title: 'Sundae Funday Bingo', date: '2026-07-13', time: '6:00–7:30 PM', location: 'Community Room',
-    description: 'Women’s ministry night of bingo, prizes, and ice cream sundaes. Bring a topping or salty snack to share.',
-    register: 'https://chelseachurch.churchcenter.com/registrations/events/3694679', category: 'women' },
-  { title: 'Men On Fire', date: '2026-08-02', time: '6:00 PM', location: 'The fire pit',
-    description: 'First-Sunday gathering of all men for brotherhood, Scripture, and prayer.', category: 'men' },
-  { title: 'Ladies Breakfast', date: '2026-08-22', time: '8:00 AM', location: 'Community Room',
-    description: 'Women of the church gather for breakfast and fellowship. Details coming soon.', category: 'women' },
-  { title: 'Men On Fire', date: '2026-09-06', time: '6:00 PM', location: 'The fire pit',
-    description: 'First-Sunday gathering of all men for brotherhood, Scripture, and prayer.', category: 'men' },
-];
-
-export function getUpcomingEvents(): ChurchEvent[] {
-  // sorted ascending by date; when live, the API query does this server-side
-  return [...upcoming].sort((a, b) => (a.date ?? '').localeCompare(b.date ?? ''));
-}
 
 export function groupByMonth(events: ChurchEvent[]): { month: string; events: ChurchEvent[] }[] {
   const out: { month: string; events: ChurchEvent[] }[] = [];

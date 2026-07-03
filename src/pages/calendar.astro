@@ -6,12 +6,12 @@ import CTABand from '../components/CTABand.astro';
 import { site } from '../data/site';
 import { weekly, getUpcomingEvents, groupByMonth, dateParts } from '../lib/calendar';
 
-const months = groupByMonth(getUpcomingEvents());
-const catLabel: Record<string, string> = {
-  service: 'Worship', women: 'Women', men: 'Men', groups: 'Groups', 'all-church': 'All Church',
-};
+// LIVE from Church Center's public calendar API (no token). Falls back to seed.
+const months = groupByMonth(await getUpcomingEvents());
+const catLabel: Record<string, string> = { service: 'Worship', women: 'Women', men: 'Men', groups: 'Groups' };
+const ccBase = `https://${site.churchCenter.subdomain}`;
 ---
-<Base title="Calendar" description="What's happening at Chelsea Community Church — weekly worship and community groups, plus upcoming events.">
+<Base title="Calendar" description="What's happening at Chelsea Community Church — weekly worship and community groups, plus upcoming events, live from Church Center.">
   <PageHero eyebrow="What's happening" title="Calendar"
     lead="The rhythms of our week and what's coming up. See something you'd like to be part of? You're always welcome.">
     <a class="btn btn--outline" href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Full calendar in Church Center</a>
@@ -32,14 +32,14 @@ const catLabel: Record<string, string> = {
     </div>
   </Section>
 
-  <!-- Upcoming dated events -->
+  <!-- Upcoming dated events (live) -->
   <Section variant="alt" eyebrow="Upcoming" title="On the calendar">
     {months.map((m) => (
       <div class="month" data-reveal>
         <h3 class="month__label">{m.month}</h3>
         <ul class="events">
           {m.events.map((e) => {
-            const d = dateParts(e.date!);
+            const d = dateParts(e.date);
             return (
               <li class="event">
                 <div class="event__date" aria-hidden="true">
@@ -50,13 +50,15 @@ const catLabel: Record<string, string> = {
                 <div class="event__body">
                   <div class="event__head">
                     <h4>{e.title}</h4>
-                    <span class="tag-cat">{catLabel[e.category]}</span>
+                    {e.recurrence && <span class="tag-cat">{e.recurrence}</span>}
                   </div>
-                  <p class="event__meta">{e.time} · {e.location}</p>
+                  <p class="event__meta">{e.timeLabel}{e.location && ` · ${e.location}`}</p>
                   {e.description && <p class="event__desc">{e.description}</p>}
-                  {e.register && (
+                  {e.register ? (
                     <a class="event__rsvp" href={`${e.register}?open-in-church-center-modal=true`}>Register →</a>
-                  )}
+                  ) : e.publicUrl ? (
+                    <a class="event__rsvp" href={e.publicUrl} target="_blank" rel="noopener noreferrer">Details →</a>
+                  ) : null}
                 </div>
               </li>
             );
@@ -65,8 +67,7 @@ const catLabel: Record<string, string> = {
       </div>
     ))}
     <p class="note" data-reveal>
-      Showing our published highlights. The full, always-current calendar lives in
-      <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer"> Church Center</a>.
+      Events are pulled live from our <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Church Center calendar</a>.
     </p>
   </Section>
 
@@ -78,9 +79,8 @@ const catLabel: Record<string, string> = {
 <style>
   .tag-cat {
     display: inline-block; font-family: var(--display); font-size: 0.68rem; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue);
-    background: var(--blue-50, #eef4fa); background: rgba(0,82,145,0.08);
-    padding: 0.22rem 0.6rem; border-radius: 999px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue);
+    background: rgba(0,82,145,0.08); padding: 0.22rem 0.6rem; border-radius: 999px;
   }
   .weekly .tag-cat { margin-bottom: 0.6rem; }
   .weekly__time { font-family: var(--display); font-weight: 600; color: var(--navy); margin-top: 0.1rem; }
@@ -94,10 +94,7 @@ const catLabel: Record<string, string> = {
     background: #fff; border: 1px solid var(--hair); border-radius: var(--r);
     padding: 1.1rem 1.3rem; box-shadow: var(--shadow);
   }
-  .event__date {
-    display: grid; place-items: center; text-align: center;
-    background: var(--navy); color: var(--cream); border-radius: 10px; padding: 0.5rem 0.3rem;
-  }
+  .event__date { display: grid; place-items: center; text-align: center; background: var(--navy); color: var(--cream); border-radius: 10px; padding: 0.5rem 0.3rem; }
   .event__wd { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); font-family: var(--display); font-weight: 600; }
   .event__day { font-family: var(--display); font-weight: 700; font-size: 1.5rem; line-height: 1; }
   .event__mo { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(251,249,244,0.7); font-family: var(--display); }
