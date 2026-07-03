@@ -10,6 +10,7 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
 ---
 <Base title="Prayer" description="We want to pray for you — share your prayer concerns with Chelsea Community Church, or join the Prayer Team.">
   <PageHero eyebrow="Prayer" title="We want to pray for you" lead={prayer.cta}>
+    <DeaconNote area="Prayer" slot="aside" blurb="Serving and praying over our prayer ministry — reach out anytime." />
     <a class="btn btn--gold btn--lg" href="#prayer-form">Share a prayer request</a>
   </PageHero>
 
@@ -47,9 +48,6 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
     </div>
   </Section>
 
-  <Section variant="alt" tight>
-    <DeaconNote area="Prayer" blurb="Serving and praying over our prayer ministry — reach out anytime." />
-  </Section>
 </Base>
 
 <style>

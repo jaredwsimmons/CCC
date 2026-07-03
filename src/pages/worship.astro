@@ -7,7 +7,9 @@ import DeaconNote from '../components/DeaconNote.astro';
 import { worship } from '../data/content';
 ---
 <Base title="Worship" description="Blended worship — traditional and contemporary — reflecting a congregation of all generations at Chelsea Community Church.">
-  <PageHero eyebrow="Ministries" title="Worship" />
+  <PageHero eyebrow="Ministries" title="Worship">
+    <DeaconNote area="Worship" slot="aside" />
+  </PageHero>
 
   <Section>
     <div class="split">
@@ -23,10 +25,6 @@ import { worship } from '../data/content';
         ))}
       </div>
     </div>
-  </Section>
-
-  <Section tight>
-    <DeaconNote area="Worship" />
   </Section>
 
   <CTABand title="Serve with music or tech" text="Musicians, vocalists, and behind-the-scenes hands all help make Sunday distraction-free.">

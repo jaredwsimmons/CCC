@@ -11,7 +11,9 @@ const newsletter = `${site.churchCenter.forms.kidsNewsletter}?open-in-church-cen
 const serveReg = `${site.churchCenter.registrations.kidsServe}?open-in-church-center-modal=true`;
 ---
 <Base title="Kids" description="Kids Ministry at Chelsea Community Church — training up children to pursue God and pursue others, with programming at both Sunday services.">
-  <PageHero eyebrow="Ministries" title="Kids" lead={kids.mission} />
+  <PageHero eyebrow="Ministries" title="Kids" lead={kids.mission}>
+    <DeaconNote area="Kids" slot="aside" />
+  </PageHero>
 
   <Section eyebrow="First time?" title={kids.getReady.title}>
     <div class="split">
@@ -57,10 +59,6 @@ const serveReg = `${site.churchCenter.registrations.kidsServe}?open-in-church-ce
         <a class="btn btn--blue mt-1" href={serveReg}>Find out about serving in the Kids Ministry</a>
       </div>
     </div>
-  </Section>
-
-  <Section tight>
-    <DeaconNote area="Kids" />
   </Section>
 
   <CTABand title="Questions about Kids Ministry?" text="Ben Stephenson, our Family Pastor, would love to talk.">

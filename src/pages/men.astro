@@ -7,7 +7,9 @@ import DeaconNote from '../components/DeaconNote.astro';
 import { men } from '../data/content';
 ---
 <Base title="Men" description="Men's ministry at Chelsea Community Church — discipleship, Men On Fire around the fire pit, relationships, and service alongside our mission partners.">
-  <PageHero eyebrow="Ministries" title="Men" />
+  <PageHero eyebrow="Ministries" title="Men">
+    <DeaconNote area="Men" slot="aside" />
+  </PageHero>
 
   <Section eyebrow="Discipleship" title="Growing together in the Word">
     <div class="split">
@@ -46,10 +48,6 @@ import { men } from '../data/content';
         <p>{men.service.body}</p>
       </div>
     </div>
-  </Section>
-
-  <Section tight>
-    <DeaconNote area="Men" />
   </Section>
 
   <CTABand title="Join the brotherhood" text="Studies, the fire pit, serving shoulder-to-shoulder — there's a seat for you.">

@@ -8,7 +8,9 @@ import { women } from '../data/content';
 const bingo = women.events.find((e) => e.rsvp);
 ---
 <Base title="Women" description="Women's Ministry at Chelsea Community Church — growing in Christ, building authentic friendships, and living out faith with confidence and purpose.">
-  <PageHero eyebrow="Ministries" title="Women" lead={women.intro[0]} />
+  <PageHero eyebrow="Ministries" title="Women" lead={women.intro[0]}>
+    <DeaconNote area="Women" slot="aside" />
+  </PageHero>
 
   <Section>
     <div class="split">
@@ -54,10 +56,6 @@ const bingo = women.events.find((e) => e.rsvp);
       </div>
     </Section>
   )}
-
-  <Section tight>
-    <DeaconNote area="Women" />
-  </Section>
 
   <CTABand title="Questions about Women's Ministry?" text="Tammy would love to hear from you.">
     <a class="btn btn--gold btn--lg" href={`mailto:${women.contact}`}>Email Tammy for more information!</a>

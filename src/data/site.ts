@@ -102,33 +102,34 @@ export const nav: Array<{
   href: string;
   children?: Array<{ label: string; href: string }>;
 }> = [
-  { label: "I'm New", href: '/imnew' },
   {
     label: 'About',
-    href: '/beliefs',
+    href: '/imnew',
     children: [
+      { label: "I'm New", href: '/imnew' },
       { label: 'What We Believe', href: '/beliefs' },
       { label: 'Leaders', href: '/leaders' },
       { label: 'History', href: '/history' },
     ],
   },
+  { label: 'Community Groups', href: '/groups' },
+  { label: 'Calendar', href: '/calendar' },
   {
     label: 'Ministries',
     href: '/connections',
+    // alphabetical; Community Groups promoted to top-level, Prayer moved in here
     children: [
-      { label: 'Worship', href: '/worship' },
-      { label: 'Preschool', href: '/preschool' },
-      { label: 'Kids', href: '/kids' },
-      { label: 'Students', href: '/students' },
-      { label: 'Men', href: '/men' },
-      { label: 'Women', href: '/women' },
-      { label: 'Community Groups', href: '/groups' },
-      { label: 'Missions', href: '/missions' },
-      { label: 'Serve', href: '/serve' },
       { label: 'Connections', href: '/connections' },
+      { label: 'Kids', href: '/kids' },
+      { label: 'Men', href: '/men' },
+      { label: 'Missions', href: '/missions' },
+      { label: 'Prayer', href: '/prayer' },
+      { label: 'Preschool', href: '/preschool' },
+      { label: 'Serve', href: '/serve' },
+      { label: 'Students', href: '/students' },
+      { label: 'Women', href: '/women' },
+      { label: 'Worship', href: '/worship' },
     ],
   },
-  { label: 'Calendar', href: '/calendar' },
   { label: 'Media', href: '/media' },
-  { label: 'Prayer', href: '/prayer' },
 ];

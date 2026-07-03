@@ -9,7 +9,9 @@ import { site } from '../data/site';
 const preRegister = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
 <Base title="Preschool" description="Preschool ministry at Chelsea Community Church — worship and community groups for little ones every Sunday, with easy pre-registration for first-time families.">
-  <PageHero eyebrow="Ministries" title="Preschool" />
+  <PageHero eyebrow="Ministries" title="Preschool">
+    <DeaconNote area="Preschool" slot="aside" />
+  </PageHero>
 
   <Section eyebrow="First time?" title={preschool.getReady.title}>
     <div class="split">
@@ -46,10 +48,6 @@ const preRegister = `${site.churchCenter.forms.planVisit}?open-in-church-center-
         <div class="photo"><img src={src} alt={`Preschool ministry at Chelsea Community Church — photo ${i + 1}`} loading="lazy" /></div>
       ))}
     </div>
-  </Section>
-
-  <Section tight>
-    <DeaconNote area="Preschool" />
   </Section>
 
   <CTABand title="Questions about Preschool?" text="We'd love to help your family feel at home.">

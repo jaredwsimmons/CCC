@@ -29,10 +29,9 @@ const plural = d ? d.names.includes(',') : false;
     border: 1px solid var(--hair);
     border-left: 4px solid var(--gold);
     border-radius: var(--r);
-    padding: 1.05rem 1.4rem;
+    padding: 0.85rem 1.1rem;
     box-shadow: var(--shadow);
-    max-width: 40rem;
-    margin-inline: auto;
+    width: clamp(240px, 100%, 300px);
   }
   .deacon__mark {
     flex: none;

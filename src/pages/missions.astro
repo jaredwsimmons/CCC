@@ -7,7 +7,9 @@ import DeaconNote from '../components/DeaconNote.astro';
 import { missions } from '../data/content';
 ---
 <Base title="Missions" description="Missions at Chelsea Community Church — local, national, and international partners, monthly highlights, and resources for personal growth.">
-  <PageHero eyebrow="Ministries" title="Missions" lead={`${missions.verse.text} (${missions.verse.ref})`} />
+  <PageHero eyebrow="Ministries" title="Missions" lead={`${missions.verse.text} (${missions.verse.ref})`}>
+    <DeaconNote area="Missions" slot="aside" />
+  </PageHero>
 
   <!-- Monthly highlight -->
   <Section eyebrow="Monthly missions highlight" title="The Big Kaboom">
@@ -64,10 +66,6 @@ import { missions } from '../data/content';
         </li>
       ))}
     </ul>
-  </Section>
-
-  <Section tight>
-    <DeaconNote area="Missions" />
   </Section>
 
   <CTABand title="Ready to get involved?" text="Pray, give, or go — Pastor Brian can help you find your place in the mission.">

@@ -9,7 +9,9 @@ import { site } from '../data/site';
 const coming = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
 <Base title="Students" description="C3SM — Chelsea Community Church Student Ministry for middle and high schoolers. Sunday community groups at 9 AM and Wednesday nights at 6 PM.">
-  <PageHero eyebrow="Ministries · Students" title="Welcome to C3SM!" lead={students.intro} />
+  <PageHero eyebrow="Ministries · Students" title="Welcome to C3SM!" lead={students.intro}>
+    <DeaconNote area="Students" slot="aside" />
+  </PageHero>
 
   <Section>
     <div class="split">
@@ -31,10 +33,6 @@ const coming = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal
         </div>
       </div>
     </div>
-  </Section>
-
-  <Section tight>
-    <DeaconNote area="Students" />
   </Section>
 
   <CTABand title="Questions about C3SM?" text="Drew Blake, our Pastor of Students & Worship, would love to connect.">

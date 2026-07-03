@@ -7,7 +7,9 @@ import DeaconNote from '../components/DeaconNote.astro';
 import { connections } from '../data/content';
 ---
 <Base title="Connections" description="The Connections team helps every guest and member find their place at Chelsea Community Church — ministries, community groups, and events.">
-  <PageHero eyebrow="Ministries" title="Connections" />
+  <PageHero eyebrow="Ministries" title="Connections">
+    <DeaconNote area="Connections" slot="aside" />
+  </PageHero>
 
   <Section>
     <div class="split">
@@ -21,10 +23,6 @@ import { connections } from '../data/content';
         <img src={connections.image.src} alt={connections.image.alt} loading="lazy" />
       </div>
     </div>
-  </Section>
-
-  <Section tight>
-    <DeaconNote area="Connections" />
   </Section>
 
   <CTABand title="Stop by the Connections Desk" text="Just past the Worship Room every Sunday morning — we'll help you find your place.">
