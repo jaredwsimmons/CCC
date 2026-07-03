@@ -2,50 +2,50 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import Icon from '../components/Icon.astro';
 import CTABand from '../components/CTABand.astro';
 import { groups } from '../data/content';
-import { site } from '../data/site';
-const connect = `https://${site.churchCenter.subdomain}/groups`;
 ---
-<Base title="Community Groups" description="Community groups are the backbone of life at Chelsea Community Church.">
-  <PageHero eyebrow="Community groups" title="Life is better together"
-    lead={groups.intro}>
-    <a class="btn btn--gold btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Find a group</a>
-  </PageHero>
+<Base title="Community Groups" description="Community groups at Chelsea Community Church — living life within biblical community on Sunday mornings and throughout the week.">
+  <PageHero eyebrow="Ministries" title="Community Groups" lead={groups.intro} />
 
-  <Section eyebrow="Why groups" title="This is where the church becomes family" center>
-    <div class="grid cols-3">
-      {groups.how.map((h, i) => (
-        <div class="card" data-reveal data-delay={String(i + 1)}>
-          <div class={`chip ${i === 1 ? 'chip--gold' : ''}`}><Icon name={h.icon} /></div>
-          <h3>{h.title}</h3>
-          <p>{h.text}</p>
+  <Section>
+    <div class="grid cols-2">
+      {groups.list.map((g) => (
+        <div class="card group" data-reveal>
+          <p class="when">{g.when}</p>
+          <h3>{g.name}</h3>
+          <p>{g.desc}</p>
+          <p class="room">{g.room}</p>
         </div>
       ))}
     </div>
   </Section>
 
-  <Section variant="cloud">
-    <div class="split">
-      <div class="split__visual qf-pattern-blue" aria-hidden="true"><div class="split__badge"><Icon name="users" size={30} /></div></div>
-      <div data-reveal>
-        <p class="eyebrow">Getting started</p>
-        <h2 class="mt-1">Your next step is a conversation, not a commitment</h2>
-        <p class="lead">Not sure where you fit? That's okay. Tell us a little about yourself and we'll help you find a group that feels like home — no pressure, no perfect attendance required.</p>
-        <a class="btn btn--primary mt-1" href={connect} target="_blank" rel="noopener noreferrer">Browse groups <Icon name="arrow" size={18} /></a>
-      </div>
-    </div>
-  </Section>
-
-  <CTABand title="Ready to find your people?" text="Take the step. A group is waiting to welcome you in." variant="deep">
-    <a class="btn btn--gold btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Find a group</a>
+  <CTABand title="Not sure which group fits?" text="Tell us a little about yourself and we'll help you find a group that feels like home.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${groups.contact}`}>Email Rebecca for more information!</a>
   </CTABand>
 </Base>
 
 <style>
-  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
-  .split__visual { position: relative; aspect-ratio: 5/4; border-radius: var(--r-lg); background: linear-gradient(135deg, var(--blue-50), #fff); border: 1px solid var(--line); display: grid; place-items: center; }
-  .split__badge { width: 92px; height: 92px; border-radius: 26px; background: var(--grad-gold); color: var(--navy); display: grid; place-items: center; box-shadow: var(--shadow); }
-  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split__visual { order: 2; min-height: 220px; } }
+  .group .when {
+    font-family: var(--display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 0.4rem;
+  }
+  .group .room {
+    margin-top: 0.7rem;
+    font-family: var(--display);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--navy);
+    background: var(--paper);
+    border: 1px solid var(--hair);
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+  }
 </style>

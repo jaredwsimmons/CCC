@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { men } from '../data/content';
+---
+<Base title="Men" description="Men's ministry at Chelsea Community Church — discipleship, Men On Fire around the fire pit, relationships, and service alongside our mission partners.">
+  <PageHero eyebrow="Ministries" title="Men" />
+
+  <Section eyebrow="Discipleship" title="Growing together in the Word">
+    <div class="split">
+      <div data-reveal>
+        <ul class="disc">
+          {men.discipleship.items.map((i) => <li>{i}</li>)}
+        </ul>
+      </div>
+      <div class="photo" data-reveal>
+        <img src={men.discipleship.image} alt={men.discipleship.imageAlt} loading="lazy" />
+      </div>
+    </div>
+  </Section>
+
+  <Section variant="navy">
+    <div class="split">
+      <div class="photo" data-reveal>
+        <img src={men.fire.image} alt={men.fire.imageAlt} loading="lazy" />
+      </div>
+      <div data-reveal>
+        <p class="eyebrow on-dark">First Sunday · 6 PM</p>
+        <h2>{men.fire.title}</h2>
+        <p style="margin-top:0.8rem">{men.fire.body}</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section variant="white">
+    <div class="grid cols-2">
+      <div class="card" data-reveal>
+        <h3>{men.relationships.title}</h3>
+        <p>{men.relationships.body}</p>
+      </div>
+      <div class="card" data-reveal>
+        <h3>{men.service.title}</h3>
+        <p>{men.service.body}</p>
+      </div>
+    </div>
+  </Section>
+
+  <CTABand title="Join the brotherhood" text="Studies, the fire pit, serving shoulder-to-shoulder — there's a seat for you.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${men.contact}`}>Email Brian for more information!</a>
+  </CTABand>
+</Base>
+
+<style>
+  .disc { list-style: none; display: grid; gap: 0.5rem; }
+  .disc li {
+    font-family: var(--display);
+    font-weight: 600;
+    color: var(--navy);
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .disc li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+</style>

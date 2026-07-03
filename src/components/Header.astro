@@ -1,120 +1,201 @@
 ---
 import { site, nav } from '../data/site';
-import Quatrefoil from './Quatrefoil.astro';
-const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
 ---
-<header class="hdr" data-header>
-  <div class="container hdr__bar">
-    <a href="/" class="brand" aria-label={`${site.name} home`}>
-      <Quatrefoil size={34} class="brand__mark" />
-      <span class="brand__text"><span>Chelsea</span> Community Church</span>
+<div class="topbar">
+  <div class="wrap">
+    <p class="live">
+      <b>Sunday Live Service</b><span> · starts at 9 AM — </span>
+      <a href={site.media.youtubeChannel} target="_blank" rel="noopener noreferrer">watch on YouTube</a>
+    </p>
+    <nav aria-label="Quick links">
+      <a href={give}>Give</a>
+      <a href="/prayer">Prayer</a>
+      <a href={site.textSignup} target="_blank" rel="noopener noreferrer">Text</a>
+    </nav>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="/">
+      <img src="/images/logo-full-blue.png" alt={`${site.name} — home`} width="232" height="72" />
     </a>
 
-    <nav class="nav-desktop" aria-label="Primary">
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-nav-toggle
+    >
+      <span class="sr-only">Menu</span>
+      <span class="nav-toggle__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+
+    <nav id="site-nav" class="nav" aria-label="Primary">
       <ul>
         {nav.map((item) =>
           item.children ? (
-            <li class="has-sub">
-              <a href={item.href} aria-haspopup="true">{item.label}<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></a>
-              <div class="submenu">
-                <div class="submenu__inner">
-                  {item.children.map((c) => <a href={c.href}>{c.label}</a>)}
-                </div>
-              </div>
+            <li class="has-menu">
+              <a
+                href={item.href}
+                aria-haspopup="true"
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+                <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </a>
+              <ul class="menu">
+                {item.children.map((c) => (
+                  <li><a href={c.href} aria-current={isActive(c.href) ? 'page' : undefined}>{c.label}</a></li>
+                ))}
+              </ul>
             </li>
           ) : (
-            <li><a href={item.href}>{item.label}</a></li>
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+            </li>
           )
         )}
+        <li class="nav-give"><a class="btn btn--gold" href={give}>Give</a></li>
       </ul>
     </nav>
-
-    <div class="hdr__actions">
-      <a class="btn btn--gold btn--sm give" href={giveHref}>Give</a>
-      <button type="button" class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer" data-nav-toggle>
-        <span></span><span></span><span></span>
-      </button>
-    </div>
   </div>
-
-  <nav class="drawer" id="mobile-drawer" aria-label="Mobile">
-    <div class="drawer__nav">
-      <a href="/">Home</a>
-      {nav.map((item) => (
-        <>
-          <a href={item.href} class="drawer__top">{item.label}</a>
-          {item.children?.map((c) => <a href={c.href} class="drawer__sub">{c.label}</a>)}
-        </>
-      ))}
-      <a class="btn btn--gold" href={giveHref}>Give</a>
-    </div>
-  </nav>
 </header>
 
 <script is:inline>
   (function () {
     var btn = document.querySelector('[data-nav-toggle]');
-    var drawer = document.getElementById('mobile-drawer');
-    if (!btn || !drawer) return;
-    function set(open) {
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-      drawer.toggleAttribute('data-open', open);
-      document.documentElement.classList.toggle('nav-open', open);
-    }
-    btn.addEventListener('click', function () { set(btn.getAttribute('aria-expanded') !== 'true'); });
-    drawer.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+    var nav = document.getElementById('site-nav');
+    if (!btn || !nav) return;
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      document.documentElement.classList.toggle('nav-open', !open);
+    });
+    // Close the drawer when a link inside it is chosen
+    nav.addEventListener('click', function (e) {
+      if (e.target.closest('a')) {
+        btn.setAttribute('aria-expanded', 'false');
+        document.documentElement.classList.remove('nav-open');
+      }
+    });
   })();
 </script>
 
 <style>
-  .hdr { position: sticky; top: 0; z-index: 60; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: box-shadow 0.25s, border-color 0.25s, background 0.25s; }
-  .hdr.is-scrolled { box-shadow: var(--shadow-sm); border-bottom-color: var(--line); background: rgba(255,255,255,0.96); }
-  .hdr__bar { display: flex; align-items: center; gap: 1.25rem; height: var(--hdr-h); }
-
-  .brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; margin-right: auto; }
-  .brand__mark { color: var(--gold); flex-shrink: 0; }
-  .brand__text { font-family: var(--font-display); font-weight: 700; color: var(--navy); font-size: 1.05rem; line-height: 1.05; letter-spacing: -0.02em; white-space: nowrap; }
-  .brand__text span { color: var(--blue); }
-
-  .nav-desktop ul { list-style: none; display: flex; align-items: center; gap: 0.15rem; margin: 0; padding: 0; }
-  .nav-desktop > ul > li > a { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.55rem 0.85rem; border-radius: var(--pill); text-decoration: none; color: var(--ink); font-family: var(--font-display); font-weight: 500; font-size: 0.98rem; }
-  .nav-desktop > ul > li > a:hover { background: var(--blue-50); color: var(--blue-700); }
-
-  .has-sub { position: relative; }
-  .submenu { position: absolute; left: 50%; top: 100%; translate: -50% 0; padding-top: 0.6rem; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all 0.16s ease; }
-  .has-sub:hover .submenu, .has-sub:focus-within .submenu { opacity: 1; visibility: visible; transform: translateY(0); }
-  .submenu__inner { display: grid; grid-template-columns: 1fr 1fr; gap: 0.1rem; background: #fff; border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow-lg); padding: 0.5rem; min-width: 320px; max-width: calc(100vw - 2 * var(--gutter)); }
-  .has-sub:last-child .submenu { left: auto; right: 0; translate: 0; }
-  .submenu__inner a { padding: 0.55rem 0.75rem; border-radius: 10px; text-decoration: none; color: var(--slate); font-family: var(--font-display); font-weight: 500; font-size: 0.95rem; }
-  .submenu__inner a:hover { background: var(--blue-50); color: var(--blue-700); }
-
-  .hdr__actions { display: flex; align-items: center; gap: 0.75rem; }
-
-  .burger { display: none; flex-direction: column; gap: 5px; width: 44px; height: 44px; align-items: center; justify-content: center; cursor: pointer; border-radius: 12px; background: transparent; border: none; padding: 0; }
-  .burger span { width: 24px; height: 2.5px; background: var(--navy); border-radius: 2px; transition: transform 0.25s, opacity 0.25s; }
-  .burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-  .burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-  .burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
-
-  .drawer { display: none; }
-
-  @media (max-width: 940px) {
-    .nav-desktop, .give { display: none; }
-    .burger { display: flex; }
-    .drawer {
-      display: block; position: fixed; inset: var(--hdr-h) 0 0; background: #fff;
-      transform: translateX(100%); visibility: hidden;
-      transition: transform 0.3s cubic-bezier(.2,.8,.2,1), visibility 0.3s;
-      overflow-y: auto; z-index: 55; border-top: 1px solid var(--line);
-    }
-    .drawer[data-open] { transform: translateX(0); visibility: visible; }
-    .drawer__nav { display: flex; flex-direction: column; padding: 1.25rem var(--gutter) 3rem; gap: 0.15rem; }
-    .drawer__nav a { text-decoration: none; font-family: var(--font-display); color: var(--navy); padding: 0.85rem 0.5rem; border-bottom: 1px solid var(--line-soft); font-size: 1.15rem; font-weight: 600; }
-    .drawer__sub { padding-left: 1.5rem !important; color: var(--slate) !important; font-weight: 500 !important; font-size: 1rem !important; }
-    .drawer__nav .btn { margin-top: 1.25rem; border-bottom: none; justify-content: center; }
-    :global(html.nav-open) { overflow: hidden; }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--hdr-h);
   }
-  @media (max-width: 420px) { .brand__text { font-size: 0.9rem; } }
+  .brand { display: inline-flex; align-items: center; flex: none; }
+  .brand img { width: clamp(170px, 22vw, 232px); height: auto; }
+
+  /* desktop nav */
+  .nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: clamp(0.2rem, 1vw, 0.55rem);
+  }
+  .nav a:not(.btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--display);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--navy);
+    text-decoration: none;
+    padding: 0.55rem 0.65rem;
+    border-radius: 8px;
+  }
+  .nav a:not(.btn):hover { color: var(--blue); background: var(--paper); }
+  .nav a[aria-current='page'] { color: var(--blue); }
+  .nav-give { margin-left: 0.4rem; }
+
+  /* dropdowns */
+  .has-menu { position: relative; }
+  .menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 208px;
+    background: #fff;
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 0.45rem;
+    display: none;
+    flex-direction: column;
+    gap: 1px;
+    z-index: 50;
+  }
+  .menu li { list-style: none; }
+  .menu a { width: 100%; }
+  .has-menu:hover .menu,
+  .has-menu:focus-within .menu { display: flex; }
+
+  /* hamburger */
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 1.5px solid var(--hair);
+    border-radius: 10px;
+    padding: 0.55rem 0.6rem;
+    cursor: pointer;
+  }
+  .nav-toggle__bars { display: block; width: 20px; }
+  .nav-toggle__bars i {
+    display: block;
+    height: 2px;
+    background: var(--navy);
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .nav-toggle__bars i + i { margin-top: 5px; }
+  :global(html.nav-open) .nav-toggle__bars i:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  :global(html.nav-open) .nav-toggle__bars i:nth-child(2) { opacity: 0; }
+  :global(html.nav-open) .nav-toggle__bars i:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* mobile drawer */
+  @media (max-width: 980px) {
+    .nav-toggle { display: block; }
+    .nav {
+      position: fixed;
+      inset: 0;
+      top: 0;
+      padding-top: calc(var(--hdr-h) + 34px);
+      background: #fff;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.18s ease, visibility 0.18s ease;
+      overflow-y: auto;
+      z-index: 55; /* below .site-header (60) so the bar + toggle stay on top */
+    }
+    :global(html.nav-open) .nav { visibility: visible; opacity: 1; }
+    .nav ul { flex-direction: column; align-items: stretch; gap: 0; padding: 0.75rem 1.25rem 2rem; }
+    .nav a:not(.btn) { font-size: 1.05rem; padding: 0.7rem 0.5rem; border-radius: 8px; }
+    .nav a:not(.btn) svg { display: none; }
+    .menu {
+      position: static;
+      display: flex;
+      border: 0;
+      box-shadow: none;
+      background: transparent;
+      padding: 0 0 0 1rem;
+      min-width: 0;
+    }
+    .menu a { font-size: 0.98rem !important; color: var(--mid) !important; }
+    .menu a:hover { color: var(--blue) !important; }
+    .nav-give { margin: 0.9rem 0.5rem 0; }
+    .nav-give .btn { width: 100%; }
+  }
 </style>

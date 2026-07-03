@@ -1,92 +1,118 @@
 ---
 import { site, nav } from '../data/site';
-import Quatrefoil from './Quatrefoil.astro';
-import Icon from './Icon.astro';
 const year = new Date().getFullYear();
-const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
-const socials = Object.entries(site.social).filter(([, url]) => url) as [string, string][];
-const exploreLinks = nav.flatMap((n) => (n.children ? n.children : [n]));
+const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
+const address = `${site.address.line1}, ${site.address.city}, ${site.address.state} ${site.address.zip}`;
 ---
-<footer class="ftr">
-  <Quatrefoil size={520} class="ftr__watermark" />
-  <h2 class="visually-hidden">Site footer</h2>
-  <div class="container ftr__grid">
-    <div class="ftr__brand">
-      <a href="/" class="ftr__logo">
-        <Quatrefoil size={38} />
-        <span>Chelsea Community Church</span>
-      </a>
-      <p class="ftr__tag">{site.tagline}</p>
-      {socials.length > 0 && (
-        <div class="ftr__social">
-          {socials.map(([name, url]) => (
-            <a href={url} target="_blank" rel="noopener noreferrer" aria-label={name}>
-              <Icon name={name} size={20} />
-            </a>
-          ))}
-        </div>
-      )}
+<footer class="site-footer">
+  <div class="wrap top">
+    <div class="id">
+      <img src="/images/icon-white.png" alt="" width="64" height="64" loading="lazy" />
+      <p class="name">Chelsea Community<br />Church</p>
+      <p class="tagline">Pursuing God. <b>Pursuing others.</b></p>
+      <p class="times">Sundays · 9:00 &amp; 10:30 AM</p>
     </div>
 
-    <div>
-      <h3>Join us Sunday</h3>
-      <ul class="plain-list ftr__links">
-        {site.serviceTimes.map((t) => <li><strong>{t}</strong></li>)}
-        {(site.address.city) && (
-          <li class="ftr__addr">
-            {site.address.line1 && <>{site.address.line1}<br /></>}
-            {site.address.city}{site.address.state ? `, ${site.address.state}` : ''} {site.address.zip}
-          </li>
-        )}
-      </ul>
-      <a class="btn btn--gold btn--sm" href="/imnew">Plan your visit</a>
-    </div>
-
-    <div>
-      <h3>Explore</h3>
-      <ul class="plain-list ftr__links">
-        {exploreLinks.slice(0, 7).map((l) => <li><a href={l.href}>{l.label}</a></li>)}
-        <li><a href="/history">Our Story</a></li>
-        <li><a href="/connections">Connect</a></li>
+    <div class="col" aria-labelledby="ftr-touch">
+      <h2 id="ftr-touch">Get in Touch</h2>
+      <ul>
+        <li>
+          <span class="label">Address</span>
+          <a href={site.address.maps} target="_blank" rel="noopener noreferrer">{address}</a>
+        </li>
+        <li>
+          <span class="label">Phone</span>
+          <a href={`tel:+1${site.phone.replaceAll('-', '')}`}>{site.phone}</a>
+        </li>
+        <li>
+          <span class="label">Email us</span>
+          <a href={`mailto:${site.email}`}>Get in touch with us, we're here to listen!</a>
+        </li>
+        <li>
+          <span class="label">Prayer</span>
+          <a href={prayerForm}>Let us know how we can pray for you.</a>
+        </li>
       </ul>
     </div>
 
-    <div>
-      <h3>Connect</h3>
-      <ul class="plain-list ftr__links">
-        <li><a href={giveHref}>Give</a></li>
-        <li><a href="/prayer">Prayer requests</a></li>
-        <li><a href="/calendar">Calendar</a></li>
+    <div class="col" aria-labelledby="ftr-connect">
+      <h2 id="ftr-connect">Connect</h2>
+      <ul>
+        <li><a href={site.social.facebook} target="_blank" rel="noopener noreferrer">Facebook</a></li>
+        <li><a href={site.social.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href={site.social.youtube} target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href={site.social.spotify} target="_blank" rel="noopener noreferrer">Sermon podcast</a></li>
+        <li><a href={site.textSignup} target="_blank" rel="noopener noreferrer">Text updates</a></li>
         <li><a href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Church Center app</a></li>
-        <li><a href="/leaders">Our leaders</a></li>
+      </ul>
+    </div>
+
+    <div class="col" aria-labelledby="ftr-explore">
+      <h2 id="ftr-explore">Explore</h2>
+      <ul class="two-col">
+        <li><a href="/imnew">I'm New</a></li>
+        {nav.flatMap((n) => (n.children ? n.children : n.href === '/imnew' ? [] : [n])).map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+        <li><a href={give}>Give</a></li>
       </ul>
     </div>
   </div>
 
-  <div class="container ftr__bottom">
-    <p>© {year} {site.name}</p>
-    <p class="ftr__verse">“Pursuing God. Pursuing others.”</p>
+  <div class="wrap bottom">
+    <p>Copyright © {year}. All rights reserved. Chelsea Community Church</p>
   </div>
 </footer>
 
 <style>
-  .ftr { position: relative; overflow: hidden; background: var(--grad-deep); color: #b9cee1; padding-block: clamp(3rem, 6vw, 4.5rem) 1.5rem; }
-  .ftr__watermark { position: absolute; right: -130px; bottom: -150px; color: rgba(255,255,255,0.055); pointer-events: none; transform: rotate(-8deg); }
-  .ftr__grid { position: relative; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 2.5rem; }
-  .ftr h3 { color: #fff; font-size: 1rem; margin-bottom: 1rem; letter-spacing: 0.01em; }
-  .ftr__logo { display: inline-flex; align-items: center; gap: 0.6rem; color: #fff; text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
-  .ftr__logo :global(svg) { color: var(--gold); }
-  .ftr__tag { color: var(--gold-300); font-family: var(--font-display); font-weight: 600; margin-top: 0.6rem; }
-  .ftr__social { display: flex; gap: 0.6rem; margin-top: 1.25rem; }
-  .ftr__social a { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: rgba(255,255,255,0.08); color: #fff; transition: background 0.2s, transform 0.2s; }
-  .ftr__social a:hover { background: var(--gold); color: var(--navy); transform: translateY(-2px); }
-  .ftr__links li { margin-bottom: 0.55rem; }
-  .ftr__links a { color: #b9cee1; text-decoration: none; }
-  .ftr__links a:hover { color: #fff; text-decoration: underline; }
-  .ftr__links strong { color: #fff; font-family: var(--font-display); }
-  .ftr__addr { color: #90a9c2; font-size: 0.92rem; margin-top: 0.5rem; margin-bottom: 1rem; }
-  .ftr__bottom { position: relative; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.12); font-size: 0.9rem; color: #90a9c2; }
-  .ftr__verse { font-family: var(--font-display); font-style: italic; color: var(--gold-300); }
-  @media (max-width: 860px) { .ftr__grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
-  @media (max-width: 520px) { .ftr__grid { grid-template-columns: 1fr; } }
+  .top {
+    display: grid;
+    grid-template-columns: 1.1fr 1.2fr 0.8fr 1fr;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    padding-block: clamp(2.5rem, 6vw, 3.75rem) 2rem;
+  }
+  @media (max-width: 960px) { .top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .top { grid-template-columns: 1fr; } }
+
+  .id img { width: 56px; height: 56px; margin-bottom: 0.9rem; }
+  .name {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    color: #fff;
+  }
+  .tagline { margin-top: 0.5rem; font-size: 0.95rem; color: rgba(251, 249, 244, 0.8); }
+  .tagline b { color: var(--gold); font-weight: 600; }
+  .times { margin-top: 0.35rem; font-size: 0.9rem; color: rgba(251, 249, 244, 0.65); }
+
+  h2 {
+    font-family: var(--display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.9rem;
+  }
+  .col ul { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+  .col a { text-decoration: none; font-size: 0.95rem; }
+  .col a:hover { text-decoration: underline; }
+  .label {
+    display: block;
+    font-family: var(--display);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(251, 249, 244, 0.55);
+  }
+  .two-col { display: grid !important; grid-template-columns: 1fr 1fr; gap: 0.45rem 1rem; }
+
+  .bottom {
+    border-top: 1px solid rgba(251, 249, 244, 0.15);
+    padding-block: 1.1rem;
+  }
+  .bottom p { font-size: 0.85rem; color: rgba(251, 249, 244, 0.6); }
 </style>

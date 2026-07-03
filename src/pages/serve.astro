@@ -2,41 +2,82 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import Icon from '../components/Icon.astro';
 import CTABand from '../components/CTABand.astro';
-import { serveOps } from '../data/content';
-import { site } from '../data/site';
-const connect = `https://${site.churchCenter.subdomain}`;
+import { serve } from '../data/content';
 ---
-<Base title="Serve" description="Find your place to serve at Chelsea Community Church.">
-  <PageHero eyebrow="Serve" title="You were made for more than a seat"
-    lead="God has gifted every one of us to build up the church and bless our community. There's a place for your gifts — and a team that would love to have you.">
-    <a class="btn btn--gold btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Find your spot</a>
-  </PageHero>
+<Base title="Serve" description="Find your place, know your purpose, be people of pursuit — the Teams Mobilizer tool at Chelsea Community Church.">
+  <PageHero eyebrow="Ministries" title="Serve" lead={`${serve.verse.text} (${serve.verse.ref})`} />
 
-  <Section eyebrow="Where to jump in" title="Ways to serve" center>
+  <Section eyebrow="Teams Mobilizer" title="Find your place. Know your purpose.">
+    <div class="split">
+      <div data-reveal>
+        <div class="measure">
+          {serve.intro.map((p) => <p>{p}</p>)}
+        </div>
+        <a class="btn btn--gold mt-1" href={serve.survey} target="_blank" rel="noopener noreferrer">Click here to take the survey</a>
+      </div>
+      <div class="photo" data-reveal>
+        <img src={serve.image.src} alt={serve.image.alt} loading="lazy" />
+      </div>
+    </div>
+  </Section>
+
+  <Section variant="alt" center>
+    <div class="grid cols-2" style="text-align:left">
+      <div class="card" data-reveal>
+        <h3>It Is:</h3>
+        <ul class="list">
+          {serve.itIs.map((i) => <li>{i}</li>)}
+        </ul>
+      </div>
+      <div class="card" data-reveal>
+        <h3>It Is Not:</h3>
+        <ul class="list">
+          {serve.itIsNot.map((i) => <li>{i}</li>)}
+        </ul>
+      </div>
+    </div>
+  </Section>
+
+  <Section eyebrow="Instructions" title="Three simple steps">
     <div class="grid cols-3">
-      {serveOps.map((s, i) => (
-        <div class="card serve-card" data-reveal data-delay={String((i % 3) + 1)}>
-          <div class={`chip ${i % 2 ? 'chip--gold' : ''}`}><Icon name={s.icon} /></div>
+      {serve.instructions.map((s, i) => (
+        <div class="card" data-reveal>
+          <p class="step">Step {i + 1}</p>
           <h3>{s.title}</h3>
-          <p>{s.text}</p>
+          <p>{s.body}</p>
         </div>
       ))}
     </div>
+    <p class="measure closing" data-reveal>{serve.closing}</p>
   </Section>
 
-  <Section variant="deep" width="narrow">
-    <div class="center" data-reveal>
-      <p class="eyebrow on-dark eyebrow--center">Why it matters</p>
-      <h2>When everyone plays their part, the whole body grows</h2>
-      <p class="lead">Serving isn't about filling slots — it's how we love one another and reach our city. You don't need to be an expert. You just need to be willing.</p>
-      <a class="btn btn--gold btn--lg mt-1" href={connect} target="_blank" rel="noopener noreferrer">Start serving</a>
-    </div>
-  </Section>
+  <CTABand title="Questions about serving?" text="Brian Marbury, our Pastor of Missions & Service, is the one to ask.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${serve.contact}`}>Email Brian for more information!</a>
+  </CTABand>
 </Base>
 
 <style>
-  .serve-card { transition: transform 0.2s, box-shadow 0.2s; }
-  .serve-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .list { list-style: none; display: grid; gap: 0.55rem; margin-top: 0.5rem; }
+  .list li { padding-left: 1.1rem; position: relative; font-size: 0.98rem; color: var(--mid); }
+  .list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .step {
+    font-family: var(--display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 0.35rem;
+  }
+  .closing { margin-top: 2rem; font-style: italic; color: var(--mid); }
 </style>

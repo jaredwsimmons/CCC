@@ -2,104 +2,65 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import Icon from '../components/Icon.astro';
 import CTABand from '../components/CTABand.astro';
 import { site } from '../data/site';
-import { visitSteps, faqs } from '../data/content';
-const connect = `https://${site.churchCenter.subdomain}`;
-const expect = [
-  { icon: 'heart', title: 'Come as you are', text: 'Jeans or a button-down — no dress code, no pressure. Just come.' },
-  { icon: 'play', title: 'About 75 minutes', text: 'Worship through music, prayer, and a message straight from the Bible.' },
-  { icon: 'child', title: 'Your kids will love it', text: 'Safe, fun, secure environments for newborns through 5th grade.' },
-];
+import { imnew } from '../data/content';
+const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
-<Base title="I'm New" description="Planning your first visit to Chelsea Community Church? Here's everything you need to know.">
-  <PageHero eyebrow="Plan a visit" title="We saved you a seat"
-    lead="Walking into a new church can feel intimidating. Our hope is that from the parking lot to the last song, you feel genuinely welcome.">
-    <a class="btn btn--gold btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Plan your visit</a>
-    <a class="btn btn--on-dark" href="#faq">Common questions</a>
+<Base title="I'm New" description="What to expect on a Sunday at Chelsea Community Church — services at 9:00 & 10:30 AM, what to wear, where to go first, and how to let us know you're coming.">
+  <PageHero
+    eyebrow="I'm New"
+    title="What to Expect"
+    image={imnew.hero.image}
+    imageAlt={imnew.hero.imageAlt}
+  >
+    <a class="btn btn--gold btn--lg" href={planVisit}>Let Us Know You're Coming!</a>
   </PageHero>
 
-  <!-- What to expect -->
-  <Section eyebrow="What to expect" title="Relax — you belong here" center>
-    <div class="grid cols-3">
-      {expect.map((e, i) => (
-        <div class="card" data-reveal data-delay={String(i + 1)}>
-          <div class={`chip ${i === 0 ? 'chip--gold' : ''}`}><Icon name={e.icon} /></div>
-          <h3>{e.title}</h3>
-          <p>{e.text}</p>
-        </div>
-      ))}
+  <Section>
+    <div class="measure" data-reveal>
+      {imnew.expect.map((p) => <p class="expect">{p}</p>)}
+    </div>
+    <div class="grid cols-2 mt-2">
+      <div class="card" data-reveal>
+        <h3>{imnew.dress.title}</h3>
+        <p>{imnew.dress.body}</p>
+      </div>
+      <div class="card" data-reveal>
+        <h3>{imnew.whereToGo.title}</h3>
+        <p>{imnew.whereToGo.body}</p>
+      </div>
     </div>
   </Section>
 
-  <!-- When & where -->
-  <Section variant="cloud">
-    <div class="whenwhere">
+  <Section variant="navy" tight>
+    <div class="fam" data-reveal>
+      <div>
+        <p class="eyebrow on-dark">5th Sundays</p>
+        <h2>{imnew.familyWorship.title}</h2>
+        <p style="margin-top:0.8rem; max-width:62ch">{imnew.familyWorship.body}</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section eyebrow="Before you arrive" title={imnew.coming.title}>
+    <div class="split">
       <div data-reveal>
-        <p class="eyebrow">When & where</p>
-        <h2 class="mt-1">Join us this Sunday</h2>
-        <ul class="ww-list">
-          <li><Icon name="calendar" /> <span><strong>Sundays</strong> at {site.serviceTimes.join(' & ')}</span></li>
-          <li><Icon name="pin" /> <span><strong>{site.address.city}, {site.address.state}</strong>{site.address.line1 ? ` · ${site.address.line1}` : ''}</span></li>
-          <li><Icon name="users" /> <span>Both services are identical — pick what fits your morning.</span></li>
-        </ul>
-        <a class="btn btn--primary mt-1" href="/calendar">See the calendar <Icon name="arrow" size={18} /></a>
+        <p class="measure">{imnew.coming.body}</p>
+        <p class="measure" style="margin-top:0.9rem">{imnew.coming.desk}</p>
+        <a class="btn btn--blue mt-1" href={planVisit}>Let Us Know You're Coming!</a>
       </div>
-      <div class="ww-card" data-reveal data-delay="1">
-        <Icon name="child" size={32} />
-        <h3>Bringing kids?</h3>
-        <p>Arrive a few minutes early so we can get them checked in. Our team will walk you right to their room.</p>
-        <a class="btn btn--ghost btn--sm" href="/kids">About CCC Kids</a>
+      <div class="photo" data-reveal>
+        <img src={imnew.coming.image} alt={imnew.coming.imageAlt} loading="lazy" />
       </div>
     </div>
   </Section>
 
-  <!-- Steps -->
-  <Section eyebrow="How it works" title="Your first visit, step by step" center>
-    <ol class="steps">
-      {visitSteps.map((s, i) => (
-        <li class="step" data-reveal data-delay={String((i % 3) + 1)}>
-          <span class="step__n">{s.n}</span>
-          <h3>{s.title}</h3>
-          <p>{s.text}</p>
-        </li>
-      ))}
-    </ol>
-  </Section>
-
-  <!-- FAQ -->
-  <Section variant="cloud" id="faq" eyebrow="Good questions" title="Frequently asked" width="narrow">
-    <div class="accordion" data-reveal>
-      {faqs.map((f) => (
-        <details>
-          <summary>{f.q}</summary>
-          <div class="answer">{f.a}</div>
-        </details>
-      ))}
-    </div>
-  </Section>
-
-  <CTABand title="Still have questions?" text="We'd love to answer them. Reach out and a real person will get back to you." variant="deep">
-    <a class="btn btn--gold btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Get in touch</a>
+  <CTABand title="Join us this Sunday" text={`Worship & Community Groups at 9:00 and 10:30 AM · ${site.address.line1}, ${site.address.city}, ${site.address.state}`}>
+    <a class="btn btn--gold btn--lg" href={site.address.maps} target="_blank" rel="noopener noreferrer">Get directions</a>
   </CTABand>
 </Base>
 
 <style>
-  .whenwhere { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2.5rem; align-items: center; }
-  .ww-list { list-style: none; padding: 0; margin: 1.25rem 0; display: grid; gap: 0.9rem; }
-  .ww-list li { display: flex; align-items: center; gap: 0.8rem; color: var(--slate); }
-  .ww-list li :global(svg) { color: var(--blue); flex-shrink: 0; }
-  .ww-list strong { color: var(--navy); font-family: var(--font-display); }
-  .ww-card { background: var(--grad-deep); color: #cddced; border-radius: var(--r-lg); padding: 2rem; box-shadow: var(--shadow-lg); }
-  .ww-card :global(svg) { color: var(--gold-300); }
-  .ww-card h3 { color: #fff; margin: 0.75rem 0 0.5rem; }
-  .ww-card .btn { margin-top: 1rem; color: #fff; border-color: rgba(255,255,255,0.3); }
-
-  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 1.5rem; counter-reset: step; }
-  .step { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.75rem; box-shadow: var(--shadow-sm); position: relative; }
-  .step__n { font-family: var(--font-display); font-weight: 800; font-size: 2.2rem; color: var(--gold); letter-spacing: -0.03em; line-height: 1; }
-  .step h3 { margin: 0.5rem 0 0.4rem; }
-  .step p { color: var(--slate); }
-  @media (max-width: 820px) { .whenwhere { grid-template-columns: 1fr; } }
+  .expect + .expect { margin-top: 0.9em; }
 </style>

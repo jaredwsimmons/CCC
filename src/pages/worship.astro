@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { worship } from '../data/content';
+---
+<Base title="Worship" description="Blended worship — traditional and contemporary — reflecting a congregation of all generations at Chelsea Community Church.">
+  <PageHero eyebrow="Ministries" title="Worship" />
+
+  <Section>
+    <div class="split">
+      <div data-reveal>
+        <h2>A blend of all generations</h2>
+        <div class="measure" style="margin-top:1rem">
+          {worship.body.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+      <div class="stack" data-reveal>
+        {worship.images.map((img) => (
+          <div class="photo"><img src={img.src} alt={img.alt} loading="lazy" /></div>
+        ))}
+      </div>
+    </div>
+  </Section>
+
+  <CTABand title="Serve with music or tech" text="Musicians, vocalists, and behind-the-scenes hands all help make Sunday distraction-free.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${worship.serveCta.email}`}>Click to serve with music or tech!</a>
+  </CTABand>
+</Base>
+
+<style>
+  .stack { display: grid; gap: 1.25rem; }
+</style>

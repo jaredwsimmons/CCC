@@ -29,13 +29,15 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
 
+    <!-- Brand type: Poppins (display, 500–700 per brand guide) + Nunito (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- Progressive-enhancement flag: set BEFORE paint so reveal styles apply without FOUC. -->
     <script is:inline>document.documentElement.classList.add('js');</script>
@@ -50,26 +52,20 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     </main>
     <Footer />
 
-    <!-- Scroll-reveal + header shadow. Progressive: content is fully visible if this never runs. -->
+    <!-- Scroll-reveal. Progressive: content is fully visible if this never runs. -->
     <script is:inline>
       (function () {
         var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var els = document.querySelectorAll('[data-reveal]');
         if (reduce || !('IntersectionObserver' in window)) {
-          els.forEach(function (el) { el.classList.add('in'); });
+          els.forEach(function (el) { el.classList.add('is-in'); });
         } else {
           var io = new IntersectionObserver(function (entries) {
             entries.forEach(function (e) {
-              if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+              if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
             });
           }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
           els.forEach(function (el) { io.observe(el); });
-        }
-        var header = document.querySelector('[data-header]');
-        if (header) {
-          var onScroll = function () { header.classList.toggle('is-scrolled', window.scrollY > 12); };
-          onScroll();
-          window.addEventListener('scroll', onScroll, { passive: true });
         }
       })();
     </script>

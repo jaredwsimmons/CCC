@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { students } from '../data/content';
+import { site } from '../data/site';
+const coming = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
+---
+<Base title="Students" description="C3SM — Chelsea Community Church Student Ministry for middle and high schoolers. Sunday community groups at 9 AM and Wednesday nights at 6 PM.">
+  <PageHero eyebrow="Ministries · Students" title="Welcome to C3SM!" lead={students.intro} />
+
+  <Section>
+    <div class="split">
+      <div class="photo" data-reveal>
+        <img src={students.photo.src} alt={students.photo.alt} loading="lazy" />
+      </div>
+      <div data-reveal>
+        <div class="grid" style="gap:1rem">
+          {students.schedule.map((s) => (
+            <div class="card">
+              <h3>{s.when}</h3>
+              <p>{s.what}</p>
+            </div>
+          ))}
+        </div>
+        <div class="ctas">
+          <a class="btn btn--gold" href={coming}>Let us know your family is coming!</a>
+          <a class="btn btn--outline" href="/calendar">Summer events calendar</a>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <CTABand title="Questions about C3SM?" text="Drew Blake, our Pastor of Students & Worship, would love to connect.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${students.contact}`}>Get in touch with Pastor Drew!</a>
+  </CTABand>
+</Base>
+
+<style>
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
+</style>

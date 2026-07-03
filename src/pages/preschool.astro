@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { preschool } from '../data/content';
+import { site } from '../data/site';
+const preRegister = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
+---
+<Base title="Preschool" description="Preschool ministry at Chelsea Community Church — worship and community groups for little ones every Sunday, with easy pre-registration for first-time families.">
+  <PageHero eyebrow="Ministries" title="Preschool" />
+
+  <Section eyebrow="First time?" title={preschool.getReady.title}>
+    <div class="split">
+      <div data-reveal>
+        <p class="measure">{preschool.getReady.body}</p>
+        <a class="btn btn--gold mt-1" href={preRegister}>Pre-Register Your Family</a>
+      </div>
+      <div class="card sched" data-reveal>
+        <h3>Sunday Schedule</h3>
+        <ul>
+          {preschool.schedule.map((s) => (
+            <li><b>{s.time}</b> — {s.what}</li>
+          ))}
+        </ul>
+        <a href={preschool.newsletter} target="_blank" rel="noopener noreferrer">Check out our monthly newsletter →</a>
+      </div>
+    </div>
+  </Section>
+
+  <Section variant="alt" eyebrow="Good to know" title="Making Sunday mornings easy" center>
+    <div class="grid cols-3">
+      {preschool.tips.map((t) => (
+        <div class="card" style="text-align:left" data-reveal>
+          <h3>{t.title}</h3>
+          <p>{t.body}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <Section tight>
+    <div class="gallery" data-reveal>
+      {preschool.gallery.map((src, i) => (
+        <div class="photo"><img src={src} alt={`Preschool ministry at Chelsea Community Church — photo ${i + 1}`} loading="lazy" /></div>
+      ))}
+    </div>
+  </Section>
+
+  <CTABand title="Questions about Preschool?" text="We'd love to help your family feel at home.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${preschool.contact}`}>Email us for more information!</a>
+  </CTABand>
+</Base>
+
+<style>
+  .sched ul { list-style: none; margin: 0.5rem 0 1rem; display: grid; gap: 0.4rem; }
+  .sched b { color: var(--blue); }
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .gallery .photo { aspect-ratio: 4/3; }
+  @media (max-width: 700px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+</style>

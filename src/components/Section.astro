@@ -1,7 +1,7 @@
 ---
 interface Props {
-  variant?: 'default' | 'cloud' | 'cream' | 'sky' | 'deep';
-  width?: 'default' | 'wide' | 'narrow';
+  variant?: 'default' | 'alt' | 'white' | 'navy';
+  tight?: boolean;
   eyebrow?: string;
   title?: string;
   lead?: string;
@@ -10,19 +10,34 @@ interface Props {
   class?: string;
 }
 const {
-  variant = 'default', width = 'default', eyebrow, title, lead, center = false, id, class: cls = '',
+  variant = 'default',
+  tight = false,
+  eyebrow,
+  title,
+  lead,
+  center = false,
+  id,
+  class: cls = '',
 } = Astro.props;
-const sectionClass = ['section', variant !== 'default' ? `section--${variant}` : '', cls].filter(Boolean).join(' ');
-const containerClass = ['container', width === 'wide' ? 'container--wide' : '', width === 'narrow' ? 'container--narrow' : ''].filter(Boolean).join(' ');
+const sectionClass = [
+  'section',
+  tight ? 'section--tight' : '',
+  variant !== 'default' ? `section--${variant}` : '',
+  center ? 'center' : '',
+  variant === 'navy' ? 'on-dark' : '',
+  cls,
+]
+  .filter(Boolean)
+  .join(' ');
 const hasHead = eyebrow || title || lead;
 ---
 <section class={sectionClass} id={id}>
-  <div class={containerClass}>
+  <div class="wrap">
     {hasHead && (
-      <div class={`section-head ${center ? 'section-head--center' : ''}`} data-reveal>
-        {eyebrow && <p class={`eyebrow ${center ? 'eyebrow--center' : ''}`}>{eyebrow}</p>}
+      <div class="section-head" data-reveal>
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
         {title && <h2>{title}</h2>}
-        {lead && <p class="lead">{lead}</p>}
+        {lead && <p class="lead" style="margin-top:0.7rem">{lead}</p>}
       </div>
     )}
     <slot />

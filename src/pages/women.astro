@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { women } from '../data/content';
+const bingo = women.events.find((e) => e.rsvp);
+---
+<Base title="Women" description="Women's Ministry at Chelsea Community Church — growing in Christ, building authentic friendships, and living out faith with confidence and purpose.">
+  <PageHero eyebrow="Ministries" title="Women" lead={women.intro[0]} />
+
+  <Section>
+    <div class="split">
+      <div data-reveal>
+        <p class="measure">{women.intro[1]}</p>
+      </div>
+      <div class="photo" data-reveal>
+        <img src={women.photo.src} alt={women.photo.alt} loading="lazy" />
+      </div>
+    </div>
+  </Section>
+
+  <Section variant="alt" eyebrow="Upcoming summer events" title="Join us this summer" center>
+    <div class="grid cols-3">
+      {women.events.map((e) => (
+        <div class="card event" data-reveal>
+          <h3>{e.name}</h3>
+          <p class="when">{e.when}</p>
+          <p class="where">{e.where}</p>
+          <p>{e.note}</p>
+          {e.rsvp && (
+            <a class="btn btn--blue mt-1" href={`${e.rsvp}?open-in-church-center-modal=true`}>RSVP for {e.name}</a>
+          )}
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  {bingo && (
+    <Section variant="white">
+      <div class="split">
+        <div class="photo" data-reveal>
+          <img src={bingo.image} alt={bingo.imageAlt} loading="lazy" />
+        </div>
+        <div data-reveal>
+          <p class="eyebrow">Spotlight · {bingo.when}</p>
+          <h2>{bingo.name}</h2>
+          <div class="measure" style="margin-top:0.9rem">
+            {bingo.detail!.map((p) => <p>{p}</p>)}
+          </div>
+          <a class="btn btn--gold mt-1" href={`${bingo.rsvp}?open-in-church-center-modal=true`}>RSVP for Sundae Funday Bingo</a>
+        </div>
+      </div>
+    </Section>
+  )}
+
+  <CTABand title="Questions about Women's Ministry?" text="Tammy would love to hear from you.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${women.contact}`}>Email Tammy for more information!</a>
+  </CTABand>
+</Base>
+
+<style>
+  .event { text-align: left; }
+  .event .when { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.95rem; }
+  .event .where { font-size: 0.92rem; }
+</style>

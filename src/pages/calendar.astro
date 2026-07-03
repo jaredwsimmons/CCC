@@ -2,14 +2,15 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import ChurchCenterCalendar from '../components/ChurchCenterCalendar.astro';
+import { site } from '../data/site';
 ---
-<Base title="Calendar" description="What's happening at Chelsea Community Church.">
-  <PageHero eyebrow="What's happening" title="Church Calendar"
+<Base title="Calendar" description="What's happening at Chelsea Community Church — services, groups, studies, and events, kept up to date in Church Center.">
+  <PageHero eyebrow="What's happening" title="Calendar"
     lead="Services, groups, studies, and events across the life of our church — kept up to date in Church Center.">
-    <a class="btn btn--gold" href="/imnew">Plan a visit</a>
+    <a class="btn btn--outline" href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Click to View Calendar</a>
   </PageHero>
-  <section class="section">
-    <div class="container" data-reveal>
+  <section class="section section--tight">
+    <div class="wrap" data-reveal>
       <ChurchCenterCalendar />
     </div>
   </section>

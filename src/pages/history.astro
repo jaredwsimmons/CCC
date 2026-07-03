@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { history } from '../data/content';
+import { site } from '../data/site';
+const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
+---
+<Base title="History" description="From Double Oak Community Church's Chelsea campus to an independent church under the Chelsea Park clocktower — the story of Chelsea Community Church.">
+  <PageHero
+    eyebrow="About"
+    title="History"
+    image={history.hero.image}
+    imageAlt={history.hero.imageAlt}
+  />
+
+  <Section eyebrow="Our story" title="Planting roots as Chelsea grows">
+    <p class="measure" data-reveal>{history.body}</p>
+    <p class="mt-2" data-reveal>
+      <a href="/beliefs">Read what we believe →</a>
+    </p>
+  </Section>
+
+  <CTABand title="Be part of the next chapter" text="Worship with us Sundays at 9:00 & 10:30 AM.">
+    <a class="btn btn--gold btn--lg" href={planVisit}>Plan a Visit</a>
+  </CTABand>
+</Base>

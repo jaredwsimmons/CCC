@@ -2,62 +2,70 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import Icon from '../components/Icon.astro';
 import CTABand from '../components/CTABand.astro';
-import { beliefs, values } from '../data/content';
+import { beliefs } from '../data/content';
 import { site } from '../data/site';
-const connect = `https://${site.churchCenter.subdomain}`;
+const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
-<Base title="What We Believe" description="The heart of what Chelsea Community Church believes and why.">
-  <PageHero eyebrow="What we believe" title="Firm on the essentials. Gracious on the rest."
-    lead={beliefs.intro} />
+<Base title="What We Believe" description="The Bible tells the story of God pursuing us — our vision, our affiliation, and the beliefs of Chelsea Community Church.">
+  <PageHero eyebrow="About" title="What We Believe" />
 
-  <!-- Statement of faith -->
-  <Section eyebrow="Statement of faith" title="What we hold to" center>
-    <div class="grid cols-3">
-      {beliefs.statement.map((b, i) => (
-        <div class="card belief" data-reveal data-delay={String((i % 3) + 1)}>
-          <span class="belief__no">{String(i + 1).padStart(2, '0')}</span>
+  <!-- God's pursuit -->
+  <Section>
+    <div class="split pursuit">
+      <div data-reveal>
+        <h2>{beliefs.pursuit.title}</h2>
+        <div class="measure" style="margin-top:1rem">
+          {beliefs.pursuit.body.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+      <div class="photo pursuit-art" data-reveal>
+        <img src={beliefs.pursuit.image} alt={beliefs.pursuit.imageAlt} loading="lazy" />
+      </div>
+    </div>
+  </Section>
+
+  <!-- Vision -->
+  <Section variant="white" eyebrow="Our Vision" title="Pursuing God. Pursuing others.">
+    <div class="measure" data-reveal>
+      {beliefs.vision.body.map((p) => <p>{p}</p>)}
+    </div>
+  </Section>
+
+  <!-- Affiliation -->
+  <Section eyebrow="Our Affiliation" title="A community church in the Baptist tradition">
+    <p class="measure" data-reveal>
+      {beliefs.affiliation.body}
+      {' '}<a href={beliefs.affiliation.doccUrl} target="_blank" rel="noopener noreferrer">Learn more about Double Oak Community Church →</a>
+    </p>
+  </Section>
+
+  <!-- Statement of beliefs -->
+  <Section variant="alt" eyebrow="Our Beliefs" title="What we hold to" center>
+    <div class="grid cols-2">
+      {beliefs.statements.map((b, i) => (
+        <div class="card" style="text-align:left" data-reveal>
+          <span class="scripture">{b.refs}</span>
           <h3>{b.title}</h3>
           <p>{b.text}</p>
         </div>
       ))}
+      <div class="card bylaws" data-reveal>
+        <h3>Church Bylaws</h3>
+        <p>How we govern ourselves as a congregation.</p>
+        <a class="btn btn--outline mt-1" href={site.bylaws} target="_blank" rel="noopener noreferrer">Click to read our church bylaws</a>
+      </div>
     </div>
   </Section>
 
-  <!-- Values -->
-  <Section variant="cloud" eyebrow="Our values" title="What shapes us" center
-    lead="Beliefs on paper become a way of life. These are the values that guide how we love God and people.">
-    <div class="grid cols-3">
-      {values.map((v, i) => (
-        <div class="card" data-reveal data-delay={String((i % 3) + 1)}>
-          <div class={`chip ${i % 2 ? 'chip--gold' : ''}`}><Icon name={v.icon} /></div>
-          <h3>{v.title}</h3>
-          <p>{v.text}</p>
-        </div>
-      ))}
-    </div>
-  </Section>
-
-  <!-- Distinctives -->
-  <Section eyebrow="Common questions" title="A few distinctives" width="narrow">
-    <div class="accordion" data-reveal>
-      {beliefs.distinctives.map((d) => (
-        <details>
-          <summary>{d.q}</summary>
-          <div class="answer">{d.a}</div>
-        </details>
-      ))}
-    </div>
-  </Section>
-
-  <CTABand title="Questions about faith?" text="Our pastors and elders would love to talk — no pressure, no judgment." variant="gold">
-    <a class="btn btn--dark btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Reach out</a>
+  <CTABand title="Come and see" text="The best way to get to know us is a Sunday morning. We'd love to meet you.">
+    <a class="btn btn--gold btn--lg" href={planVisit}>Plan a Visit</a>
+    <a class="btn btn--outline-light btn--lg" href="/imnew">What to expect</a>
   </CTABand>
 </Base>
 
 <style>
-  .belief { position: relative; }
-  .belief__no { font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: var(--gold-600); letter-spacing: 0.05em; }
-  .belief h3 { margin: 0.35rem 0 0.5rem; }
+  .pursuit-art { align-self: start; }
+  @media (max-width: 860px) { .pursuit-art { order: -1; } }
+  .bylaws { text-align: left; }
 </style>

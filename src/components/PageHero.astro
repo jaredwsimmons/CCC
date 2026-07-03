@@ -1,25 +1,50 @@
 ---
-import Quatrefoil from './Quatrefoil.astro';
-interface Props { eyebrow?: string; title: string; lead?: string; }
-const { eyebrow, title, lead } = Astro.props;
+// Page hero. With an image: navy-overlay photo hero. Without: quiet paper hero
+// with the brand's gold-dash eyebrow — matching the warm, uncluttered guide.
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  image?: string;
+  imageAlt?: string;
+}
+const { eyebrow, title, lead, image, imageAlt = '' } = Astro.props;
 ---
-<section class="phero">
-  <Quatrefoil size={420} class="phero__wm" />
-  <div class="container phero__inner">
-    {eyebrow && <p class="eyebrow on-dark" data-reveal>{eyebrow}</p>}
-    <h1 data-reveal data-delay="1">{title}</h1>
-    {lead && <p class="lead phero__lead" data-reveal data-delay="2">{lead}</p>}
-    <div class="phero__actions" data-reveal data-delay="2"><slot /></div>
-  </div>
-</section>
+{image ? (
+  <section class="hero phero--img">
+    <div class="hero__img" aria-hidden={imageAlt === '' ? 'true' : undefined}>
+      <img src={image} alt={imageAlt} loading="eager" fetchpriority="high" />
+    </div>
+    <div class="wrap inner">
+      {eyebrow && <p class="eyebrow on-dark">{eyebrow}</p>}
+      <h1>{title}</h1>
+      {lead && <p class="lead" style="color:rgba(251,249,244,0.9)">{lead}</p>}
+      <div class="actions"><slot /></div>
+    </div>
+  </section>
+) : (
+  <section class="phero--paper">
+    <div class="wrap inner">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1>{title}</h1>
+      {lead && <p class="lead">{lead}</p>}
+      <div class="actions"><slot /></div>
+    </div>
+  </section>
+)}
 
 <style>
-  .phero { position: relative; overflow: hidden; background: var(--grad-hero); color: #dbe8f4; padding-block: clamp(3.5rem, 9vw, 6.5rem); }
-  .phero::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.05) 1.2px, transparent 1.2px); background-size: 26px 26px; opacity: 0.6; }
-  .phero__wm { position: absolute; right: -80px; top: -100px; color: rgba(255,255,255,0.09); transform: rotate(10deg); }
-  .phero__inner { position: relative; max-width: 820px; }
-  .phero h1 { color: #fff; }
-  .phero__lead { color: #cdddec; max-width: 60ch; margin-top: 1rem; }
-  .phero__actions { margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
-  .phero__actions:empty { display: none; }
+  .phero--img .inner { padding-block: clamp(4rem, 11vw, 7.5rem); max-width: none; }
+  .phero--img h1 { max-width: 18ch; }
+  .phero--img .lead { margin-top: 0.9rem; max-width: 55ch; }
+
+  .phero--paper {
+    background: #fff;
+    border-bottom: 1px solid var(--hair);
+  }
+  .phero--paper .inner { padding-block: clamp(2.75rem, 7vw, 4.5rem); }
+  .phero--paper .lead { margin-top: 0.8rem; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.6rem; }
+  .actions:empty { display: none; }
 </style>

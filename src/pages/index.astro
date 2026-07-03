@@ -1,223 +1,129 @@
 ---
 import Base from '../layouts/Base.astro';
 import Section from '../components/Section.astro';
-import Icon from '../components/Icon.astro';
-import Quatrefoil from '../components/Quatrefoil.astro';
-import CTABand from '../components/CTABand.astro';
 import { site } from '../data/site';
-import { pillars, welcome, stats, ministries, currentSeries, groups, missions } from '../data/content';
-import { sanityFetch } from '../lib/sanity';
-import { siteSettingsQuery } from '../lib/queries';
+import { home } from '../data/content';
 
-const settings = await sanityFetch<any>(siteSettingsQuery);
-const announcement: string | undefined = settings?.announcement;
-const seriesLive = Boolean(settings?.series?.title);
-const series = seriesLive
-  ? settings.series
-  : { title: currentSeries.title, description: currentSeries.text, subtitle: currentSeries.subtitle };
-const giveHref = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
+const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
+const address = `${site.address.line1}, ${site.address.city}, ${site.address.state} ${site.address.zip}`;
 ---
 <Base>
-  {announcement && <div class="announce"><div class="container">✦ {announcement}</div></div>}
-
-  <!-- ===== HERO ===== -->
-  <section class="hero">
-    <Quatrefoil size={640} class="hero__wm" />
-    <div class="container hero__grid">
-      <div class="hero__copy">
-        <p class="eyebrow on-dark" data-reveal>A church family in Chelsea, Alabama</p>
-        <h1 data-reveal data-delay="1">Pursuing God.<br /><span>Pursuing others.</span></h1>
-        <p class="lead hero__lead" data-reveal data-delay="2">
-          You don't have to have it all figured out to belong here. Come as you are and
-          discover a church that's honest, warm, and centered on Jesus.
-        </p>
-        <div class="cta-row" data-reveal data-delay="2">
-          <a class="btn btn--gold btn--lg" href="/imnew">Plan your visit <Icon name="arrow" size={18} /></a>
-          <a class="btn btn--on-dark btn--lg" href="/media"><Icon name="play" size={18} /> Watch a message</a>
-        </div>
-      </div>
-
-      <aside class="hero__card" data-reveal data-delay="3">
-        <p class="pill pill--gold">This Sunday</p>
-        <p class="hero__card-title">Two gatherings</p>
-        <ul class="hero__times">
-          {site.serviceTimes.map((t) => (
-            <li><Icon name="check" size={20} /> <strong>{t}</strong> Worship</li>
-          ))}
-        </ul>
-        <p class="hero__loc"><Icon name="pin" size={18} /> {site.address.city}, {site.address.state}</p>
-        <div class="hero__card-actions">
-          <a class="btn btn--primary" href="/imnew">Plan a visit</a>
-          <a class="btn btn--ghost" href={giveHref}>Give</a>
-        </div>
-      </aside>
+  <!-- Hero — real photo of the church family in worship -->
+  <section class="hero home-hero">
+    <div class="hero__img">
+      <img src={home.hero.image} alt={home.hero.imageAlt} loading="eager" fetchpriority="high" />
     </div>
-  </section>
-
-  <!-- ===== PILLARS ===== -->
-  <Section variant="cloud">
-    <h2 class="visually-hidden">What we're about</h2>
-    <div class="grid cols-3">
-      {pillars.map((p, i) => (
-        <div class="card" data-reveal data-delay={String(i + 1)}>
-          <div class={`chip ${i === 0 ? 'chip--gold' : ''}`}><Icon name={p.icon} /></div>
-          <h3>{p.title}</h3>
-          <p>{p.text}</p>
-        </div>
-      ))}
-    </div>
-  </Section>
-
-  <!-- ===== WELCOME ===== -->
-  <Section>
-    <div class="welcome">
-      <div data-reveal>
-        <p class="eyebrow">{welcome.eyebrow}</p>
-        <h2 class="mt-1">{welcome.title}</h2>
-      </div>
-      <div class="welcome__body" data-reveal data-delay="1">
-        {welcome.body.map((para) => <p class="lead">{para}</p>)}
-        <a class="btn btn--ghost mt-1" href="/imnew">What to expect <Icon name="arrow" size={18} /></a>
-      </div>
-    </div>
-  </Section>
-
-  <!-- ===== CURRENT SERIES ===== -->
-  <section class="series section">
-    <div class="container series__grid">
-      <div class="series__art qf-pattern-light" aria-hidden="true">
-        <div class="series__lockup">
-          <Quatrefoil size={44} />
-          <span class="series__label">Sermon Series</span>
-          <strong class="series__big">{series.subtitle ?? series.title}</strong>
-        </div>
-      </div>
-      <div class="series__copy" data-reveal>
-        <p class="eyebrow on-dark">{seriesLive ? 'Now teaching' : 'Sermon series'}</p>
-        <h2>{series.title}</h2>
-        {series.subtitle && <p class="series__sub">{series.subtitle}</p>}
-        <p class="lead">{series.description}</p>
-        <div class="cta-row mt-1">
-          <a class="btn btn--gold" href="/media">Watch the series</a>
-          <a class="btn btn--on-dark" href="/media">All messages</a>
-        </div>
+    <div class="wrap inner">
+      <p class="eyebrow on-dark">A church family in Chelsea, Alabama</p>
+      <h1>Pursuing God.<br />Pursuing others.</h1>
+      <div class="rule" aria-hidden="true"></div>
+      <p class="sub">{home.hero.sub} · <b>{home.hero.times}</b></p>
+      <div class="actions">
+        <a class="btn btn--gold btn--lg" href={planVisit}>Plan a Visit</a>
+        <a class="btn btn--outline-light btn--lg" href="/imnew">I'm New</a>
       </div>
     </div>
   </section>
 
-  <!-- ===== MINISTRIES ===== -->
-  <Section variant="cloud" eyebrow="For every age & stage" title="Find your place" center
-    lead="From your youngest to your oldest, there's a place to belong and grow.">
-    <div class="grid cols-3 min-grid">
-      {ministries.map((m, i) => (
-        <a class="card card--link min-card" href={`/${m.slug}`} data-reveal data-delay={String((i % 3) + 1)}>
-          <div class={`chip ${m.color === 'gold' ? 'chip--gold' : ''}`}><Icon name={m.icon} /></div>
-          <h3>{m.name}</h3>
-          <p>{m.tagline}</p>
-          <span class="card__arrow">Learn more <Icon name="arrow" size={16} /></span>
-        </a>
-      ))}
+  <!-- Blue band — this Sunday -->
+  <div class="band">
+    <div class="wrap">
+      <span class="dot" aria-hidden="true"></span>
+      <span>This Sunday · 9:00 &amp; 10:30 AM</span>
+      <span class="band-addr">{address}</span>
+      <a href={site.address.maps} target="_blank" rel="noopener noreferrer">Get directions</a>
+    </div>
+  </div>
+
+  <!-- Welcome -->
+  <Section eyebrow="Welcome" title="Welcome to Chelsea Community Church" center>
+    <p class="lead measure" data-reveal>{home.welcome.body}</p>
+    <div class="welcome-actions" data-reveal>
+      <a class="btn btn--blue" href="/imnew">I'm New</a>
+      <a class="btn btn--outline" href="/beliefs">Learn More</a>
     </div>
   </Section>
 
-  <!-- ===== COMMUNITY GROUPS (split) ===== -->
-  <Section>
+  <!-- Current series -->
+  <Section variant="navy">
     <div class="split">
-      <div class="split__visual qf-pattern-blue" aria-hidden="true">
-        <div class="split__badge"><Icon name="users" size={30} /></div>
+      <div class="photo" data-reveal>
+        <img src={home.series.art} alt={home.series.artAlt} loading="lazy" />
       </div>
       <div data-reveal>
-        <p class="eyebrow">Community groups</p>
-        <h2 class="mt-1">Real life happens in circles, not rows</h2>
-        <p class="lead">{groups.intro}</p>
-        <a class="btn btn--primary mt-1" href="/groups">Find a group <Icon name="arrow" size={18} /></a>
+        <p class="eyebrow on-dark">{home.series.eyebrow}</p>
+        <h2>Jesus Storyteller</h2>
+        <p style="margin-top:0.9rem">{home.series.body}</p>
+        <div class="series-actions">
+          <a class="btn btn--gold" href={site.media.seriesPlaylist} target="_blank" rel="noopener noreferrer">Watch Service</a>
+          <a class="btn btn--outline-light" href={site.social.spotify} target="_blank" rel="noopener noreferrer">Listen on Spotify</a>
+        </div>
       </div>
     </div>
   </Section>
 
-  <!-- ===== STATS ===== -->
-  <Section variant="deep">
+  <!-- App spotlight -->
+  <Section variant="white" eyebrow="Spotlight" title="New church app">
+    <div class="split">
+      <div data-reveal>
+        <p class="measure">{home.app.body}</p>
+        <div class="app-actions">
+          <a class="btn btn--blue" href={site.app.ios} target="_blank" rel="noopener noreferrer">App Store</a>
+          <a class="btn btn--blue" href={site.app.android} target="_blank" rel="noopener noreferrer">Google Play</a>
+          <a class="btn btn--outline" href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Set up Church Center</a>
+        </div>
+      </div>
+      <div class="photo photo--plain" data-reveal>
+        <img src={home.app.image} alt={home.app.imageAlt} loading="lazy" />
+      </div>
+    </div>
+  </Section>
+
+  <!-- Get in touch — the current site's footer tiles, as cards -->
+  <Section eyebrow="Get in touch" title="We're here to listen" center>
     <div class="grid cols-4">
-      {stats.map((s, i) => (
-        <div class="center" data-reveal data-delay={String((i % 4) + 1)}>
-          <div class="stat__num">{s.num}</div>
-          <div class="stat__label">{s.label}</div>
-        </div>
-      ))}
+      <a class="card touch" href={`mailto:${site.email}`} data-reveal>
+        <h3>Email Us</h3>
+        <p>Get in touch with us, we're here to listen!</p>
+      </a>
+      <a class="card touch" href={prayerForm} data-reveal>
+        <h3>Prayer</h3>
+        <p>Let us know how we can pray for you.</p>
+      </a>
+      <a class="card touch" href={site.social.facebook} target="_blank" rel="noopener noreferrer" data-reveal>
+        <h3>Facebook</h3>
+        <p>Connect with us and stay up-to-date!</p>
+      </a>
+      <a class="card touch" href={site.social.instagram} target="_blank" rel="noopener noreferrer" data-reveal>
+        <h3>Instagram</h3>
+        <p>Connect with us and stay up-to-date!</p>
+      </a>
     </div>
+    <p class="visit-line" data-reveal>
+      <b>{address}</b> · <a href={`tel:+1${site.phone.replaceAll('-', '')}`}>{site.phone}</a>
+    </p>
   </Section>
-
-  <!-- ===== MISSIONS TEASER ===== -->
-  <Section eyebrow="On mission together" title="From Chelsea to the nations" center lead={missions.intro}>
-    <div class="grid cols-3">
-      {missions.focus.map((f, i) => (
-        <div class="card center" data-reveal data-delay={String(i + 1)}>
-          <div class="chip chip--gold" style="margin-inline:auto"><Icon name={f.icon} /></div>
-          <h3>{f.title}</h3>
-          <p>{f.text}</p>
-        </div>
-      ))}
-    </div>
-    <div class="center mt-2"><a class="btn btn--ghost" href="/missions">Explore missions <Icon name="arrow" size={18} /></a></div>
-  </Section>
-
-  <!-- ===== CTA ===== -->
-  <CTABand title="We'd love to meet you this Sunday" text="Whatever your story, there's a seat with your name on it. Let us know you're coming." variant="gold">
-    <a class="btn btn--dark btn--lg" href="/imnew">Plan your visit</a>
-    <a class="btn btn--ghost btn--lg" href="/calendar" style="border-color:rgba(6,42,74,.25);color:var(--navy)">See what's happening</a>
-  </CTABand>
 </Base>
 
 <style>
-  .announce { background: var(--grad-gold); color: var(--navy); font-family: var(--font-display); font-weight: 600; text-align: center; padding: 0.65rem 0; font-size: 0.95rem; }
+  .home-hero .inner { padding-block: clamp(4.5rem, 13vw, 8.5rem); }
+  .home-hero h1 { font-size: clamp(2.4rem, 6.5vw, 4.1rem); }
+  .home-hero .sub { font-family: var(--display); font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 500; }
+  .home-hero .sub b { color: var(--gold); font-weight: 600; }
+  .home-hero .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
 
-  /* Hero */
-  .hero { position: relative; overflow: hidden; background: var(--grad-hero); color: #dbe8f4; padding-block: clamp(3.5rem, 9vw, 7rem); }
-  .hero::before { content: ""; position: absolute; inset: -20%; pointer-events: none; background: radial-gradient(40% 50% at 18% 28%, rgba(74,144,194,0.38), transparent 70%), radial-gradient(38% 46% at 86% 72%, rgba(240,195,52,0.14), transparent 70%); background-size: 200% 200%; }
-  @media (prefers-reduced-motion: no-preference) { .hero::before { animation: aurora 20s ease-in-out infinite; } }
-  .hero::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.06) 1.3px, transparent 1.3px); background-size: 28px 28px; opacity: 0.6; pointer-events: none; }
-  .hero__wm { position: absolute; right: -150px; top: -170px; color: rgba(255,255,255,0.09); pointer-events: none; transform: rotate(12deg); }
-  .hero__grid { position: relative; display: grid; grid-template-columns: 1.5fr 0.9fr; gap: 3rem; align-items: center; }
-  .hero__copy h1 { color: #fff; font-size: clamp(2.6rem, 6.5vw, 5rem); }
-  .hero__copy h1 span { color: var(--gold-300); }
-  .hero__lead { color: #cddced; max-width: 48ch; margin-top: 1.25rem; }
-  .hero .cta-row { margin-top: 1.75rem; }
+  .band-addr { color: rgba(251, 249, 244, 0.75); }
+  @media (max-width: 700px) { .band-addr { display: none; } }
 
-  .hero__card { position: relative; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(14px); border-radius: var(--r-lg); padding: 1.75rem; box-shadow: var(--shadow-lg); }
-  .hero__card-title { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: #fff; margin: 0.75rem 0 1rem; letter-spacing: -0.02em; }
-  .hero__times { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.6rem; }
-  .hero__times li { display: flex; align-items: center; gap: 0.6rem; color: #eaf2fa; }
-  .hero__times li :global(svg) { color: var(--gold-300); }
-  .hero__times strong { color: #fff; font-family: var(--font-display); }
-  .hero__loc { display: flex; align-items: center; gap: 0.5rem; color: #b9cee1; margin-bottom: 1.25rem; }
-  .hero__card-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem; }
-  .hero__card-actions .btn--ghost { color: #fff; border-color: rgba(255,255,255,0.3); }
-  .hero__card-actions .btn--ghost:hover { background: rgba(255,255,255,0.12); }
+  .welcome-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+  .series-actions, .app-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.4rem; }
 
-  /* Welcome */
-  .welcome { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 2.5rem; align-items: start; }
-  .welcome__body .lead + .lead { margin-top: 1rem; }
+  .photo--plain { border: 1px solid var(--hair); }
 
-  /* Series */
-  .series { background: var(--grad-deep); color: #cddced; position: relative; overflow: hidden; }
-  .series__grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 3rem; align-items: center; }
-  .series__art { position: relative; display: grid; place-items: center; aspect-ratio: 4/3; border-radius: var(--r-lg); border: 1px solid rgba(255,255,255,0.14); overflow: hidden; color: var(--gold-300); }
-  .series__art::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 25%, rgba(240,195,52,0.16), transparent 65%); }
-  .series__lockup { position: relative; text-align: center; padding: 1.5rem; }
-  .series__label { display: block; text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.72rem; color: #9fb6cc; margin: 0.85rem 0 0.4rem; font-family: var(--font-display); font-weight: 600; }
-  .series__big { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 3.4vw, 2.4rem); color: #fff; line-height: 1.12; letter-spacing: -0.02em; }
-  .series__copy h2 { color: #fff; }
-  .series__sub { font-family: var(--font-display); color: var(--gold-300); font-weight: 600; margin: 0.25rem 0 0.75rem; font-size: 1.15rem; }
-
-  /* Split */
-  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
-  .split__visual { position: relative; aspect-ratio: 5/4; border-radius: var(--r-lg); background: linear-gradient(135deg, var(--blue-50), #fff); border: 1px solid var(--line); display: grid; place-items: center; }
-  .split__badge { width: 92px; height: 92px; border-radius: 26px; background: var(--grad-gold); color: var(--navy); display: grid; place-items: center; box-shadow: var(--shadow); }
-
-  @media (max-width: 940px) {
-    .hero__grid, .welcome, .series__grid, .split { grid-template-columns: 1fr; }
-    .hero__card { max-width: none; margin-inline: auto; }
-    .series__art { aspect-ratio: auto; min-height: 190px; }
-    .split__visual { order: 2; min-height: 220px; }
-  }
+  .touch { text-decoration: none; display: block; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .touch:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(25,55,79,0.06), 0 14px 30px -12px rgba(25,55,79,0.18); }
+  .touch h3 { color: var(--blue); }
+  .visit-line { margin-top: 2rem; color: var(--mid); font-size: 0.98rem; }
 </style>

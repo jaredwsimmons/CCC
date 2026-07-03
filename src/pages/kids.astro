@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { kids } from '../data/content';
+import { site } from '../data/site';
+const preRegister = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
+const newsletter = `${site.churchCenter.forms.kidsNewsletter}?open-in-church-center-modal=true`;
+const serveReg = `${site.churchCenter.registrations.kidsServe}?open-in-church-center-modal=true`;
+---
+<Base title="Kids" description="Kids Ministry at Chelsea Community Church — training up children to pursue God and pursue others, with programming at both Sunday services.">
+  <PageHero eyebrow="Ministries" title="Kids" lead={kids.mission} />
+
+  <Section eyebrow="First time?" title={kids.getReady.title}>
+    <div class="split">
+      <div data-reveal>
+        <p class="measure">{kids.getReady.body}</p>
+        <div class="ctas">
+          <a class="btn btn--gold" href={preRegister}>Pre-Register Your Family</a>
+          <a class="btn btn--outline" href={newsletter}>Sign up for the Kids Ministry Newsletter!</a>
+        </div>
+      </div>
+      <div class="card sched" data-reveal>
+        <h3>Sunday Schedule</h3>
+        <ul>
+          {kids.schedule.map((s) => (
+            <li><b>{s.time}</b> — {s.what}</li>
+          ))}
+        </ul>
+        <a href="/calendar">Check out our Summer activities →</a>
+      </div>
+    </div>
+  </Section>
+
+  <Section variant="white">
+    <div class="split">
+      <div class="photo" data-reveal>
+        <img src={kids.summer.image} alt={kids.summer.imageAlt} loading="lazy" />
+      </div>
+      <div data-reveal>
+        <p class="eyebrow">Family worship</p>
+        <h2>{kids.worshipTogether.title}</h2>
+        <p class="measure" style="margin-top:0.9rem">{kids.worshipTogether.body}</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section variant="alt" eyebrow="What shapes Kids Ministry" title="Gospel · Scripture · Family · Community · Mission">
+    <div class="split values">
+      <div class="photo values-art" data-reveal>
+        <img src={kids.values.image} alt={kids.values.imageAlt} loading="lazy" />
+      </div>
+      <div data-reveal>
+        <p class="measure">{kids.mission}</p>
+        <a class="btn btn--blue mt-1" href={serveReg}>Find out about serving in the Kids Ministry</a>
+      </div>
+    </div>
+  </Section>
+
+  <CTABand title="Questions about Kids Ministry?" text="Ben Stephenson, our Family Pastor, would love to talk.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${kids.contact}`}>Email Ben for more information</a>
+  </CTABand>
+</Base>
+
+<style>
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
+  .sched ul { list-style: none; margin: 0.5rem 0 1rem; display: grid; gap: 0.4rem; }
+  .sched b { color: var(--blue); }
+  .values-art { max-width: 420px; justify-self: center; }
+</style>

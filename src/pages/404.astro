@@ -1,27 +1,33 @@
 ---
 import Base from '../layouts/Base.astro';
-import Quatrefoil from '../components/Quatrefoil.astro';
-import Icon from '../components/Icon.astro';
 ---
 <Base title="Page not found" description="We couldn't find that page.">
   <section class="nf">
-    <Quatrefoil size={520} class="nf__wm" />
-    <div class="container nf__inner">
+    <div class="wrap inner">
+      <img src="/images/icon-gold.png" alt="" width="72" height="72" />
       <p class="eyebrow on-dark">404</p>
       <h1>We couldn't find that page</h1>
       <p class="lead">The link may be old or mistyped — but you're still welcome here. Let's get you back on track.</p>
-      <div class="cta-row mt-1">
-        <a class="btn btn--gold btn--lg" href="/">Back home <Icon name="arrow" size={18} /></a>
-        <a class="btn btn--on-dark" href="/imnew">Plan a visit</a>
+      <div class="actions">
+        <a class="btn btn--gold btn--lg" href="/">Back home</a>
+        <a class="btn btn--outline-light btn--lg" href="/imnew">Plan a visit</a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .nf { position: relative; overflow: hidden; background: var(--grad-hero); color: #dbe8f4; min-height: 60vh; display: grid; align-items: center; padding-block: clamp(3rem, 8vw, 6rem); }
-  .nf__wm { position: absolute; right: -120px; bottom: -160px; color: rgba(255,255,255,0.05); }
-  .nf__inner { position: relative; max-width: 640px; }
+  .nf {
+    background: var(--navy);
+    color: var(--cream);
+    min-height: 60vh;
+    display: grid;
+    align-items: center;
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .inner { max-width: 640px; }
+  .inner img { width: 64px; height: 64px; margin-bottom: 1.25rem; }
   .nf h1 { color: #fff; }
-  .nf .lead { color: #cddced; margin-top: 1rem; }
+  .nf .lead { color: rgba(251, 249, 244, 0.82); margin-top: 0.9rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.6rem; }
 </style>

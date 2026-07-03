@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import CTABand from '../components/CTABand.astro';
+import { connections } from '../data/content';
+---
+<Base title="Connections" description="The Connections team helps every guest and member find their place at Chelsea Community Church — ministries, community groups, and events.">
+  <PageHero eyebrow="Ministries" title="Connections" />
+
+  <Section>
+    <div class="split">
+      <div data-reveal>
+        <h2>A purpose and a place for everyone</h2>
+        <div class="measure" style="margin-top:1rem">
+          {connections.body.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+      <div class="photo" data-reveal>
+        <img src={connections.image.src} alt={connections.image.alt} loading="lazy" />
+      </div>
+    </div>
+  </Section>
+
+  <CTABand title="Stop by the Connections Desk" text="Just past the Worship Room every Sunday morning — we'll help you find your place.">
+    <a class="btn btn--gold btn--lg" href={`mailto:${connections.contact}`}>Email Brian for more information!</a>
+    <a class="btn btn--outline-light btn--lg" href="/imnew">Plan your first visit</a>
+  </CTABand>
+</Base>

@@ -2,54 +2,77 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import CTABand from '../components/CTABand.astro';
-import { leadership } from '../data/content';
+import { leaders } from '../data/content';
 import { site } from '../data/site';
-const connect = `https://${site.churchCenter.subdomain}`;
-const initials = (n: string) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
-
-const groupsList = [
-  { key: 'Elders', tagline: 'Shepherding the spiritual life of our church.', people: leadership.elders },
-  { key: 'Pastoral Staff', tagline: 'Leading and caring for our ministries day to day.', people: leadership.staff },
-  { key: 'Deacons', tagline: 'Serving the practical needs of our church family.', people: leadership.deacons },
-];
 ---
-<Base title="Our Leaders" description="Meet the elders, pastors, and deacons who serve Chelsea Community Church.">
-  <PageHero eyebrow="Our team" title="Meet our leaders"
-    lead="Chelsea Community Church is led by a team of elders, pastors, and deacons — ordinary people devoted to loving God and shepherding His people." />
+<Base title="Leaders" description="The elders, pastors, staff, and deacons of Chelsea Community Church.">
+  <PageHero eyebrow="About" title="Leaders" />
 
-  {groupsList.map((g, gi) => (
-    <Section variant={gi % 2 ? 'cloud' : 'default'} eyebrow={g.key} title={g.tagline} center={false}>
-      <div class="grid cols-3">
-        {g.people.map((p, i) => (
-          <div class="card person" data-reveal data-delay={String((i % 3) + 1)}>
-            <div class="person__avatar" aria-hidden="true">{initials(p.name)}</div>
-            <div>
-              <h3>{p.name}</h3>
-              <p class="person__role">{p.role}</p>
-            </div>
+  <Section>
+    <div class="grid cols-4 staff">
+      {leaders.staff.map((p) => (
+        <div class="person" data-reveal>
+          <div class="person__photo">
+            <img src={p.image} alt={`${p.name} — ${p.role}`} loading="lazy" />
           </div>
-        ))}
-      </div>
-    </Section>
-  ))}
-
-  <Section variant="deep" width="narrow">
-    <div class="center" data-reveal>
-      <p class="eyebrow on-dark eyebrow--center">How we're led</p>
-      <h2>Elder-led. Congregationally accountable.</h2>
-      <p class="lead">A plurality of elders shepherds the church, deacons serve its needs, and our congregation shares in the major decisions — shared, prayerful, servant leadership under the authority of Christ and His Word.</p>
+          <h3>{p.name}</h3>
+          <p>{p.role}</p>
+        </div>
+      ))}
     </div>
   </Section>
 
-  <CTABand title="Need to reach a pastor?" text="Our team is here for you — for prayer, questions, or just to talk." variant="gold">
-    <a class="btn btn--dark btn--lg" href={connect} target="_blank" rel="noopener noreferrer">Contact us</a>
-  </CTABand>
+  <Section variant="alt" eyebrow="Deacons" title="Serving the body" center>
+    <div class="deacons" data-reveal>
+      {leaders.deacons.map((d) => (
+        <div class="deacon">
+          <span class="area">{d.area}</span>
+          <span class="names">{d.names}</span>
+        </div>
+      ))}
+    </div>
+    <p class="note" data-reveal>
+      Questions about our leadership? <a href={`mailto:${site.email}`}>Email the church office</a>.
+    </p>
+  </Section>
 </Base>
 
 <style>
-  .person { display: flex; align-items: center; gap: 1.1rem; }
-  .person__avatar { width: 66px; height: 66px; flex-shrink: 0; border-radius: 20px; background: var(--grad-deep); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: 0.02em; box-shadow: var(--shadow-sm); }
-  .person h3 { margin: 0; font-size: 1.15rem; }
-  .person__role { color: var(--blue); font-family: var(--font-display); font-weight: 600; font-size: 0.92rem; margin: 0.15rem 0 0; }
+  .staff { gap: 1.75rem 1.25rem; }
+  .person { text-align: center; }
+  .person__photo {
+    aspect-ratio: 1;
+    border-radius: var(--r);
+    overflow: hidden;
+    border: 1px solid var(--hair);
+    box-shadow: var(--shadow);
+    background: #fff;
+    margin-bottom: 0.8rem;
+  }
+  .person__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .person h3 { font-size: 1.08rem; }
+  .person p { font-size: 0.88rem; color: var(--mid); }
+
+  .deacons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0.6rem 1.25rem;
+    text-align: left;
+    background: #fff;
+    border: 1px solid var(--hair);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+  .deacon { display: flex; flex-direction: column; padding-block: 0.35rem; }
+  .area {
+    font-family: var(--display);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .names { font-size: 0.95rem; }
+  .note { margin-top: 1.5rem; color: var(--mid); font-size: 0.95rem; }
 </style>
