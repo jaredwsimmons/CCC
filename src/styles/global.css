@@ -52,7 +52,10 @@ body {
   display: flex;
   flex-direction: column;
 }
-#main { flex: 1 0 auto; }
+#main { flex: 0 0 auto; }
+/* On short pages the NAVY footer (not the paper main) absorbs the leftover
+   height — so the page ends in footer color, never a paper void above it. */
+.site-footer { flex: 1 0 auto; display: flex; flex-direction: column; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 a:hover { color: var(--blue-deep); }
