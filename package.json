@@ -12,6 +12,7 @@
     "check": "astro check"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "@portabletext/to-html": "^2.0.13",
     "@sanity/client": "^6.22.5",
     "@sanity/image-url": "^1.1.0",
