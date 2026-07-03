@@ -98,8 +98,9 @@ const isActive = (href: string) =>
   .brand { display: inline-flex; align-items: center; flex: none; }
   .brand img { width: clamp(170px, 22vw, 232px); height: auto; }
 
-  /* desktop nav */
-  .nav ul {
+  /* desktop nav — top-level list only (`.nav ul` would out-specify
+     `.menu { display: none }` and force every dropdown open) */
+  .nav > ul {
     list-style: none;
     display: flex;
     align-items: center;
@@ -140,6 +141,8 @@ const isActive = (href: string) =>
   }
   .menu li { list-style: none; }
   .menu a { width: 100%; }
+  /* invisible bridge over the 4px gap so hover isn't lost mid-travel */
+  .menu::before { content: ""; position: absolute; top: -8px; left: 0; right: 0; height: 8px; }
   .has-menu:hover .menu,
   .has-menu:focus-within .menu { display: flex; }
 
@@ -181,7 +184,7 @@ const isActive = (href: string) =>
       z-index: 55; /* below .site-header (60) so the bar + toggle stay on top */
     }
     :global(html.nav-open) .nav { visibility: visible; opacity: 1; }
-    .nav ul { flex-direction: column; align-items: stretch; gap: 0; padding: 0.75rem 1.25rem 2rem; }
+    .nav > ul { flex-direction: column; align-items: stretch; gap: 0; padding: 0.75rem 1.25rem 2rem; }
     .nav a:not(.btn) { font-size: 1.05rem; padding: 0.7rem 0.5rem; border-radius: 8px; }
     .nav a:not(.btn) svg { display: none; }
     .menu {
