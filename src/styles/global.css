@@ -31,7 +31,7 @@
   --r: 14px;
   --r-sm: 9px;
   --shadow: 0 1px 2px rgba(25, 55, 79, 0.05), 0 8px 24px -12px rgba(25, 55, 79, 0.12);
-  --hdr-h: 76px;
+  --hdr-h: 64px;
   --ring: 0 0 0 3px rgba(0, 82, 145, 0.55);
 }
 
@@ -207,35 +207,16 @@ p + p { margin-top: 0.9em; }
 .band a { color: #fff; font-weight: 600; }
 .band a:hover { color: var(--gold); }
 
-/* ---- header ---- */
+/* ---- header ----
+   NOTE: no backdrop-filter here — it would make the header the containing
+   block for the fixed-position mobile drawer, trapping it inside the bar. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 60;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(8px);
+  background: #fff;
   border-bottom: 1px solid var(--hair);
 }
-.topbar {
-  background: var(--navy);
-  color: var(--cream);
-  font-family: var(--display);
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-}
-.topbar .wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-block: 0.42rem;
-}
-.topbar a { color: var(--cream); text-decoration: none; }
-.topbar a:hover { color: var(--gold); }
-.topbar .live b { color: var(--gold); font-weight: 600; }
-.topbar nav { display: flex; gap: 1.1rem; }
-@media (max-width: 620px) { .topbar .live span { display: none; } }
 
 /* ---- footer ---- */
 .site-footer { background: var(--navy); color: var(--cream); }

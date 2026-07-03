@@ -5,20 +5,6 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (href: string) =>
   href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
 ---
-<div class="topbar">
-  <div class="wrap">
-    <p class="live">
-      <b>Sunday Live Service</b><span> · starts at 9 AM — </span>
-      <a href={site.media.youtubeChannel} target="_blank" rel="noopener noreferrer">watch on YouTube</a>
-    </p>
-    <nav aria-label="Quick links">
-      <a href={give}>Give</a>
-      <a href="/prayer">Prayer</a>
-      <a href={site.textSignup} target="_blank" rel="noopener noreferrer">Text</a>
-    </nav>
-  </div>
-</div>
-
 <header class="site-header">
   <div class="wrap bar">
     <a class="brand" href="/">
@@ -95,8 +81,9 @@ const isActive = (href: string) =>
     gap: 1rem;
     min-height: var(--hdr-h);
   }
-  .brand { display: inline-flex; align-items: center; flex: none; }
-  .brand img { width: clamp(170px, 22vw, 232px); height: auto; }
+  /* brand + toggle sit above the mobile drawer (z 55) inside the header's stacking context */
+  .brand { display: inline-flex; align-items: center; flex: none; position: relative; z-index: 56; }
+  .brand img { width: clamp(148px, 17vw, 188px); height: auto; }
 
   /* desktop nav — top-level list only (`.nav ul` would out-specify
      `.menu { display: none }` and force every dropdown open) */
@@ -149,11 +136,13 @@ const isActive = (href: string) =>
   /* hamburger */
   .nav-toggle {
     display: none;
-    background: none;
+    background: #fff;
     border: 1.5px solid var(--hair);
     border-radius: 10px;
     padding: 0.55rem 0.6rem;
     cursor: pointer;
+    position: relative;
+    z-index: 56;
   }
   .nav-toggle__bars { display: block; width: 20px; }
   .nav-toggle__bars i {
@@ -175,7 +164,7 @@ const isActive = (href: string) =>
       position: fixed;
       inset: 0;
       top: 0;
-      padding-top: calc(var(--hdr-h) + 34px);
+      padding-top: calc(var(--hdr-h) + 20px);
       background: #fff;
       visibility: hidden;
       opacity: 0;
