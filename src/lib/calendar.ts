@@ -103,15 +103,54 @@ export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
   return events.sort((a, b) => a.date.localeCompare(b.date));
 }
 
-// Weekly rhythms — curated (an at-a-glance summary above the live list)
-export const weekly = [
-  { title: 'Sunday Worship', time: 'Sundays · 9:00 & 10:30 AM', location: 'Worship Room', category: 'service' as const,
-    description: 'Two identical gatherings with programming for kids and students at both hours.' },
-  { title: 'Community Groups', time: 'Wednesdays · 6:00 PM', location: 'On campus & in homes', category: 'groups' as const,
-    description: 'exHIMplify, Stringfellowship, and the Allgood group meet mid-week.' },
-  { title: "Men's Bible Study", time: 'Mon 6:00 AM · Thu 6:30 AM/PM · Fri 6:30 AM', location: 'Around town & the Church Commons', category: 'men' as const,
-    description: 'Four weekly gatherings — come to whichever fits your week.' },
+// The rhythm of our week — curated tiles above the live event list.
+export interface RhythmTile {
+  category: string;
+  title: string;
+  time: string;
+  location: string;
+  description: string;
+  link?: { href: string; label: string };
+}
+export const rhythm: RhythmTile[] = [
+  { category: 'Worship', title: 'Sunday Worship', time: 'Sundays · 9:00 & 10:30 AM', location: 'Worship Room',
+    description: 'Two identical gatherings, with programming for kids and students at both hours.' },
+  { category: 'Kids & Students', title: 'Kids & Students', time: 'Both Sunday services', location: 'Kids & Student Halls',
+    description: 'Preschool through high school meet at both Sunday services; students also gather Wednesday nights at 6 PM.' },
+  { category: 'Community Groups', title: 'Community Groups', time: 'Everyday', location: 'On campus & in homes',
+    description: 'Adults do life together in groups throughout the week.',
+    link: { href: '/groups', label: 'See all community groups →' } },
+  { category: '5th Sundays', title: 'Family Worship', time: '5th Sundays', location: 'Worship Room',
+    description: 'On months with a 5th Sunday, we cancel all age-graded ministries — Preschool through Students — and the whole church worships together.' },
 ];
+
+// Build a traditional month grid (Sun–Sat weeks) for the calendar's "Month" view.
+export interface DayCell { day: number; date: string; events: ChurchEvent[] }
+export function buildMonthGrids(events: ChurchEvent[]): { label: string; weeks: (DayCell | null)[][] }[] {
+  const byMonth = new Map<string, ChurchEvent[]>();
+  for (const e of events) {
+    const ym = e.date.slice(0, 7);
+    if (!byMonth.has(ym)) byMonth.set(ym, []);
+    byMonth.get(ym)!.push(e);
+  }
+  const out: { label: string; weeks: (DayCell | null)[][] }[] = [];
+  for (const [ym, evs] of [...byMonth.entries()].sort()) {
+    const [y, m] = ym.split('-').map(Number);
+    const label = new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const firstDow = new Date(y, m - 1, 1).getDay();
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const byDay: Record<number, ChurchEvent[]> = {};
+    for (const e of evs) (byDay[Number(e.date.slice(8, 10))] ||= []).push(e);
+    const cells: (DayCell | null)[] = [];
+    for (let i = 0; i < firstDow; i++) cells.push(null);
+    for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, date: `${ym}-${String(d).padStart(2, '0')}`, events: byDay[d] || [] });
+    while (cells.length % 7) cells.push(null);
+    const weeks: (DayCell | null)[][] = [];
+    for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
+    out.push({ label, weeks });
+  }
+  return out;
+}
 
 export function groupByMonth(events: ChurchEvent[]): { month: string; events: ChurchEvent[] }[] {
   const out: { month: string; events: ChurchEvent[] }[] = [];

@@ -41,7 +41,7 @@ import { site } from '../data/site';
   .staff { gap: 1.75rem 1.25rem; }
   .person { text-align: center; }
   .person__photo {
-    aspect-ratio: 1;
+    aspect-ratio: 3 / 4;
     border-radius: var(--r);
     overflow: hidden;
     border: 1px solid var(--hair);
@@ -49,7 +49,8 @@ import { site } from '../data/site';
     background: #fff;
     margin-bottom: 0.8rem;
   }
-  .person__photo img { width: 100%; height: 100%; object-fit: cover; }
+  /* portrait headshots (~0.7 ratio) — anchor to the top so heads aren't cropped */
+  .person__photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
   .person h3 { font-size: 1.08rem; }
   .person p { font-size: 0.88rem; color: var(--mid); }
 

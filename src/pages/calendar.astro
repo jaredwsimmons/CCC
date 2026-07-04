@@ -4,68 +4,108 @@ import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
 import { site } from '../data/site';
-import { weekly, getUpcomingEvents, groupByMonth, dateParts } from '../lib/calendar';
+import { rhythm, getUpcomingEvents, groupByMonth, dateParts, buildMonthGrids } from '../lib/calendar';
 
-// LIVE from Church Center's public calendar API (no token). Falls back to seed.
-const months = groupByMonth(await getUpcomingEvents());
-const catLabel: Record<string, string> = { service: 'Worship', women: 'Women', men: 'Men', groups: 'Groups' };
-const ccBase = `https://${site.churchCenter.subdomain}`;
+const events = await getUpcomingEvents();
+const months = groupByMonth(events);
+const monthGrids = buildMonthGrids(events);
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 ---
-<Base title="Calendar" description="What's happening at Chelsea Community Church — weekly worship and community groups, plus upcoming events, live from Church Center.">
+<Base title="Calendar" description="What's happening at Chelsea Community Church — the rhythm of our week plus upcoming events, live from Church Center.">
   <PageHero eyebrow="What's happening" title="Calendar"
-    lead="The rhythms of our week and what's coming up. See something you'd like to be part of? You're always welcome.">
-    <a class="btn btn--outline" href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Full calendar in Church Center</a>
-  </PageHero>
+    lead="The rhythms of our week and what's coming up. See something you'd like to be part of? You're always welcome." />
 
-  <!-- Weekly rhythm -->
+  <!-- Rhythm of our week -->
   <Section eyebrow="Every week" title="The rhythm of our week">
-    <div class="grid cols-3">
-      {weekly.map((e) => (
+    <div class="grid cols-4">
+      {rhythm.map((t) => (
         <div class="card weekly" data-reveal>
-          <span class="tag-cat">{catLabel[e.category]}</span>
-          <h3>{e.title}</h3>
-          <p class="weekly__time">{e.time}</p>
-          <p class="weekly__loc">{e.location}</p>
-          {e.description && <p>{e.description}</p>}
+          <span class="tag-cat">{t.category}</span>
+          <h3>{t.title}</h3>
+          <p class="weekly__time">{t.time}</p>
+          <p class="weekly__loc">{t.location}</p>
+          <p>{t.description}</p>
+          {t.link && <a class="weekly__link" href={t.link.href}>{t.link.label}</a>}
         </div>
       ))}
     </div>
   </Section>
 
-  <!-- Upcoming dated events (live) -->
-  <Section variant="alt" eyebrow="Upcoming" title="On the calendar">
-    {months.map((m) => (
-      <div class="month" data-reveal>
-        <h3 class="month__label">{m.month}</h3>
-        <ul class="events">
-          {m.events.map((e) => {
-            const d = dateParts(e.date);
-            return (
-              <li class="event">
-                <div class="event__date" aria-hidden="true">
-                  <span class="event__wd">{d.weekday}</span>
-                  <span class="event__day">{d.day}</span>
-                  <span class="event__mo">{d.month}</span>
-                </div>
-                <div class="event__body">
-                  <div class="event__head">
-                    <h4>{e.title}</h4>
-                    {e.recurrence && <span class="tag-cat">{e.recurrence}</span>}
-                  </div>
-                  <p class="event__meta">{e.timeLabel}{e.location && ` · ${e.location}`}</p>
-                  {e.description && <p class="event__desc">{e.description}</p>}
-                  {e.register ? (
-                    <a class="event__rsvp" href={`${e.register}?open-in-church-center-modal=true`}>Register →</a>
-                  ) : e.publicUrl ? (
-                    <a class="event__rsvp" href={e.publicUrl} target="_blank" rel="noopener noreferrer">Details →</a>
-                  ) : null}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+  <!-- Upcoming events — List / Month toggle -->
+  <Section variant="alt">
+    <div class="ev-head" data-reveal>
+      <div>
+        <p class="eyebrow">Upcoming</p>
+        <h2>On the calendar</h2>
       </div>
-    ))}
+      <div class="viewtoggle" role="tablist" aria-label="Calendar view">
+        <button type="button" data-view-btn="list" class="is-active" role="tab" aria-selected="true">List</button>
+        <button type="button" data-view-btn="month" role="tab" aria-selected="false">Month</button>
+      </div>
+    </div>
+
+    <!-- LIST view -->
+    <div data-view="list">
+      {months.map((m) => (
+        <div class="month" data-reveal>
+          <h3 class="month__label">{m.month}</h3>
+          <ul class="events">
+            {m.events.map((e) => {
+              const d = dateParts(e.date);
+              return (
+                <li class="event">
+                  <div class="event__date" aria-hidden="true">
+                    <span class="event__wd">{d.weekday}</span>
+                    <span class="event__day">{d.day}</span>
+                    <span class="event__mo">{d.month}</span>
+                  </div>
+                  <div class="event__body">
+                    <div class="event__head">
+                      <h4>{e.title}</h4>
+                      {e.recurrence && <span class="tag-cat">{e.recurrence}</span>}
+                    </div>
+                    <p class="event__meta">{e.timeLabel}{e.location && ` · ${e.location}`}</p>
+                    {e.description && <p class="event__desc">{e.description}</p>}
+                    {e.register ? (
+                      <a class="event__rsvp" href={`${e.register}?open-in-church-center-modal=true`}>Register →</a>
+                    ) : e.publicUrl ? (
+                      <a class="event__rsvp" href={e.publicUrl} target="_blank" rel="noopener noreferrer">Details →</a>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- MONTH view -->
+    <div data-view="month" hidden>
+      {monthGrids.map((mg) => (
+        <div class="month" data-reveal>
+          <h3 class="month__label">{mg.label}</h3>
+          <div class="cal-scroll">
+            <div class="cal-grid">
+              {DOW.map((d) => <div class="cal-dow">{d}</div>)}
+              {mg.weeks.flat().map((cell) => cell ? (
+                <div class={`cal-cell${cell.events.length ? ' has-ev' : ''}`}>
+                  <span class="cal-day">{cell.day}</span>
+                  {cell.events.slice(0, 3).map((e) => {
+                    const href = e.register ? `${e.register}?open-in-church-center-modal=true` : e.publicUrl;
+                    return href
+                      ? <a class="cal-ev" href={href} target={e.register ? undefined : '_blank'} rel="noopener noreferrer" title={e.title}>{e.title}</a>
+                      : <span class="cal-ev" title={e.title}>{e.title}</span>;
+                  })}
+                  {cell.events.length > 3 && <span class="cal-more">+{cell.events.length - 3} more</span>}
+                </div>
+              ) : <div class="cal-cell cal-cell--empty"></div>)}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
     <p class="note" data-reveal>
       Events are pulled live from our <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Church Center calendar</a>.
     </p>
@@ -76,23 +116,47 @@ const ccBase = `https://${site.churchCenter.subdomain}`;
   </CTABand>
 </Base>
 
+<script is:inline>
+  (function () {
+    var btns = document.querySelectorAll('[data-view-btn]');
+    var views = document.querySelectorAll('[data-view]');
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var v = btn.getAttribute('data-view-btn');
+        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
+        views.forEach(function (x) { x.hidden = x.getAttribute('data-view') !== v; });
+      });
+    });
+  })();
+</script>
+
 <style>
   .tag-cat {
-    display: inline-block; font-family: var(--display); font-size: 0.68rem; font-weight: 600;
+    display: inline-block; font-family: var(--display); font-size: 0.66rem; font-weight: 600;
     letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue);
     background: rgba(0,82,145,0.08); padding: 0.22rem 0.6rem; border-radius: 999px;
   }
   .weekly .tag-cat { margin-bottom: 0.6rem; }
   .weekly__time { font-family: var(--display); font-weight: 600; color: var(--navy); margin-top: 0.1rem; }
   .weekly__loc { font-size: 0.9rem; color: var(--mid); margin-bottom: 0.5rem; }
+  .weekly__link { display: inline-block; margin-top: 0.7rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
 
+  /* view toggle */
+  .ev-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  .viewtoggle { display: inline-flex; background: #fff; border: 1px solid var(--hair); border-radius: 999px; padding: 0.2rem; box-shadow: var(--shadow); }
+  .viewtoggle button {
+    font-family: var(--display); font-weight: 600; font-size: 0.9rem; color: var(--mid);
+    background: none; border: 0; padding: 0.45rem 1.1rem; border-radius: 999px; cursor: pointer;
+  }
+  .viewtoggle button.is-active { background: var(--navy); color: var(--cream); }
+
+  /* list view */
   .month + .month { margin-top: 2rem; }
   .month__label { font-size: 1.1rem; color: var(--navy); margin-bottom: 0.9rem; }
   .events { list-style: none; display: grid; gap: 0.9rem; }
   .event {
     display: grid; grid-template-columns: 76px 1fr; gap: 1.25rem; align-items: start;
-    background: #fff; border: 1px solid var(--hair); border-radius: var(--r);
-    padding: 1.1rem 1.3rem; box-shadow: var(--shadow);
+    background: #fff; border: 1px solid var(--hair); border-radius: var(--r); padding: 1.1rem 1.3rem; box-shadow: var(--shadow);
   }
   .event__date { display: grid; place-items: center; text-align: center; background: var(--navy); color: var(--cream); border-radius: 10px; padding: 0.5rem 0.3rem; }
   .event__wd { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); font-family: var(--display); font-weight: 600; }
@@ -103,6 +167,23 @@ const ccBase = `https://${site.churchCenter.subdomain}`;
   .event__meta { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.9rem; margin-top: 0.25rem; }
   .event__desc { font-size: 0.95rem; color: var(--mid); margin-top: 0.4rem; }
   .event__rsvp { display: inline-block; margin-top: 0.6rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+
+  /* month grid view */
+  .cal-scroll { overflow-x: auto; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(96px, 1fr)); gap: 1px; background: var(--hair); border: 1px solid var(--hair); border-radius: var(--r); overflow: hidden; }
+  .cal-dow { background: var(--navy); color: var(--cream); font-family: var(--display); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; padding: 0.5rem 0; }
+  .cal-cell { background: #fff; min-height: 92px; padding: 0.35rem 0.4rem; display: flex; flex-direction: column; gap: 0.2rem; }
+  .cal-cell--empty { background: var(--paper); }
+  .cal-day { font-family: var(--display); font-weight: 600; font-size: 0.8rem; color: var(--mid); }
+  .has-ev .cal-day { color: var(--navy); }
+  .cal-ev {
+    font-size: 0.7rem; line-height: 1.2; color: var(--navy); background: rgba(0,82,145,0.08);
+    border-left: 2px solid var(--blue); padding: 0.12rem 0.3rem; border-radius: 3px;
+    text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  a.cal-ev:hover { background: rgba(0,82,145,0.15); }
+  .cal-more { font-size: 0.66rem; color: var(--mid); font-weight: 600; }
+
   .note { margin-top: 1.75rem; font-size: 0.95rem; color: var(--mid); }
   @media (max-width: 480px) { .event { grid-template-columns: 60px 1fr; gap: 1rem; padding: 1rem; } }
 </style>

@@ -5,36 +5,44 @@ import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
 import DeaconNote from '../components/DeaconNote.astro';
 import { groups as groupsContent } from '../data/content';
-import { getGroupsByType } from '../lib/groups';
+import { getGroups, TYPES } from '../lib/groups';
 import { site } from '../data/site';
 
-// LIVE from Church Center's public groups API (no token). Full groups hidden.
-const sections = await getGroupsByType();
+// LIVE from Church Center's public groups API (no token). Full groups hidden,
+// sorted Mon→Sun by meeting day/time.
+const groups = await getGroups();
 const allGroupsUrl = `https://${site.churchCenter.subdomain}/groups`;
+const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label: t.replace(' Groups', '') }))];
 ---
-<Base title="Community Groups" description="Community groups at Chelsea Community Church — living life within biblical community. Find one that fits and request to join.">
+<Base title="Community Groups" description="Community groups at Chelsea Community Church — find one that fits your week and request to join.">
   <PageHero eyebrow="Community groups" title="Life is better together" lead={groupsContent.intro}>
     <DeaconNote area="Adult Discipleship" slot="aside" blurb="Serving and praying over our community groups." />
-    <a class="btn btn--gold btn--lg" href={allGroupsUrl} target="_blank" rel="noopener noreferrer">Browse all groups</a>
   </PageHero>
 
-  {sections.map((s) => (
-    <Section eyebrow={s.type} title={s.type === 'Community Groups' ? 'Find your community group' : s.type}>
-      <div class="grid cols-3">
-        {s.groups.map((g) => (
-          <div class="card group" data-reveal>
-            <span class="tag-cat">Open to join</span>
-            <h3>{g.name}</h3>
-            {g.schedule && <p class="group__sched">{g.schedule}</p>}
-            {g.description && <p>{g.description}</p>}
-            <a class="group__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer">Request to join →</a>
-          </div>
-        ))}
-      </div>
-    </Section>
-  ))}
+  <Section eyebrow="Find your group" title="Groups open to join">
+    <div class="viewtoggle" role="tablist" aria-label="Filter groups" data-reveal>
+      {tabs.map((t, i) => (
+        <button type="button" data-filter={t.key} class={i === 0 ? 'is-active' : ''} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>{t.label}</button>
+      ))}
+    </div>
 
-  <Section variant="alt" tight>
+    <div class="grid cols-3 gcards">
+      {groups.map((g) => (
+        <article class="gcard" data-type={g.type} data-reveal>
+          <div class="gcard__img">
+            {g.image ? <img src={g.image} alt="" loading="lazy" /> : <div class="gcard__ph" aria-hidden="true"><img src="/images/icon-gold.png" alt="" width="34" height="34" /></div>}
+          </div>
+          <div class="gcard__body">
+            <span class="tag-cat">{g.type.replace(' Groups', '')} · Open</span>
+            <h3>{g.name}</h3>
+            {g.schedule && <p class="gcard__sched">{g.schedule}</p>}
+            {g.description && <p class="gcard__desc">{g.description}</p>}
+            <a class="gcard__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer">Request to join →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+
     <p class="note" data-reveal>
       Groups are listed live from <a href={allGroupsUrl} target="_blank" rel="noopener noreferrer">Church Center</a>.
       Full groups aren't shown — if one you love is full, <a href={`mailto:${groupsContent.contact}`}>let us know</a> and we'll help you find a fit.
@@ -46,14 +54,35 @@ const allGroupsUrl = `https://${site.churchCenter.subdomain}/groups`;
   </CTABand>
 </Base>
 
+<script is:inline>
+  (function () {
+    var btns = document.querySelectorAll('[data-filter]');
+    var cards = document.querySelectorAll('.gcard');
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var f = btn.getAttribute('data-filter');
+        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
+        cards.forEach(function (c) { c.style.display = (f === 'all' || c.getAttribute('data-type') === f) ? '' : 'none'; });
+      });
+    });
+  })();
+</script>
+
 <style>
-  .tag-cat {
-    display: inline-block; font-family: var(--display); font-size: 0.66rem; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-deep);
-    background: rgba(240,195,52,0.16); padding: 0.22rem 0.6rem; border-radius: 999px; margin-bottom: 0.55rem;
-  }
-  .group__sched { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.9rem; margin-top: 0.1rem; }
-  .group p { margin-top: 0.5rem; }
-  .group__join { display: inline-block; margin-top: 0.9rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
-  .note { font-size: 0.95rem; color: var(--mid); max-width: 62ch; }
+  .viewtoggle { display: inline-flex; flex-wrap: wrap; background: #fff; border: 1px solid var(--hair); border-radius: 999px; padding: 0.2rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
+  .viewtoggle button { font-family: var(--display); font-weight: 600; font-size: 0.9rem; color: var(--mid); background: none; border: 0; padding: 0.45rem 1.1rem; border-radius: 999px; cursor: pointer; }
+  .viewtoggle button.is-active { background: var(--navy); color: var(--cream); }
+
+  .gcards { align-items: start; }
+  .gcard { background: #fff; border: 1px solid var(--hair); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .gcard__img { aspect-ratio: 16 / 9; background: var(--blue-50, #eef4fa); background: linear-gradient(135deg, #eef4fa, #fff); overflow: hidden; }
+  .gcard__img img { width: 100%; height: 100%; object-fit: cover; }
+  .gcard__ph { width: 100%; height: 100%; display: grid; place-items: center; }
+  .gcard__body { padding: 1.1rem 1.25rem 1.3rem; display: flex; flex-direction: column; }
+  .tag-cat { display: inline-block; align-self: flex-start; font-family: var(--display); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-deep); background: rgba(240,195,52,0.16); padding: 0.22rem 0.6rem; border-radius: 999px; margin-bottom: 0.55rem; }
+  .gcard h3 { font-size: 1.12rem; }
+  .gcard__sched { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.9rem; margin-top: 0.25rem; }
+  .gcard__desc { font-size: 0.94rem; color: var(--mid); margin-top: 0.5rem; }
+  .gcard__join { align-self: flex-start; margin-top: 0.9rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+  .note { margin-top: 1.75rem; font-size: 0.95rem; color: var(--mid); max-width: 62ch; }
 </style>

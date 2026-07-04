@@ -112,8 +112,9 @@ export const nav: Array<{
       { label: 'History', href: '/history' },
     ],
   },
-  { label: 'Community Groups', href: '/groups' },
   { label: 'Calendar', href: '/calendar' },
+  { label: 'Community Groups', href: '/groups' },
+  { label: 'Media', href: '/media' },
   {
     label: 'Ministries',
     href: '/connections',
@@ -131,5 +132,4 @@ export const nav: Array<{
       { label: 'Worship', href: '/worship' },
     ],
   },
-  { label: 'Media', href: '/media' },
 ];

@@ -1,7 +1,7 @@
 // Groups data layer — LIVE from Church Center's PUBLIC groups API (no token),
 // the same feed the church publishes for people to browse/join. Fetched at
-// build time; full (enrollment closed) groups are hidden per request, and a
-// graceful fallback keeps the page working if the fetch ever fails.
+// build time; full (enrollment closed) groups are hidden per request, sorted
+// by meeting day/time (Mon→Sun), with a graceful fallback.
 
 const ORG_SUB = 'chelseachurch.churchcenter.com';
 const CC_API = 'https://api.churchcenter.com/groups/v2';
@@ -12,7 +12,9 @@ export interface Group {
   type: string; // "Community Groups" | "Women's Groups" | "Ministry Groups"
   schedule?: string;
   description?: string;
+  image?: string;
   joinUrl: string;
+  sortKey: number;
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -20,7 +22,11 @@ const TYPE_LABEL: Record<string, string> = {
   'women-s-groups': "Women's Groups",
   'ministry-groups': 'Ministry Groups',
 };
-const TYPE_ORDER = ['Community Groups', "Women's Groups", 'Ministry Groups'];
+export const TYPES = ['Community Groups', "Women's Groups", 'Ministry Groups'];
+
+const DAY_ORDER: Record<string, number> = {
+  monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 7,
+};
 
 const stripHtml = (s: string) =>
   (s || '').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
@@ -29,6 +35,24 @@ const stripHtml = (s: string) =>
 function typeFromUrl(url: string): string {
   const m = (url || '').match(/\/groups\/([^/]+)\//);
   return (m && TYPE_LABEL[m[1]]) || 'Groups';
+}
+
+// Sort Mon→Sun, then by start time. Groups with no parseable day sort last.
+function sortKey(schedule?: string): number {
+  if (!schedule) return 8 * 10000;
+  const s = schedule.toLowerCase();
+  let day = 8;
+  for (const [name, idx] of Object.entries(DAY_ORDER)) if (s.includes(name)) { day = idx; break; }
+  let mins = 9999;
+  const m = s.match(/from\s+(\d{1,2})(?::(\d{2}))?\s*[–\-]?\s*(?:to)?\s*\d{1,2}(?::\d{2})?\s*(am|pm)/);
+  if (m) {
+    let h = parseInt(m[1], 10);
+    const min = m[2] ? parseInt(m[2], 10) : 0;
+    if (m[3] === 'pm' && h !== 12) h += 12;
+    if (m[3] === 'am' && h === 12) h = 0;
+    mins = h * 60 + min;
+  }
+  return day * 10000 + mins;
 }
 
 async function fetchLive(timeoutMs = 9000): Promise<Group[]> {
@@ -48,16 +72,18 @@ async function fetchLive(timeoutMs = 9000): Promise<Group[]> {
     const body = await res.json();
 
     return (body.data ?? [])
-      // hide full/closed (and any not open to join)
-      .filter((g: any) => g.attributes?.enrollment_open !== false)
+      .filter((g: any) => g.attributes?.enrollment_open !== false) // hide full/closed
       .map((g: any): Group => {
         const a = g.attributes;
+        const schedule = stripHtml(a.schedule || '') || undefined;
         return {
           name: a.name?.trim() ?? 'Group',
           type: typeFromUrl(a.church_center_web_url),
-          schedule: stripHtml(a.schedule || '') || undefined,
+          schedule,
           description: stripHtml(a.description || '') || undefined,
+          image: a.header_image?.medium || a.header_image?.thumbnail || undefined,
           joinUrl: a.church_center_web_url,
+          sortKey: sortKey(schedule),
         };
       });
   } catch {
@@ -65,26 +91,16 @@ async function fetchLive(timeoutMs = 9000): Promise<Group[]> {
   }
 }
 
-// Fallback (only if the live fetch fails): a representative slice, live shape.
 const SEED: Group[] = [
-  { name: 'Generations', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 9–10am', joinUrl: `https://${ORG_SUB}/groups` },
-  { name: 'Living Stones', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 9–10am', joinUrl: `https://${ORG_SUB}/groups` },
-  { name: 'Faith in the Trenches', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 10:30–11:30am', joinUrl: `https://${ORG_SUB}/groups` },
-  { name: 'exHImplify', type: 'Community Groups', schedule: 'Meets weekly on Wednesdays from 6–7pm', joinUrl: `https://${ORG_SUB}/groups` },
+  { name: 'Generations', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 9–10am', joinUrl: `https://${ORG_SUB}/groups`, sortKey: 7 * 10000 + 540 },
+  { name: 'Living Stones', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 9–10am', joinUrl: `https://${ORG_SUB}/groups`, sortKey: 7 * 10000 + 540 },
+  { name: 'Faith in the Trenches', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 10:30–11:30am', joinUrl: `https://${ORG_SUB}/groups`, sortKey: 7 * 10000 + 630 },
+  { name: 'exHImplify', type: 'Community Groups', schedule: 'Meets weekly on Wednesdays from 6–7pm', joinUrl: `https://${ORG_SUB}/groups`, sortKey: 3 * 10000 + 1080 },
 ];
 
-export async function getGroupsByType(): Promise<{ type: string; groups: Group[] }[]> {
+// Flat list, sorted Mon→Sun by day/time (groups with no schedule last).
+export async function getGroups(): Promise<Group[]> {
   const live = await fetchLive();
   const groups = live.length ? live : SEED;
-  const byType = new Map<string, Group[]>();
-  for (const g of groups) {
-    if (!byType.has(g.type)) byType.set(g.type, []);
-    byType.get(g.type)!.push(g);
-  }
-  return [...byType.entries()]
-    .map(([type, groups]) => ({ type, groups }))
-    .sort((a, b) => {
-      const ai = TYPE_ORDER.indexOf(a.type), bi = TYPE_ORDER.indexOf(b.type);
-      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-    });
+  return groups.sort((a, b) => a.sortKey - b.sortKey || a.name.localeCompare(b.name));
 }
