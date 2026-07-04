@@ -16,6 +16,9 @@ studio/node_modules/
 .dev.vars
 .wrangler/
 
+# build-time fetch cache (ESV passages, etc.)
+.cache/
+
 # sanity
 studio/.sanity/
 

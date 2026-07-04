@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // Pure static site (default output). Deploys to Cloudflare Pages as static assets.
@@ -11,4 +11,11 @@ export default defineConfig({
   // is:inline embed scripts (Church Center modal) don't re-execute on client-side nav,
   // which would silently break the giving/registration modals after the first page load.
   trailingSlash: 'ignore',
+  // Build-time secret for the ESV scripture tooltips (src/lib/esv.ts). Optional:
+  // the site builds fine without it — references just render as plain text.
+  env: {
+    schema: {
+      ESV_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
+    },
+  },
 });

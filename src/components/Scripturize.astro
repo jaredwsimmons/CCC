@@ -1,0 +1,15 @@
+---
+// Auto-tags every scripture reference in a prose string with an ESV hover tooltip.
+// Non-reference text passes through unchanged. Build-time (via ScriptureRef → esv.ts).
+// Use for body copy that cites references without quoting them, e.g.:
+//   <p><Scripturize text={beliefs.pursuit.body[0]} /></p>
+import ScriptureRef from './ScriptureRef.astro';
+import { findRefs } from '../lib/esv';
+
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const parts = findRefs(text);
+---
+{parts.map((p) => (p.t === 'ref' ? <ScriptureRef reference={p.v} /> : p.v))}

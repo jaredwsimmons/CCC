@@ -6,21 +6,27 @@ import CTABand from '../components/CTABand.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { site } from '../data/site';
 import { imnew } from '../data/content';
+import { rhythm } from '../lib/calendar';
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
-<Base title="I'm New" description="What to expect on a Sunday at Chelsea Community Church — services at 9:00 & 10:30 AM, what to wear, where to go first, and how to let us know you're coming.">
-  <PageHero
-    eyebrow="I'm New"
-    title="What to Expect"
-    image={imnew.hero.image}
-    imageAlt={imnew.hero.imageAlt}
-  >
+<Base title="I'm New" description="What to expect on a Sunday at Chelsea Community Church — services at 9:00 & 10:30 AM, the rhythm of our week, what to wear, where to go first, and how to let us know you're coming.">
+  <PageHero eyebrow="I'm New" title="What to Expect">
     <a class="btn btn--gold btn--lg" href="#visit-form">Let Us Know You're Coming!</a>
   </PageHero>
 
-  <Section>
-    <div class="measure" data-reveal>
-      {imnew.expect.map((p) => <p class="expect">{p}</p>)}
+  <!-- The rhythm of our week (mirrors the Calendar page) + first-visit practicals -->
+  <Section eyebrow="Every week" title="The rhythm of our week">
+    <div class="grid cols-4">
+      {rhythm.map((t) => (
+        <div class="card weekly" data-reveal>
+          <span class="tag-cat">{t.category}</span>
+          <h3>{t.title}</h3>
+          <p class="weekly__time">{t.time}</p>
+          <p class="weekly__loc">{t.location}</p>
+          <p>{t.description}</p>
+          {t.link && <a class="weekly__link" href={t.link.href}>{t.link.label}</a>}
+        </div>
+      ))}
     </div>
     <div class="grid cols-2 mt-2">
       <div class="card" data-reveal>
@@ -35,14 +41,13 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
   </Section>
 
   <!-- One "let us know you're coming" moment: the form, with the warm invite as
-       its intro and the Connections-Desk alternative + photo alongside. (Merged
-       from two back-to-back sections that repeated the same message.) -->
+       its intro and the Connections-Desk alternative + photo alongside. -->
   <Section id="visit-form" variant="alt" eyebrow="Before you arrive" title={imnew.coming.title} lead={imnew.coming.body}>
     <div class="split visit-split">
       <div data-reveal>
         <ContactForm
           formType="visit"
-          submitLabel="Let us know you're coming"
+          submitLabel="Submit"
           fallbackHref={planVisit}
           fallbackLabel="Prefer our Church Center form?"
           successMsg="We can't wait to meet you! Look for us at the Connections Desk — we'll have something for you."
@@ -67,13 +72,23 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
     </div>
   </Section>
 
-  <CTABand title="Join us this Sunday" text={`Worship & Community Groups at 9:00 and 10:30 AM · ${site.address.line1}, ${site.address.city}, ${site.address.state}`}>
+  <CTABand title="Join us this Sunday" text="The best way to get to know us is a Sunday morning. We'd love to meet you.">
     <a class="btn btn--gold btn--lg" href={site.address.maps} target="_blank" rel="noopener noreferrer">Get directions</a>
   </CTABand>
 </Base>
 
 <style>
-  .expect + .expect { margin-top: 0.9em; }
   /* form + supporting column align to the top, not vertically centered */
   .visit-split { align-items: start; }
+
+  /* weekly rhythm tiles — mirrored from the Calendar page */
+  .tag-cat {
+    display: inline-block; font-family: var(--display); font-size: 0.66rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue);
+    background: rgba(0, 82, 145, 0.08); padding: 0.22rem 0.6rem; border-radius: 999px;
+  }
+  .weekly .tag-cat { margin-bottom: 0.6rem; }
+  .weekly__time { font-family: var(--display); font-weight: 600; color: var(--navy); margin-top: 0.1rem; }
+  .weekly__loc { font-size: 0.9rem; color: var(--mid); margin-bottom: 0.5rem; }
+  .weekly__link { display: inline-block; margin-top: 0.7rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
 </style>

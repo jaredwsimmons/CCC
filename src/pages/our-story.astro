@@ -3,22 +3,18 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import Scripturize from '../components/Scripturize.astro';
 import { beliefs, history } from '../data/content';
 import { site } from '../data/site';
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
 <Base title="Our Story" description="Our vision, our founding, and our affiliation — the story of Chelsea Community Church, from Double Oak's Chelsea campus to an independent church under the Chelsea Park clocktower.">
-  <PageHero
-    eyebrow="About"
-    title="Our Story"
-    image={history.hero.image}
-    imageAlt={history.hero.imageAlt}
-  />
+  <PageHero eyebrow="About" title="Our Story" />
 
   <!-- Vision -->
   <Section eyebrow="Our vision" title="Pursuing God. Pursuing others.">
     <div class="measure" data-reveal>
-      {beliefs.vision.body.map((p) => <p>{p}</p>)}
+      {beliefs.vision.body.map((p) => <p><Scripturize text={p} /></p>)}
     </div>
   </Section>
 

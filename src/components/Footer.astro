@@ -1,5 +1,5 @@
 ---
-import { site, nav } from '../data/site';
+import { site } from '../data/site';
 const year = new Date().getFullYear();
 const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
 const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
@@ -42,7 +42,7 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
         <li><a href={site.social.facebook} target="_blank" rel="noopener noreferrer">Facebook</a></li>
         <li><a href={site.social.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>
         <li><a href={site.social.youtube} target="_blank" rel="noopener noreferrer">YouTube</a></li>
-        <li><a href={site.social.spotify} target="_blank" rel="noopener noreferrer">Sermon podcast</a></li>
+        <li><a href="/media">Media</a></li>
         <li><a href={site.textSignup} target="_blank" rel="noopener noreferrer">Text updates</a></li>
         <li><a href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Church Center app</a></li>
       </ul>
@@ -52,9 +52,13 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
       <h2 id="ftr-explore">Explore</h2>
       <ul class="two-col">
         <li><a href="/imnew">I'm New</a></li>
-        {nav.flatMap((n) => (n.children ? n.children : n.href === '/imnew' ? [] : [n])).map((l) => (
-          <li><a href={l.href}>{l.label}</a></li>
-        ))}
+        <li><a href="/our-story">Our Story</a></li>
+        <li><a href="/beliefs">What We Believe</a></li>
+        <li><a href="/leaders">Leaders</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+        <li><a href="/groups">Community Groups</a></li>
+        <li><a href="/serve">Ministries</a></li>
+        <li><a href="/media">Media</a></li>
         <li><a href="/bylaws">Bylaws</a></li>
         <li><a href={give}>Give</a></li>
       </ul>

@@ -117,8 +117,9 @@ export const nav: Array<{
   { label: 'Media', href: '/media' },
   {
     label: 'Ministries',
-    href: '/connections',
-    // alphabetical; Community Groups promoted to top-level, Prayer moved in here
+    href: '/serve',
+    // "Ministries" itself links to Serve; the dropdown lists the ministries
+    // (Serve removed from the list). alphabetical; Prayer lives in here.
     children: [
       { label: 'Connections', href: '/connections' },
       { label: 'Kids', href: '/kids' },
@@ -126,7 +127,6 @@ export const nav: Array<{
       { label: 'Missions', href: '/missions' },
       { label: 'Prayer', href: '/prayer' },
       { label: 'Preschool', href: '/preschool' },
-      { label: 'Serve', href: '/serve' },
       { label: 'Students', href: '/students' },
       { label: 'Women', href: '/women' },
       { label: 'Worship', href: '/worship' },

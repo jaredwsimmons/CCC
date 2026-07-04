@@ -1,0 +1,81 @@
+---
+// A single scripture reference with a hover/focus tooltip of the ESV text.
+// The verse text is fetched ONCE at build time (src/lib/esv.ts). If no ESV key is
+// configured, `text` is null and the reference renders as plain text (no tooltip) —
+// the page is fully functional either way.
+import { getPassage } from '../lib/esv';
+
+interface Props {
+  reference: string;
+}
+const { reference } = Astro.props;
+const text = await getPassage(reference);
+---
+{text ? (
+  <span class="sref" tabindex="0">
+    <span class="sref-label">{reference}</span>
+    <span class="sref-pop" role="tooltip">
+      <span class="sref-text">{text}</span>
+      <cite class="sref-cite">ESV</cite>
+    </span>
+  </span>
+) : (
+  <span class="sref-plain">{reference}</span>
+)}
+
+<style>
+  .sref {
+    position: relative;
+    display: inline;
+  }
+  .sref-label {
+    border-bottom: 1px dotted currentColor;
+    cursor: help;
+  }
+  .sref:hover .sref-label,
+  .sref:focus-visible .sref-label {
+    color: var(--blue-deep);
+  }
+
+  .sref-pop {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 40;
+    width: max-content;
+    max-width: min(340px, 78vw);
+    background: #fff;
+    color: var(--navy);
+    border: 1px solid var(--hair);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 0.7rem 0.85rem;
+    /* reset the small-caps caption styling inherited from .scripture */
+    font-family: var(--body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-transform: none;
+    text-align: left;
+    white-space: normal;
+  }
+  .sref:hover .sref-pop,
+  .sref:focus .sref-pop,
+  .sref:focus-within .sref-pop {
+    display: block;
+  }
+
+  .sref-cite {
+    display: block;
+    margin-top: 0.4rem;
+    font-family: var(--display);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    font-style: normal;
+  }
+</style>

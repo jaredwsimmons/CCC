@@ -4,6 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import ContactForm from '../components/ContactForm.astro';
 import DeaconNote from '../components/DeaconNote.astro';
+import Scripturize from '../components/Scripturize.astro';
 import { prayer } from '../data/content';
 import { site } from '../data/site';
 const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
@@ -35,7 +36,7 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
   </Section>
 
   <Section variant="alt" eyebrow="Our prayer ministry" title="A church where prayer is central">
-    <p class="measure" data-reveal>{prayer.ministry}</p>
+    <p class="measure" data-reveal><Scripturize text={prayer.ministry} /></p>
   </Section>
 
   <Section eyebrow="Join the prayer team" title="How to get involved">

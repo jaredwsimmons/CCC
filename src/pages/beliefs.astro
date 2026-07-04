@@ -3,8 +3,11 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
+import ScriptureRef from '../components/ScriptureRef.astro';
+import Scripturize from '../components/Scripturize.astro';
 import { beliefs } from '../data/content';
 import { site } from '../data/site';
+import { splitRefs } from '../lib/esv';
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
 <Base title="What We Believe" description="The Bible tells the story of God pursuing us — the beliefs and statement of faith of Chelsea Community Church.">
@@ -18,11 +21,13 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
       <div data-reveal>
         <h2>{beliefs.pursuit.title}</h2>
         <div class="measure" style="margin-top:1rem">
-          {beliefs.pursuit.body.map((p) => <p>{p}</p>)}
+          {beliefs.pursuit.body.map((p) => <p><Scripturize text={p} /></p>)}
         </div>
       </div>
-      <div class="photo pursuit-art" data-reveal>
-        <img src={beliefs.pursuit.image} alt={beliefs.pursuit.imageAlt} loading="lazy" />
+      <div class="pursuit-art" data-reveal>
+        <div class="photo"><img src="/images/creation-god.webp" alt="Detail of God from Michelangelo's Creation of Adam, reaching toward Adam" loading="lazy" width="881" height="464" /></div>
+        <div class="photo"><img src={beliefs.pursuit.image} alt={beliefs.pursuit.imageAlt} loading="lazy" /></div>
+        <div class="photo"><img src="/images/creation-adam.webp" alt="Detail of Adam from Michelangelo's Creation of Adam, reaching out" loading="lazy" width="790" height="414" /></div>
       </div>
     </div>
   </Section>
@@ -30,9 +35,16 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
   <!-- Statement of beliefs -->
   <Section variant="alt" eyebrow="Our Beliefs" title="What we hold to" center>
     <div class="grid cols-2">
-      {beliefs.statements.map((b, i) => (
+      {beliefs.statements.map((b) => (
         <div class="card" style="text-align:left" data-reveal>
-          <span class="scripture">{b.refs}</span>
+          <span class="scripture">
+            {splitRefs(b.refs).map((r, j) => (
+              <Fragment>
+                {j > 0 && <span class="sref-sep">; </span>}
+                <ScriptureRef reference={r} />
+              </Fragment>
+            ))}
+          </span>
           <h3>{b.title}</h3>
           <p>{b.text}</p>
         </div>
@@ -43,6 +55,7 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
         <a class="btn btn--outline mt-1" href="/bylaws">Read our church bylaws →</a>
       </div>
     </div>
+    <p class="esv-attribution" data-reveal>Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.</p>
   </Section>
 
   <CTABand title="Come and see" text="The best way to get to know us is a Sunday morning. We'd love to meet you.">
@@ -52,7 +65,24 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
 </Base>
 
 <style>
-  .pursuit-art { align-self: start; }
-  @media (max-width: 860px) { .pursuit-art { order: -1; } }
+  /* stack the three Creation-of-Adam details to fill the pursuit text's height:
+     the split stretches both columns to the (taller) text height, then the three
+     photos divide that height equally and cover-crop to fill. */
+  .split.pursuit { align-items: stretch; }
+  .pursuit-art { display: flex; flex-direction: column; gap: 0.85rem; min-height: 0; }
+  .pursuit-art .photo { flex: 1; min-height: 0; }
+  @media (max-width: 860px) {
+    .pursuit-art { order: -1; }
+    .pursuit-art .photo { flex: 0 0 auto; } /* natural height when stacked on mobile */
+  }
   .bylaws { text-align: left; }
+  .sref-sep { color: var(--mid); }
+  .esv-attribution {
+    max-width: 60ch;
+    margin: 2rem auto 0;
+    text-align: center;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--mid);
+  }
 </style>
