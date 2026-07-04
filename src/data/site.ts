@@ -107,9 +107,9 @@ export const nav: Array<{
     href: '/imnew',
     children: [
       { label: "I'm New", href: '/imnew' },
+      { label: 'Our Story', href: '/our-story' },
       { label: 'What We Believe', href: '/beliefs' },
       { label: 'Leaders', href: '/leaders' },
-      { label: 'History', href: '/history' },
     ],
   },
   { label: 'Calendar', href: '/calendar' },

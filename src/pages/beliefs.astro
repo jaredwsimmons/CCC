@@ -7,8 +7,10 @@ import { beliefs } from '../data/content';
 import { site } from '../data/site';
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
-<Base title="What We Believe" description="The Bible tells the story of God pursuing us — our vision, our affiliation, and the beliefs of Chelsea Community Church.">
-  <PageHero eyebrow="About" title="What We Believe" />
+<Base title="What We Believe" description="The Bible tells the story of God pursuing us — the beliefs and statement of faith of Chelsea Community Church.">
+  <PageHero eyebrow="About" title="What We Believe">
+    <a class="btn btn--outline" href="/our-story">Our story →</a>
+  </PageHero>
 
   <!-- God's pursuit -->
   <Section>
@@ -23,21 +25,6 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
         <img src={beliefs.pursuit.image} alt={beliefs.pursuit.imageAlt} loading="lazy" />
       </div>
     </div>
-  </Section>
-
-  <!-- Vision -->
-  <Section variant="white" eyebrow="Our Vision" title="Pursuing God. Pursuing others.">
-    <div class="measure" data-reveal>
-      {beliefs.vision.body.map((p) => <p>{p}</p>)}
-    </div>
-  </Section>
-
-  <!-- Affiliation -->
-  <Section eyebrow="Our Affiliation" title="A community church in the Baptist tradition">
-    <p class="measure" data-reveal>
-      {beliefs.affiliation.body}
-      {' '}<a href={beliefs.affiliation.doccUrl} target="_blank" rel="noopener noreferrer">Learn more about Double Oak Community Church →</a>
-    </p>
   </Section>
 
   <!-- Statement of beliefs -->

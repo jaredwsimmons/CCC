@@ -8,3 +8,4 @@
 # Keep this file — it's the right tool for old-URL redirects on Pages
 # (do NOT use Cloudflare's zone-level Bulk Redirects; the free-plan quota there is unreliable).
 /home    /    301
+/history  /our-story  301
