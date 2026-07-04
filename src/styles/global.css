@@ -98,12 +98,6 @@ p + p { margin-top: 0.9em; }
 .center .eyebrow::after { content: ""; width: 26px; height: 2px; background: var(--gold); flex: none; }
 .on-dark .eyebrow, .eyebrow.on-dark { color: rgba(251, 249, 244, 0.75); }
 
-/* gold underline motif — one per idea */
-.u-mark {
-  background: linear-gradient(180deg, transparent 78%, var(--gold) 78%, var(--gold) 96%, transparent 96%);
-  padding: 0 2px;
-}
-
 /* ---- layout ---- */
 .wrap { max-width: var(--wrap); margin-inline: auto; padding-inline: clamp(1.1rem, 4vw, 2rem); }
 .grid { display: grid; gap: 1.25rem; }
@@ -265,8 +259,6 @@ p + p { margin-top: 0.9em; }
   padding: 0.4rem 0.95rem;
   border-radius: 999px;
 }
-.icon-bullet { display: flex; gap: 0.8rem; align-items: flex-start; }
-.icon-bullet img { width: 22px; height: 22px; margin-top: 0.2rem; flex: none; }
 
 hr.rule { border: 0; height: 1px; background: var(--hair); margin: 2rem 0; }
 

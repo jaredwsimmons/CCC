@@ -55,10 +55,6 @@ export const imnew = {
     title: 'Where to Go First',
     body: 'Our building has three covered entrances in the front. The Worship Room, Connections Desk, and Preschool Hall are most easily accessed through the entrance on the right. If you have an elementary-aged kid or a teenager, their activities are on the left side of the building, and it’s best to enter through the second covered door. There will be greeters at each of these doors to help you find your way.',
   },
-  familyWorship: {
-    title: 'Family Worship Sundays',
-    body: 'In order to keep the primacy of families in the forefront of our culture, we cancel all age-graded ministry activities, Preschool through Students, every time a month has a 5th Sunday. Those days the whole church will worship together in the Worship Room.',
-  },
   coming: {
     title: "Let Us Know You're Coming!",
     body: 'We can’t wait to meet you! Before you arrive, we’d love for you to share just a little bit of contact information with us. Don’t worry — we’ll keep it safe and only use it to thank you for visiting and to share any information you’d like to know about us.',
@@ -96,8 +92,6 @@ export const beliefs = {
     ],
   },
   affiliation: {
-    title: 'Our Affiliation',
-    body: 'Double Oak Community Church began meeting in Mt Laurel on January 16, 2005 and started a second campus in Chelsea on August 12, 2018. After a congregational vote in December 2024, the Chelsea Campus has begun the process of pursuing independence and is operating as Chelsea Community Church in 2025. While maintaining our autonomy as a local body of believers, we identify ourselves as a community church in the Baptist tradition.',
     doccUrl: 'https://docc.org/',
   },
   statements: [
@@ -347,66 +341,12 @@ export const women = {
   contactName: 'Tammy',
 };
 
+// Live groups come from src/lib/groups.ts (Church Center public API). Only the
+// page's intro + contact live here now.
 export const groups = {
   title: 'Community Groups',
   intro:
     'We believe in the importance in living life within biblical community and our community groups offer everyone that opportunity. We have groups for adults that meet during both our Sunday morning services, and some that meet throughout the week. Check out the list to see what fits you best!',
-  list: [
-    {
-      when: 'Sundays | 9 AM',
-      name: 'Generations',
-      room: 'Room 101',
-      desc: "This multi-generational community group believes there is much to be learned from believers across generations. The class aims to connect adults to others in the church, serve the church and the community, and grow together as it studies God's Word. It is led by Cooper and Andrea Kandler.",
-    },
-    {
-      when: 'Sundays | 9 AM',
-      name: 'Living Stones',
-      room: 'Room 102',
-      desc: 'Our goal is to love God and love our neighbor while we encourage each other to believe the gospel of Jesus, develop community together while living out the gospel in Chelsea and beyond. This group is led by Stephen Thomas.',
-    },
-    {
-      when: 'Sundays | 10:30 AM',
-      name: 'Warriors for God',
-      room: 'Room 101',
-      desc: 'Our group is based on Ephesians 6:14-17. We are preparing to be warriors of God as we seek after God’s heart. We exist to grow deeper in the study of God’s word, not merely reading words on a page, but desiring to see the Bible come alive! We also pray, serve and care for one another in times of need as a believing community who walks this life together. This group is led by Gerry Snell.',
-    },
-    {
-      when: 'Sundays | 10:30 AM',
-      name: 'Faith in the Trenches: Doing Life Together at All Ages',
-      room: 'Room C5',
-      desc: 'FitT is a purposefully multigenerational group of both singles and married couples committed to pursuing Christ through the message of the Gospel in their own lives and with the faith family at Chelsea Community Church. This includes the faithful sharing and demonstration of the Gospel with everyone they encounter and a welcoming of brothers and sisters to come do life together. This group is led by Mark and Liz Clayton.',
-    },
-    {
-      when: 'Sundays | 10:30 AM',
-      name: 'Young Adults',
-      room: 'Room 102',
-      desc: 'Our study for this year is Love Letters: Dynamic Relationships in God’s Word. We will explore a variety of letters and writings from both the Old and New Testaments that show how God’s love covers everything we, as believers, encounter in our lives. This group is led by Casey Ballenger and John Herring.',
-    },
-    {
-      when: 'Sundays | 5:00 PM',
-      name: 'Haisten Community Group',
-      room: 'Meets in homes',
-      desc: 'This group meets in homes and is currently at capacity. Leader: Wes Haisten',
-    },
-    {
-      when: 'Wednesdays | 6 PM',
-      name: 'Allgood Community Group',
-      room: 'Meets in homes',
-      desc: 'This group meets in homes and is currently at capacity. Leaders: Alan & Tammy Allgood',
-    },
-    {
-      when: 'Wednesdays | 6 PM',
-      name: 'exHIMplify',
-      room: 'Room C5',
-      desc: 'We desire to grow together in our knowledge and love of the Father and one another. We want to be known and to know one another as we do life together, living out our faith through authentic relationships. This group is led by Brian & Mandi Marbury and meets on campus Wednesday nights from 6-7 PM.',
-    },
-    {
-      when: 'Wednesdays | 6 PM',
-      name: 'Stringfellowship',
-      room: 'Room 101',
-      desc: 'This group seeks to be discipled in the word and to care for one another and seek fellowship with one another. The group is led by Matt and Carlye Stringfellow.',
-    },
-  ],
   contact: site.contacts.office,
   contactName: 'Rebecca',
 };
