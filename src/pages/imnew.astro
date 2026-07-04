@@ -34,35 +34,36 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
     </div>
   </Section>
 
-  <Section eyebrow="Before you arrive" title={imnew.coming.title}>
-    <div class="split">
+  <!-- One "let us know you're coming" moment: the form, with the warm invite as
+       its intro and the Connections-Desk alternative + photo alongside. (Merged
+       from two back-to-back sections that repeated the same message.) -->
+  <Section id="visit-form" variant="alt" eyebrow="Before you arrive" title={imnew.coming.title} lead={imnew.coming.body}>
+    <div class="split visit-split">
       <div data-reveal>
-        <p class="measure">{imnew.coming.body}</p>
-        <p class="measure" style="margin-top:0.9rem">{imnew.coming.desk}</p>
+        <ContactForm
+          formType="visit"
+          submitLabel="Let us know you're coming"
+          fallbackHref={planVisit}
+          fallbackLabel="Prefer our Church Center form?"
+          successMsg="We can't wait to meet you! Look for us at the Connections Desk — we'll have something for you."
+          fields={[
+            { name: 'name', label: 'Your name', required: true, autocomplete: 'name', half: true },
+            { name: 'email', label: 'Email', type: 'email', required: true, autocomplete: 'email', half: true },
+            { name: 'phone', label: 'Phone (optional)', type: 'tel', autocomplete: 'tel', half: true },
+            { name: 'visit_date', label: 'Which Sunday are you thinking?', type: 'text', placeholder: 'e.g. this Sunday, or a date', half: true },
+            { name: 'message', label: 'Anything we should know? (kids’ ages, questions…)', type: 'textarea' },
+          ]}
+        />
       </div>
-      <div class="photo" data-reveal>
-        <img src={imnew.coming.image} alt={imnew.coming.imageAlt} loading="lazy" />
+      <div data-reveal>
+        <div class="photo">
+          <img src={imnew.coming.image} alt={imnew.coming.imageAlt} loading="lazy" />
+        </div>
+        <div class="card mt-2">
+          <h3>Prefer to connect in person?</h3>
+          <p>{imnew.coming.desk}</p>
+        </div>
       </div>
-    </div>
-  </Section>
-
-  <Section id="visit-form" variant="alt" eyebrow="Plan your visit" title="Let us know you're coming">
-    <p class="measure" data-reveal style="margin-bottom:1.75rem">Tell us a little about yourself and we'll be ready to welcome you — with a gift waiting at the Connections Desk. We'll only use this to say hello and share what you'd like to know.</p>
-    <div data-reveal>
-      <ContactForm
-        formType="visit"
-        submitLabel="Let us know you're coming"
-        fallbackHref={planVisit}
-        fallbackLabel="Prefer our Church Center form?"
-        successMsg="We can't wait to meet you! Look for us at the Connections Desk — we'll have something for you."
-        fields={[
-          { name: 'name', label: 'Your name', required: true, autocomplete: 'name', half: true },
-          { name: 'email', label: 'Email', type: 'email', required: true, autocomplete: 'email', half: true },
-          { name: 'phone', label: 'Phone (optional)', type: 'tel', autocomplete: 'tel', half: true },
-          { name: 'visit_date', label: 'Which Sunday are you thinking?', type: 'text', placeholder: 'e.g. this Sunday, or a date', half: true },
-          { name: 'message', label: 'Anything we should know? (kids’ ages, questions…)', type: 'textarea' },
-        ]}
-      />
     </div>
   </Section>
 
@@ -73,4 +74,6 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
 
 <style>
   .expect + .expect { margin-top: 0.9em; }
+  /* form + supporting column align to the top, not vertically centered */
+  .visit-split { align-items: start; }
 </style>

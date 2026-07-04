@@ -55,6 +55,7 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
         {nav.flatMap((n) => (n.children ? n.children : n.href === '/imnew' ? [] : [n])).map((l) => (
           <li><a href={l.href}>{l.label}</a></li>
         ))}
+        <li><a href="/bylaws">Bylaws</a></li>
         <li><a href={give}>Give</a></li>
       </ul>
     </div>
