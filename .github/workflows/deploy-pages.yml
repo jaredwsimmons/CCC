@@ -7,9 +7,11 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Deploy whenever the preview branch is pushed, plus a manual button.
+  # Deploy on pushes to the default branch (the github-pages environment allows
+  # main by default), plus a manual button. Merging the preview branch into main
+  # publishes the site.
   push:
-    branches: [claude/github-pages-setup-3xck52]
+    branches: [main]
   workflow_dispatch:
 
 # Least-privilege token that the Pages deploy needs.
