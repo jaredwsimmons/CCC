@@ -2,7 +2,7 @@
 // reorganized for the new layout. Wording is theirs; only structure is ours.
 // Staff will maintain this through Sanity once the CMS project is wired up.
 
-import { site } from './site';
+import { site, withBase } from './site';
 
 /* ================================ HOME ================================ */
 
@@ -11,7 +11,7 @@ export const home = {
     title: 'Pursuing God. Pursuing others.',
     sub: 'Worship & Community Groups',
     times: '9:00 AM & 10:30 AM',
-    image: '/images/worship-service.webp',
+    image: withBase('/images/worship-service.webp'),
     imageAlt: 'The Chelsea Community Church family standing in worship on Sunday morning',
   },
   welcome: {
@@ -23,14 +23,14 @@ export const home = {
     eyebrow: 'Current sermon series',
     title: 'Jesus Storyteller',
     body: 'This summer, join us for Jesus Storyteller: Learning from the Parables of Jesus — a journey through the unforgettable stories Jesus used to reveal truth, challenge hearts, and invite people into the Kingdom of God. From lost sons and good Samaritans to persistent widows and mustard seeds, these timeless parables still speak powerfully today. Come discover how the stories Jesus told can transform the way we live, love, and follow Him. Join us Sunday at 9:00 or 10:30 AM!',
-    art: '/images/series-jesus-storyteller.webp',
+    art: withBase('/images/series-jesus-storyteller.webp'),
     artAlt: 'Jesus Storyteller — Learning from the Parables of Jesus, current sermon series art',
   },
   app: {
     eyebrow: 'Spotlight',
     title: 'New church app',
     body: 'Give, sign up for events, connect with a community, check your family in, and more! Download the Church Center app today, search for Chelsea Community Church, and log in with the email or phone number connected to your Planning Center profile.',
-    image: '/images/app-spotlight.webp',
+    image: withBase('/images/app-spotlight.webp'),
     imageAlt: 'The Church Center app for Chelsea Community Church on a phone, with App Store and Google Play badges',
   },
 };
@@ -40,7 +40,7 @@ export const home = {
 export const imnew = {
   hero: {
     title: 'What to Expect',
-    image: '/images/building-aerial.webp',
+    image: withBase('/images/building-aerial.webp'),
     imageAlt: 'Aerial view of the Chelsea Community Church building beside the Chelsea Park clocktower',
   },
   expect: [
@@ -59,7 +59,7 @@ export const imnew = {
     title: "Let Us Know You're Coming!",
     body: 'We can’t wait to meet you! Before you arrive, we’d love for you to share just a little bit of contact information with us. Don’t worry — we’ll keep it safe and only use it to thank you for visiting and to share any information you’d like to know about us.',
     desk: 'If you’re not ready to fill out the form or prefer to connect in person, that’s okay too! Be sure to stop by our Connections Desk — it’s just past the Worship Room. There, you can learn more about who we are, what we’re about, and pick up a special gift we’ve prepared just for you. We’re so glad you’re here!',
-    image: '/images/lobby.webp',
+    image: withBase('/images/lobby.webp'),
     imageAlt: 'Guests and members connecting in the church lobby on a Sunday morning',
   },
 };
@@ -70,7 +70,7 @@ export const beliefs = {
   hero: { title: 'What We Believe' },
   pursuit: {
     title: 'The Bible tells the story of God pursuing us.',
-    image: '/images/creation-of-adam.webp',
+    image: withBase('/images/creation-of-adam.webp'),
     imageAlt: 'Detail of Michelangelo’s Creation of Adam — two hands reaching toward one another',
     body: [
       'From the very beginning, God has pursued us. After Adam and Eve sinned, they did not run toward God; they ran away from Him, hiding among the trees of the garden (Genesis 3:8-9).',
@@ -137,14 +137,14 @@ export const beliefs = {
 
 export const leaders = {
   staff: [
-    { name: 'Alan Allgood', role: 'Lay Elder', image: '/images/leader-alan-allgood.webp' },
-    { name: 'Mark Clayton', role: 'Lay Elder', image: '/images/leader-mark-clayton.webp' },
-    { name: 'Wes Haisten', role: 'Lay Elder', image: '/images/leader-wes-haisten.webp' },
-    { name: 'Drew Blake', role: 'Pastor of Students & Worship', image: '/images/leader-drew-blake.webp' },
-    { name: 'John Herring', role: 'Executive Pastor', image: '/images/leader-john-herring.webp' },
-    { name: 'Kathryn Kipley', role: 'Family Ministry Associate', image: '/images/leader-kathryn-kipley.webp' },
-    { name: 'Brian Marbury', role: 'Pastor of Missions & Service', image: '/images/leader-brian-marbury.webp' },
-    { name: 'Ben Stephenson', role: 'Family Pastor', image: '/images/leader-ben-stephenson.webp' },
+    { name: 'Alan Allgood', role: 'Lay Elder', image: withBase('/images/leader-alan-allgood.webp') },
+    { name: 'Mark Clayton', role: 'Lay Elder', image: withBase('/images/leader-mark-clayton.webp') },
+    { name: 'Wes Haisten', role: 'Lay Elder', image: withBase('/images/leader-wes-haisten.webp') },
+    { name: 'Drew Blake', role: 'Pastor of Students & Worship', image: withBase('/images/leader-drew-blake.webp') },
+    { name: 'John Herring', role: 'Executive Pastor', image: withBase('/images/leader-john-herring.webp') },
+    { name: 'Kathryn Kipley', role: 'Family Ministry Associate', image: withBase('/images/leader-kathryn-kipley.webp') },
+    { name: 'Brian Marbury', role: 'Pastor of Missions & Service', image: withBase('/images/leader-brian-marbury.webp') },
+    { name: 'Ben Stephenson', role: 'Family Pastor', image: withBase('/images/leader-ben-stephenson.webp') },
   ],
   deacons: [
     { area: 'Adult Discipleship', names: 'Ryan Akers, Casey Ballenger' },
@@ -174,7 +174,7 @@ export const leaders = {
 export const history = {
   hero: {
     title: 'History',
-    image: '/images/building-clocktower.webp',
+    image: withBase('/images/building-clocktower.webp'),
     imageAlt: 'The Chelsea Park clocktower with the Chelsea Community Church building behind it, alongside Highway 280',
   },
   body: 'In January of 2005 a church called Double Oak Community Church began meeting in the town of Mt. Laurel east of Birmingham on Highway 280. The heart of that church from its founding was to be an anchor point for ministry as the metro area spread farther out, particular toward the city of Chelsea. So on August 12, 2018, they started a second campus that met in Chelsea Park Elementary School. Land was purchased and a building was built right under the clocktower of the Chelsea Park neighborhood, and a new church began to grow. After a congregational vote in December 2024, the Chelsea Campus began the process of pursuing independence, officially becoming Chelsea Community Church in 2025. We are excited to be planting our roots just as Chelsea begins its own expansion. We are here to proclaim the Gospel of Jesus Christ and the hope of his Kingdom in Chelsea.',
@@ -190,8 +190,8 @@ export const worship = {
   ],
   serveCta: { label: 'Click to serve with music or tech!', email: site.contacts.tech },
   images: [
-    { src: '/images/worship-singer.webp', alt: 'A vocalist leading sung worship' },
-    { src: '/images/worship-tech.webp', alt: 'The production team’s audio console during a service' },
+    { src: withBase('/images/worship-singer.webp'), alt: 'A vocalist leading sung worship' },
+    { src: withBase('/images/worship-tech.webp'), alt: 'The production team’s audio console during a service' },
   ],
 };
 
@@ -221,12 +221,12 @@ export const preschool = {
     },
   ],
   gallery: [
-    '/images/preschool-1.webp',
-    '/images/preschool-2.webp',
-    '/images/preschool-3.webp',
-    '/images/preschool-4.webp',
-    '/images/preschool-5.webp',
-    '/images/preschool-6.webp',
+    withBase('/images/preschool-1.webp'),
+    withBase('/images/preschool-2.webp'),
+    withBase('/images/preschool-3.webp'),
+    withBase('/images/preschool-4.webp'),
+    withBase('/images/preschool-5.webp'),
+    withBase('/images/preschool-6.webp'),
   ],
   contact: site.contacts.family,
 };
@@ -248,11 +248,11 @@ export const kids = {
     body: 'At Chelsea Community Church we believe that the family is God’s main tool for calling children into a life of faith. Because of that we want to encourage you to consider having your kids attend the main worship service alongside you each Sunday, especially 3rd–5th graders. This way Worship Together is a load lifted with two arms, at home and at church.',
   },
   values: {
-    image: '/images/kids-values.webp',
+    image: withBase('/images/kids-values.webp'),
     imageAlt: 'Kids Ministry values: Gospel, Scripture, Family, Community, and Mission',
   },
   summer: {
-    image: '/images/kids-summer-spectacular.webp',
+    image: withBase('/images/kids-summer-spectacular.webp'),
     imageAlt: 'Summer Spectacular — summer activities for kids',
   },
   contact: site.contacts.family,
@@ -272,7 +272,7 @@ export const students = {
       what: 'Games, student-led worship, and Bible teaching in the Worship Room at 6 PM',
     },
   ],
-  photo: { src: '/images/students-c3sm.webp', alt: 'C3SM students and leaders on a summer trip' },
+  photo: { src: withBase('/images/students-c3sm.webp'), alt: 'C3SM students and leaders on a summer trip' },
   contact: site.contacts.students,
 };
 
@@ -281,13 +281,13 @@ export const men = {
   discipleship: {
     title: 'Discipleship',
     items: ['Topic Based Studies', 'Monthly Fire Pit', 'Community Groups'],
-    image: '/images/men-bible-study.webp',
+    image: withBase('/images/men-bible-study.webp'),
     imageAlt: 'Men’s Bible Study weekly gatherings: Monday 6:00 AM at Bojangles, Thursday 6:30 AM at Mt. Laurel O’Henry’s, Thursday 6:30 PM and Friday 6:30 AM at the Church Commons',
   },
   fire: {
     title: 'Men On Fire',
     body: 'On the first Sunday of every month, all men gather around the fire pit — one place, one purpose. It’s a time for brotherhood, real conversation about Scripture, and powerful prayer.',
-    image: '/images/men-on-fire.webp',
+    image: withBase('/images/men-on-fire.webp'),
     imageAlt: 'Men On Fire — first Sunday every month at 6 PM',
   },
   relationships: {
@@ -307,7 +307,7 @@ export const women = {
     'At Chelsea Community Church, our Women’s Ministry exists to help women pursue God and pursue others by growing in their relationship with Christ, building authentic friendships, and living out their faith with confidence and purpose.',
     'We believe every woman — at every stage of life — has been uniquely created by God and called to make an impact in her home, church, workplace, and community. Whether you are new to faith, have walked with Christ for years, or are simply looking for connection, you are welcome here. Please join us at one of our upcoming events!',
   ],
-  photo: { src: '/images/women-ministry.webp', alt: 'Women of Chelsea Community Church at a ministry event' },
+  photo: { src: withBase('/images/women-ministry.webp'), alt: 'Women of Chelsea Community Church at a ministry event' },
   events: [
     {
       name: 'Summer Bible Study',
@@ -321,7 +321,7 @@ export const women = {
       where: '6:00–7:30 PM | Community Room',
       note: 'Free event! Register in Church Center!',
       rsvp: site.churchCenter.registrations.sundaeBingo,
-      image: '/images/women-sundae-bingo.webp',
+      image: withBase('/images/women-sundae-bingo.webp'),
       imageAlt: 'Sundae Funday Bingo — Monday, July 13, 6:00–7:30 PM in the Community Room',
       detail: [
         'Ladies, mark your calendars for a sweet summer evening of fun, fellowship, and friendly competition! Join us for Sundae Funday Bingo on July 13 from 6:00–7:30 PM in the Community Room. Enjoy an evening filled with bingo, prizes, laughter, and delicious ice cream sundaes!',
@@ -360,7 +360,7 @@ export const missions = {
   highlight: {
     title: 'Monthly Missions Highlight',
     body: "The Big Kaboom is coming up on Saturday, June 27, and Chelsea Community Church is partnering with other local churches to provide a free Kids Zone for families in our community! The Kids Zone will feature inflatables, face painting, games, and other fun activities for children. We're looking for volunteers from 7:00–7:45 PM to assist with activities in the Kids Zone or help at our church booth. We'd love for you to join us — contact Pastor Brian for more information.",
-    image: '/images/missions-big-kaboom.webp',
+    image: withBase('/images/missions-big-kaboom.webp'),
     imageAlt: 'Big Kaboom — Saturday, June 27, 7:00–7:45 PM. We need you! Contact Brian Marbury or scan the QR code to volunteer.',
   },
   local: [
@@ -405,7 +405,7 @@ export const serve = {
     "It's not a spiritual gifts inventory, and it doesn't sign you up to serve on a team. You'll get an email with your results, and you'll be contacted by Brian Marbury to talk more about where God might be calling you to serve.",
   ],
   survey: 'https://volunteeraccelerator.ministryarchitects.com/DOCC/survey.php',
-  image: { src: '/images/teams-mobilizer.webp', alt: 'Teams Mobilizer — find your place, know your purpose, be people of pursuit' },
+  image: { src: withBase('/images/teams-mobilizer.webp'), alt: 'Teams Mobilizer — find your place, know your purpose, be people of pursuit' },
   itIs: [
     'A way to match people to ministry positions within the local church.',
     'Through a quick survey, our leadership can learn your unique skills and desires and you can learn which serving opportunities are the best match for you!',
@@ -440,7 +440,7 @@ export const connections = {
     'Our connections team is available each Sunday morning to assist every guest and church member. We will help everyone get connected to age specific ministries, community groups and events. We will also be happy to answer any questions that you may have and share information about our church.',
     'We believe that everyone has a purpose and a place, and our hope as a connections team is to help everyone find his or her place within our church so that they can minister and be ministered to, living out their purpose. Being a part of a local church is vital to the health, growth and maturity of everyone.',
   ],
-  image: { src: '/images/connections-welcome.webp', alt: 'A warm handshake of welcome' },
+  image: { src: withBase('/images/connections-welcome.webp'), alt: 'A warm handshake of welcome' },
   contact: site.contacts.missions,
 };
 

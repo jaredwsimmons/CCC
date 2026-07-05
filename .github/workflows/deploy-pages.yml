@@ -1,0 +1,66 @@
+# Publishes a static preview of the site to GitHub Pages so staff can see it.
+#
+# This is a PREVIEW target, separate from the production Cloudflare Pages deploy.
+# GitHub project sites are served from a subpath (https://jaredwsimmons.github.io/CCC/),
+# so we build with BASE_PATH=/CCC. Internal links/assets route through withBase()
+# (src/data/site.ts), so the same source builds cleanly for both roots.
+name: Deploy to GitHub Pages
+
+on:
+  # Deploy whenever the preview branch is pushed, plus a manual button.
+  push:
+    branches: [claude/github-pages-setup-3xck52]
+  workflow_dispatch:
+
+# Least-privilege token that the Pages deploy needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One in-flight deploy at a time; don't cancel a running publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Enables Pages on first run and exposes the resolved base_path.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (base = /CCC for the project-page subpath)
+        run: npm run build
+        env:
+          BASE_PATH: /CCC
+          SITE_URL: https://jaredwsimmons.github.io
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

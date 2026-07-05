@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { site } from '../data/site';
+import { site, withBase } from '../data/site';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ChurchCenterScript from '../components/ChurchCenterScript.astro';
@@ -36,8 +36,8 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" href="/favicon-32.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href={withBase('/favicon-32.png')} type="image/png" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
 
     <!-- Progressive-enhancement flag: set BEFORE paint so reveal styles apply without FOUC. -->
     <script is:inline>document.documentElement.classList.add('js');</script>

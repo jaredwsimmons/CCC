@@ -5,7 +5,7 @@ import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
 import DeaconNote from '../components/DeaconNote.astro';
 import { kids } from '../data/content';
-import { site } from '../data/site';
+import { site, withBase } from '../data/site';
 const preRegister = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 const newsletter = `${site.churchCenter.forms.kidsNewsletter}?open-in-church-center-modal=true`;
 const serveReg = `${site.churchCenter.registrations.kidsServe}?open-in-church-center-modal=true`;
@@ -31,7 +31,7 @@ const serveReg = `${site.churchCenter.registrations.kidsServe}?open-in-church-ce
             <li><b>{s.time}</b> — {s.what}</li>
           ))}
         </ul>
-        <a href="/calendar">Check out our Summer activities →</a>
+        <a href={withBase('/calendar')}>Check out our Summer activities →</a>
       </div>
     </div>
   </Section>

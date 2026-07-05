@@ -1,6 +1,16 @@
 // Central site configuration — the one place to edit church-wide constants.
 // Every value below was pulled from the live chelseachurch.com crawl (2026-07-03).
 
+// Prefix an internal, root-absolute path (e.g. "/imnew", "/images/x.png") with the
+// deploy base. On Cloudflare (root) BASE_URL is "/" so paths are unchanged; on the
+// GitHub Pages project preview BASE_URL is "/CCC/" so links/assets resolve correctly.
+// Use for every INTERNAL href/src. External URLs (http…) must NOT go through this.
+export const withBase = (path: string): string => {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, ''); // '' at root, '/CCC' on Pages
+  const p = path.startsWith('/') ? path : `/${path}`;
+  return `${base}${p}`;
+};
+
 export const site = {
   name: 'Chelsea Community Church',
   shortName: 'CCC',

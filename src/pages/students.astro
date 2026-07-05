@@ -5,7 +5,7 @@ import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
 import DeaconNote from '../components/DeaconNote.astro';
 import { students } from '../data/content';
-import { site } from '../data/site';
+import { site, withBase } from '../data/site';
 const coming = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
 <Base title="Students" description="C3SM — Chelsea Community Church Student Ministry for middle and high schoolers. Sunday community groups at 9 AM and Wednesday nights at 6 PM.">
@@ -29,7 +29,7 @@ const coming = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal
         </div>
         <div class="ctas">
           <a class="btn btn--gold" href={coming}>Let us know your family is coming!</a>
-          <a class="btn btn--outline" href="/calendar">Summer events calendar</a>
+          <a class="btn btn--outline" href={withBase('/calendar')}>Summer events calendar</a>
         </div>
       </div>
     </div>

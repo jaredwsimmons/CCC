@@ -2,6 +2,7 @@
 // Small on-brand card naming the deacon(s) who serve a given ministry.
 // Data comes from the real deacon roster in content.ts (no API needed).
 import { leaders } from '../data/content';
+import { withBase } from '../data/site';
 interface Props { area: string; blurb?: string; }
 const { area, blurb } = Astro.props;
 const d = leaders.deacons.find((x) => x.area === area);
@@ -10,7 +11,7 @@ const plural = d ? d.names.includes(',') : false;
 {d && (
   <div class="deacon" data-reveal>
     <div class="deacon__mark" aria-hidden="true">
-      <img src="/images/icon-gold.png" alt="" width="30" height="30" />
+      <img src={withBase('/images/icon-gold.png')} alt="" width="30" height="30" />
     </div>
     <div>
       <p class="deacon__label">{plural ? 'Deacons' : 'Deacon'}</p>

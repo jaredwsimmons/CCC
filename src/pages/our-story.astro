@@ -5,7 +5,7 @@ import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
 import Scripturize from '../components/Scripturize.astro';
 import { beliefs, history } from '../data/content';
-import { site } from '../data/site';
+import { site, withBase } from '../data/site';
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
 <Base title="Our Story" description="Our vision, our founding, and our affiliation — the story of Chelsea Community Church, from Double Oak's Chelsea campus to an independent church under the Chelsea Park clocktower.">
@@ -34,6 +34,6 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
 
   <CTABand title="Come and see" text="The best way to know us is a Sunday morning. We'd love to meet you.">
     <a class="btn btn--gold btn--lg" href={planVisit}>Plan a Visit</a>
-    <a class="btn btn--outline-light btn--lg" href="/beliefs">What we believe</a>
+    <a class="btn btn--outline-light btn--lg" href={withBase('/beliefs')}>What we believe</a>
   </CTABand>
 </Base>

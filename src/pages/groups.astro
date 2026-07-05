@@ -6,7 +6,7 @@ import CTABand from '../components/CTABand.astro';
 import DeaconNote from '../components/DeaconNote.astro';
 import { groups as groupsContent } from '../data/content';
 import { getGroups, TYPES } from '../lib/groups';
-import { site } from '../data/site';
+import { site, withBase } from '../data/site';
 
 // LIVE from Church Center's public groups API (no token). Full groups hidden,
 // sorted Mon→Sun by meeting day/time.
@@ -30,7 +30,7 @@ const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label
       {groups.map((g) => (
         <article class="gcard" data-type={g.type} data-reveal>
           <div class="gcard__img">
-            {g.image ? <img src={g.image} alt="" loading="lazy" /> : <div class="gcard__ph" aria-hidden="true"><img src="/images/icon-gold.png" alt="" width="34" height="34" /></div>}
+            {g.image ? <img src={g.image} alt="" loading="lazy" /> : <div class="gcard__ph" aria-hidden="true"><img src={withBase('/images/icon-gold.png')} alt="" width="34" height="34" /></div>}
           </div>
           <div class="gcard__body">
             <span class="tag-cat">{g.type.replace(' Groups', '')} · Open</span>

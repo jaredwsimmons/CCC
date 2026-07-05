@@ -1,5 +1,5 @@
 ---
-import { site } from '../data/site';
+import { site, withBase } from '../data/site';
 const year = new Date().getFullYear();
 const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
 const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
@@ -8,7 +8,7 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
 <footer class="site-footer">
   <div class="wrap top">
     <div class="id">
-      <img src="/images/icon-white.png" alt="" width="64" height="64" loading="lazy" />
+      <img src={withBase('/images/icon-white.png')} alt="" width="64" height="64" loading="lazy" />
       <p class="name">Chelsea Community<br />Church</p>
       <p class="tagline">Pursuing God. <b>Pursuing others.</b></p>
       <p class="times">Sundays · 9:00 &amp; 10:30 AM</p>
@@ -42,7 +42,7 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
         <li><a href={site.social.facebook} target="_blank" rel="noopener noreferrer">Facebook</a></li>
         <li><a href={site.social.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>
         <li><a href={site.social.youtube} target="_blank" rel="noopener noreferrer">YouTube</a></li>
-        <li><a href="/media">Media</a></li>
+        <li><a href={withBase('/media')}>Media</a></li>
         <li><a href={site.textSignup} target="_blank" rel="noopener noreferrer">Text updates</a></li>
         <li><a href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Church Center app</a></li>
       </ul>
@@ -51,15 +51,15 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
     <div class="col" aria-labelledby="ftr-explore">
       <h2 id="ftr-explore">Explore</h2>
       <ul class="two-col">
-        <li><a href="/imnew">I'm New</a></li>
-        <li><a href="/our-story">Our Story</a></li>
-        <li><a href="/beliefs">What We Believe</a></li>
-        <li><a href="/leaders">Leaders</a></li>
-        <li><a href="/calendar">Calendar</a></li>
-        <li><a href="/groups">Community Groups</a></li>
-        <li><a href="/serve">Ministries</a></li>
-        <li><a href="/media">Media</a></li>
-        <li><a href="/bylaws">Bylaws</a></li>
+        <li><a href={withBase('/imnew')}>I'm New</a></li>
+        <li><a href={withBase('/our-story')}>Our Story</a></li>
+        <li><a href={withBase('/beliefs')}>What We Believe</a></li>
+        <li><a href={withBase('/leaders')}>Leaders</a></li>
+        <li><a href={withBase('/calendar')}>Calendar</a></li>
+        <li><a href={withBase('/groups')}>Community Groups</a></li>
+        <li><a href={withBase('/serve')}>Ministries</a></li>
+        <li><a href={withBase('/media')}>Media</a></li>
+        <li><a href={withBase('/bylaws')}>Bylaws</a></li>
         <li><a href={give}>Give</a></li>
       </ul>
     </div>

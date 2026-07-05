@@ -5,6 +5,7 @@ import Section from '../components/Section.astro';
 import CTABand from '../components/CTABand.astro';
 import DeaconNote from '../components/DeaconNote.astro';
 import { connections } from '../data/content';
+import { withBase } from '../data/site';
 ---
 <Base title="Connections" description="The Connections team helps every guest and member find their place at Chelsea Community Church — ministries, community groups, and events.">
   <PageHero eyebrow="Ministries" title="Connections">
@@ -27,6 +28,6 @@ import { connections } from '../data/content';
 
   <CTABand title="Stop by the Connections Desk" text="Just past the Worship Room every Sunday morning — we'll help you find your place.">
     <a class="btn btn--gold btn--lg" href={`mailto:${connections.contact}`}>Email Brian for more information!</a>
-    <a class="btn btn--outline-light btn--lg" href="/imnew">Plan your first visit</a>
+    <a class="btn btn--outline-light btn--lg" href={withBase('/imnew')}>Plan your first visit</a>
   </CTABand>
 </Base>

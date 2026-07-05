@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Section from '../components/Section.astro';
-import { site } from '../data/site';
+import { site, withBase } from '../data/site';
 import { home } from '../data/content';
 
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
@@ -17,7 +17,7 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
     <div class="hero__img">
       <img src={home.hero.image} alt={home.hero.imageAlt} loading="eager" fetchpriority="high" />
       <video class="hero__video" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
-        <source src="/videos/hero.mp4" type="video/mp4" />
+        <source src={withBase('/videos/hero.mp4')} type="video/mp4" />
       </video>
     </div>
     <div class="wrap inner">
@@ -27,7 +27,7 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
       <p class="sub">{home.hero.sub} · <b>{home.hero.times}</b></p>
       <div class="actions">
         <a class="btn btn--gold btn--lg" href={planVisit}>Plan a Visit</a>
-        <a class="btn btn--outline-light btn--lg" href="/imnew">I'm New</a>
+        <a class="btn btn--outline-light btn--lg" href={withBase('/imnew')}>I'm New</a>
       </div>
     </div>
   </section>
@@ -46,8 +46,8 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
   <Section eyebrow="Welcome" title="Welcome to Chelsea Community Church" center>
     <p class="lead measure" data-reveal>{home.welcome.body}</p>
     <div class="welcome-actions" data-reveal>
-      <a class="btn btn--blue" href="/imnew">I'm New</a>
-      <a class="btn btn--outline" href="/beliefs">Learn More</a>
+      <a class="btn btn--blue" href={withBase('/imnew')}>I'm New</a>
+      <a class="btn btn--outline" href={withBase('/beliefs')}>Learn More</a>
     </div>
   </Section>
 

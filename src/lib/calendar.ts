@@ -7,6 +7,8 @@
 // Fetched at BUILD time; if anything fails we fall back to the seeded events
 // below so the page never breaks. (Undocumented app API — hence the fallback.)
 
+import { withBase } from '../data/site';
+
 const ORG_SUB = 'chelseachurch.churchcenter.com';
 const CC_API = 'https://api.churchcenter.com/calendar/v2';
 const TZ = 'America/Chicago';
@@ -119,7 +121,7 @@ export const rhythm: RhythmTile[] = [
     description: 'Preschool through high school meet at both Sunday services; students also gather Wednesday nights at 6 PM.' },
   { category: 'Community Groups', title: 'Community Groups', time: 'Everyday', location: 'On campus & in homes',
     description: 'Adults do life together in groups throughout the week.',
-    link: { href: '/groups', label: 'See all community groups →' } },
+    link: { href: withBase('/groups'), label: 'See all community groups →' } },
   { category: '5th Sundays', title: 'Family Worship', time: '5th Sundays', location: 'Worship Room',
     description: 'On months with a 5th Sunday, we cancel all age-graded ministries — Preschool through Students — and the whole church worships together.' },
 ];

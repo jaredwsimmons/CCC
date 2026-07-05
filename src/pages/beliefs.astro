@@ -6,13 +6,13 @@ import CTABand from '../components/CTABand.astro';
 import ScriptureRef from '../components/ScriptureRef.astro';
 import Scripturize from '../components/Scripturize.astro';
 import { beliefs } from '../data/content';
-import { site } from '../data/site';
+import { site, withBase } from '../data/site';
 import { splitRefs } from '../lib/esv';
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
 ---
 <Base title="What We Believe" description="The Bible tells the story of God pursuing us — the beliefs and statement of faith of Chelsea Community Church.">
   <PageHero eyebrow="About" title="What We Believe">
-    <a class="btn btn--outline" href="/our-story">Our story →</a>
+    <a class="btn btn--outline" href={withBase('/our-story')}>Our story →</a>
   </PageHero>
 
   <!-- God's pursuit -->
@@ -25,9 +25,9 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
         </div>
       </div>
       <div class="pursuit-art" data-reveal>
-        <div class="photo"><img src="/images/creation-god.webp" alt="Detail of God from Michelangelo's Creation of Adam, reaching toward Adam" loading="lazy" width="881" height="464" /></div>
+        <div class="photo"><img src={withBase('/images/creation-god.webp')} alt="Detail of God from Michelangelo's Creation of Adam, reaching toward Adam" loading="lazy" width="881" height="464" /></div>
         <div class="photo"><img src={beliefs.pursuit.image} alt={beliefs.pursuit.imageAlt} loading="lazy" /></div>
-        <div class="photo"><img src="/images/creation-adam.webp" alt="Detail of Adam from Michelangelo's Creation of Adam, reaching out" loading="lazy" width="790" height="414" /></div>
+        <div class="photo"><img src={withBase('/images/creation-adam.webp')} alt="Detail of Adam from Michelangelo's Creation of Adam, reaching out" loading="lazy" width="790" height="414" /></div>
       </div>
     </div>
   </Section>
@@ -52,7 +52,7 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
       <div class="card bylaws" data-reveal>
         <h3>Church Bylaws</h3>
         <p>How we govern ourselves as a congregation — Christ ruled, elder led, and congregationally accountable.</p>
-        <a class="btn btn--outline mt-1" href="/bylaws">Read our church bylaws →</a>
+        <a class="btn btn--outline mt-1" href={withBase('/bylaws')}>Read our church bylaws →</a>
       </div>
     </div>
     <p class="esv-attribution" data-reveal>Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.</p>
@@ -60,7 +60,7 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
 
   <CTABand title="Come and see" text="The best way to get to know us is a Sunday morning. We'd love to meet you.">
     <a class="btn btn--gold btn--lg" href={planVisit}>Plan a Visit</a>
-    <a class="btn btn--outline-light btn--lg" href="/imnew">What to expect</a>
+    <a class="btn btn--outline-light btn--lg" href={withBase('/imnew')}>What to expect</a>
   </CTABand>
 </Base>
 
