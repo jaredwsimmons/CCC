@@ -1,8 +1,14 @@
-# Local secrets for `wrangler pages dev` (the Cloudflare function runtime).
-# Copy this file to  .dev.vars  and paste your real Planning Center
-# Personal Access Token values. .dev.vars is gitignored — it never gets committed.
-#
-# Get these at: https://api.planningcenteronline.com/oauth/applications
-#   → Personal Access Tokens → New Personal Access Token
+# Local secrets for the Cloudflare Workers runtime.
+# Copy this file to  .dev.vars  and fill in real values. .dev.vars is gitignored — it never gets committed.
+# `npm run dev` reads it from here; `npm run preview` reads it from dist/server/.dev.vars (copy it
+# there after building). Leave ESV_API_KEY out when running `npm test` (snapshots assume no key).
+# In production, set each one with:  npx wrangler secret put <NAME>
+
+# ESV API (scripture tooltips). OPTIONAL: without it, scripture references render as plain text.
+# Free key from https://api.esv.org/  →  create an API Application (register it to the church).
+ESV_API_KEY=
+
+# Planning Center Personal Access Token, used by scripts/pco-fields.mjs (for the custom forms,
+# not in use yet). Get these at: https://api.planningcenteronline.com/personal_access_tokens
 PCO_APP_ID=PCO_APP_ID
 PCO_SECRET=PCO_SECRET

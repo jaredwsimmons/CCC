@@ -8,8 +8,8 @@ import { groups as groupsContent } from '../data/content';
 import { getGroups, TYPES } from '../lib/groups';
 import { site, withBase } from '../data/site';
 
-// LIVE from Church Center's public groups API (no token). Full groups hidden,
-// sorted Mon→Sun by meeting day/time.
+// LIVE from Church Center's public groups API (no token), cached at the edge.
+// Full groups hidden, sorted Mon→Sun by meeting day/time.
 const groups = await getGroups();
 const allGroupsUrl = `https://${site.churchCenter.subdomain}/groups`;
 const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label: t.replace(' Groups', '') }))];
@@ -25,6 +25,12 @@ const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label
         <button type="button" data-filter={t.key} class={i === 0 ? 'is-active' : ''} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>{t.label}</button>
       ))}
     </div>
+
+    {groups.length === 0 && (
+      <p class="note" data-reveal>
+        No open groups to show right now. <a href={allGroupsUrl} target="_blank" rel="noopener noreferrer">Browse all groups on Church Center</a>.
+      </p>
+    )}
 
     <div class="grid cols-3 gcards">
       {groups.map((g) => (

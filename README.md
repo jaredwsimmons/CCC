@@ -2,7 +2,7 @@
 
 A fast, free-to-host church website. Replaces the GoHighLevel/agency site while **keeping Planning Center as the engine**.
 
-**Stack:** [Astro](https://astro.build) (static) → [Cloudflare Pages](https://pages.cloudflare.com) (free host) → [Sanity](https://www.sanity.io) (the CMS staff edit) → **Church Center embeds** for calendar / giving / forms / registration. Domain stays at GoDaddy; email stays on Google Workspace.
+**Stack:** [Astro](https://astro.build) (server-rendered) → [Cloudflare Workers](https://workers.cloudflare.com) (free host) → [Sanity](https://www.sanity.io) (the CMS staff edit) → **Church Center** for calendar / giving / forms / registration. Pages are built when they're visited, so edits and Church Center changes show up without a rebuild. Domain registration stays at GoDaddy; email stays on Google Workspace.
 
 > Design rationale, cost model, and the GoHighLevel→Planning Center CRM plan live in the vault:
 > `04 Church/Church Website — Target Stack & CRM Replacement.md`.
@@ -11,7 +11,7 @@ A fast, free-to-host church website. Replaces the GoHighLevel/agency site while 
 
 ## Prerequisites
 
-- **Node 22** (`.nvmrc` pins it)
+- **Node 22.23.4+** (`.nvmrc` pins it; Astro 7 requires it)
 - A free **Sanity** account → https://www.sanity.io/manage (only needed once you want real content; the site builds without it)
 
 ## Quick start (the website)
@@ -24,9 +24,12 @@ npm run dev      # http://localhost:4321
 The site runs immediately with **placeholder pages** for every nav item and **live Church Center** calendar/giving. It builds fine before Sanity is connected.
 
 ```bash
-npm run build    # static output → ./dist  (this is what Cloudflare Pages serves)
-npm run preview  # preview the production build locally
+npm run build    # Workers bundle + static assets → ./dist
+npm run preview  # run the production build locally in the Workers runtime
+npm test         # Playwright tests (builds + previews the site)
 ```
+
+`npm run dev` and `npm run preview` run Cloudflare's real Workers runtime locally — no Cloudflare account needed. Astro 7 keeps them running in the background: if one says it's "already running", stop it with `npx astro dev stop` / `npx astro preview stop`. Local secrets go in `.dev.vars` (see `.dev.vars.example`).
 
 ## Connecting Sanity (the CMS)
 
@@ -44,25 +47,21 @@ npm run preview  # preview the production build locally
    npm run dev               # http://localhost:3333  — the editing UI
    npm run deploy            # publishes it to https://<name>.sanity.studio (free hosting for staff)
    ```
-4. Add content in the Studio (Pages, Events, Sermons, Leaders, Site Settings). The website reads it at **build time**, so re-run `npm run build` (or let Cloudflare rebuild) to see changes.
+4. Add content in the Studio. The website reads it **when each page is visited**, so a published change is live within seconds — no rebuild.
 
-### Auto-rebuild on publish (so staff edits go live by themselves)
-In the Sanity project: **API → Webhooks → Create** a webhook pointing at a **Cloudflare Pages Deploy Hook** (Pages project → Settings → Builds & deployments → Deploy hooks). Then hitting **Publish** in the Studio triggers a rebuild; the change is live in ~1–2 min.
-
-## How the Church Center embeds work
+## How Church Center and the live data work
 
 - The modal runtime loads once in `<head>` (`src/components/ChurchCenterScript.astro`).
-- Any link ending in `?open-in-church-center-modal=true` opens giving/forms/registration in an overlay (see `GiveButton` usage). **Requires HTTPS** — Cloudflare Pages provides it automatically.
-- The calendar is an `<iframe>` embed (`src/components/ChurchCenterCalendar.astro`) pointed at the Church Center calendar.
+- Any link ending in `?open-in-church-center-modal=true` opens giving/forms/registration in an overlay on desktop (phones open it in a new tab). **Requires HTTPS.**
+- The calendar, groups and sermon feeds are fetched from Church Center / the podcast and YouTube feeds when a page is visited, and cached at the edge (`src/lib/cache.ts`): 10–30 minutes fresh, with the last good copy shown if a source is down.
 - Church Center org/URLs are configured in `src/data/site.ts`.
 
-## Deploy to Cloudflare Pages
+## Deploy to Cloudflare Workers
 
-1. Push this repo to GitHub.
-2. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git**.
-3. Build settings: **Framework = Astro**, build command `npm run build`, output dir `dist`.
-4. Add env vars `PUBLIC_SANITY_PROJECT_ID` / `PUBLIC_SANITY_DATASET` in Pages settings.
-5. Add the custom domain `chelseachurch.com` (move DNS to Cloudflare — free — which also lets you add a **DMARC** record to fix the current email-spoofing gap). Keep domain registration at GoDaddy; only nameservers change. **Recreate the Google Workspace MX + SPF records exactly** during the DNS move or email breaks.
+1. Create a free Cloudflare account under the church's shared address.
+2. Either deploy from a machine (`npx wrangler login`, then `npm run build && npx wrangler deploy`), or connect the GitHub repo under **Workers & Pages** (Workers Builds) with build command `npm run build` and deploy command `npx wrangler deploy`.
+3. Set build variables `PUBLIC_SANITY_PROJECT_ID` / `PUBLIC_SANITY_DATASET`, and secrets with `npx wrangler secret put ESV_API_KEY`.
+4. Add the custom domain `chelseachurch.com` to the Worker. Cloudflare requires the domain's DNS to be hosted on Cloudflare (registration stays at GoDaddy; only nameservers change). **Recreate the Google Workspace MX, SPF and verification records exactly** during the DNS move or email breaks — see the staff asks doc.
 
 ## Project structure
 
@@ -79,12 +78,12 @@ In the Sanity project: **API → Webhooks → Create** a webhook pointing at a *
 │  │  └─ give.astro         # Church Center giving
 │  └─ styles/global.css     # brand system (blue #005291 / gold #F0C334, Poppins/Nunito)
 ├─ studio/                  # Sanity Studio (schemas + config) — staff editing UI
-└─ public/                  # favicon, robots.txt, _redirects
+└─ public/                  # favicon, robots.txt, images (old-URL redirects live in astro.config.mjs)
 ```
 
 ## Editing content (for staff)
 
-Everything is edited in the **Studio** (`<name>.sanity.studio`) — no code. Pick a page, fill in the labeled fields, add an image (drag the focal point), press **Publish**. You can't break the layout; the site rebuilds itself. Full walkthrough in the vault stack note.
+Everything is edited in the **Studio** (`<name>.sanity.studio`) — no code. Pick a page, fill in the labeled fields, add an image (drag the focal point), press **Publish**. You can't break the layout, and the change is live within seconds. Full walkthrough in the vault stack note.
 
 ---
 

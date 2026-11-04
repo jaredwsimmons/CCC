@@ -1,27 +1,54 @@
 ---
 // A single scripture reference with a hover/focus tooltip of the ESV text.
-// The verse text is fetched ONCE at build time (src/lib/esv.ts). If no ESV key is
-// configured, `text` is null and the reference renders as plain text (no tooltip) —
-// the page is fully functional either way.
-import { getPassage } from '../lib/esv';
+// The verse loads from /api/esv the first time the reference is hovered, focused or
+// tapped (src/lib/esv.ts explains why not while rendering). If no ESV key is
+// configured, the reference renders as plain text (no tooltip) — the page is fully
+// functional either way.
+import { hasEsvKey } from '../lib/esv';
 
 interface Props {
   reference: string;
 }
 const { reference } = Astro.props;
-const text = await getPassage(reference);
 ---
-{text ? (
-  <span class="sref" tabindex="0">
+{hasEsvKey() ? (
+  <span class="sref" tabindex="0" data-ref={reference}>
     <span class="sref-label">{reference}</span>
     <span class="sref-pop" role="tooltip">
-      <span class="sref-text">{text}</span>
+      <span class="sref-text">Loading…</span>
       <cite class="sref-cite">ESV</cite>
     </span>
   </span>
 ) : (
   <span class="sref-plain">{reference}</span>
 )}
+
+<script>
+  // Load each reference's verse once, on its first hover, focus or tap.
+  async function load(el: HTMLElement) {
+    if (el.dataset.loaded) return;
+    el.dataset.loaded = '1';
+    const out = el.querySelector('.sref-text');
+    try {
+      const res = await fetch(`/api/esv?ref=${encodeURIComponent(el.dataset.ref ?? '')}`);
+      if (!res.ok) throw new Error(`ESV ${res.status}`);
+      const { text } = (await res.json()) as { text: string };
+      if (out) out.textContent = text;
+    } catch {
+      if (out) out.textContent = 'The verse text could not be loaded.';
+    }
+  }
+  for (const type of ['pointerenter', 'focusin']) {
+    document.addEventListener(
+      type,
+      (e) => {
+        const el = (e.target as Element | null)?.closest?.('.sref[data-ref]');
+        if (el instanceof HTMLElement) load(el);
+      },
+      true,
+    );
+  }
+</script>
 
 <style>
   .sref {

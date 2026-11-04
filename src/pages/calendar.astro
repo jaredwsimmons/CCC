@@ -44,6 +44,12 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       </div>
     </div>
 
+    {events.length === 0 && (
+      <p class="note" data-reveal>
+        No upcoming events to show right now. See the <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Church Center calendar</a> for the latest.
+      </p>
+    )}
+
     <!-- LIST view -->
     <div data-view="list">
       {months.map((m) => (

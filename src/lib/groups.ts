@@ -1,7 +1,10 @@
 // Groups data layer — LIVE from Church Center's PUBLIC groups API (no token),
-// the same feed the church publishes for people to browse/join. Fetched at
-// build time; full (enrollment closed) groups are hidden per request, sorted
-// by meeting day/time (Mon→Sun), with a graceful fallback.
+// the same feed the church publishes for people to browse/join. Fetched when
+// the page is visited and cached at the edge for 30 minutes, falling back to
+// the last good copy (src/lib/cache.ts); full (enrollment closed) groups are
+// hidden per request, sorted by meeting day/time (Mon→Sun).
+
+import { cached } from './cache';
 
 const ORG_SUB = 'chelseachurch.churchcenter.com';
 const CC_API = 'https://api.churchcenter.com/groups/v2';
@@ -55,20 +58,21 @@ function sortKey(schedule?: string): number {
   return day * 10000 + mins;
 }
 
-async function fetchLive(timeoutMs = 9000): Promise<Group[]> {
+// null = the fetch failed (as opposed to [] = no open groups).
+async function fetchLive(timeoutMs = 9000): Promise<Group[] | null> {
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), timeoutMs);
     const opts = { signal: ctrl.signal, headers: { 'User-Agent': UA } };
 
     const tokRes = await fetch(`https://${ORG_SUB}/sessions/tokens`, { ...opts, method: 'POST', headers: { ...opts.headers, 'Content-Type': 'application/json' } });
-    if (!tokRes.ok) { clearTimeout(t); return []; }
+    if (!tokRes.ok) { clearTimeout(t); return null; }
     const token = (await tokRes.json())?.data?.attributes?.token;
-    if (!token) { clearTimeout(t); return []; }
+    if (!token) { clearTimeout(t); return null; }
 
     const res = await fetch(`${CC_API}/groups?per_page=100`, { ...opts, headers: { ...opts.headers, Authorization: `Bearer ${token}` } });
     clearTimeout(t);
-    if (!res.ok) return [];
+    if (!res.ok) return null;
     const body = await res.json();
 
     return (body.data ?? [])
@@ -87,20 +91,12 @@ async function fetchLive(timeoutMs = 9000): Promise<Group[]> {
         };
       });
   } catch {
-    return [];
+    return null;
   }
 }
 
-const SEED: Group[] = [
-  { name: 'Generations', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 9–10am', joinUrl: `https://${ORG_SUB}/groups`, sortKey: 7 * 10000 + 540 },
-  { name: 'Living Stones', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 9–10am', joinUrl: `https://${ORG_SUB}/groups`, sortKey: 7 * 10000 + 540 },
-  { name: 'Faith in the Trenches', type: 'Community Groups', schedule: 'Meets weekly on Sundays from 10:30–11:30am', joinUrl: `https://${ORG_SUB}/groups`, sortKey: 7 * 10000 + 630 },
-  { name: 'exHImplify', type: 'Community Groups', schedule: 'Meets weekly on Wednesdays from 6–7pm', joinUrl: `https://${ORG_SUB}/groups`, sortKey: 3 * 10000 + 1080 },
-];
-
 // Flat list, sorted Mon→Sun by day/time (groups with no schedule last).
 export async function getGroups(): Promise<Group[]> {
-  const live = await fetchLive();
-  const groups = live.length ? live : SEED;
+  const groups = (await cached('groups', 30 * 60, fetchLive)) ?? [];
   return groups.sort((a, b) => a.sortKey - b.sortKey || a.name.localeCompare(b.name));
 }

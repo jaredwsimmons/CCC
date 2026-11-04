@@ -1,10 +1,12 @@
 // Public feed parsing — NO auth token required.
-// YouTube channel RSS + the sermon podcast RSS are fetched at BUILD TIME and
-// parsed into typed data the Media page renders natively (no iframe/embed).
-// If a feed is unreachable at build, we return [] and the page falls back to
-// its platform buttons — a feed hiccup never fails the build.
+// YouTube channel RSS + the sermon podcast RSS are fetched when the Media page is
+// visited, cached at the edge for 15 minutes (src/lib/cache.ts), and parsed into
+// typed data the page renders natively (no iframe/embed). If a feed is unreachable
+// and nothing is cached, we return [] and the page falls back to its platform buttons.
+// Cached copies are JSON, so dates are kept as strings until they're handed out.
 import { XMLParser } from 'fast-xml-parser';
 import { site } from '../data/site';
+import { cached } from './cache';
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
 
@@ -59,27 +61,30 @@ export interface Video {
 }
 
 export async function getYouTubeVideos(limit = 6): Promise<Video[]> {
-  const xml = await fetchText(site.media.youtubeFeed);
-  if (!xml) return [];
-  try {
-    const feed = parser.parse(xml)?.feed;
-    return asArray<any>(feed?.entry)
-      .map((e) => {
-        const id = e['yt:videoId'];
-        const thumb = e['media:group']?.['media:thumbnail']?.['@_url'];
-        return {
-          id,
-          title: decodeEntities(typeof e.title === 'string' ? e.title : e.title?.['#text'] ?? ''),
-          date: e.published ? new Date(e.published) : null,
-          thumbnail: thumb || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : ''),
-          url: id ? `https://www.youtube.com/watch?v=${id}` : '',
-        } as Video;
-      })
-      .filter((v) => v.id)
-      .slice(0, limit);
-  } catch {
-    return [];
-  }
+  const videos = await cached(`youtube:${limit}`, 15 * 60, async () => {
+    const xml = await fetchText(site.media.youtubeFeed);
+    if (!xml) return null;
+    try {
+      const feed = parser.parse(xml)?.feed;
+      return asArray<any>(feed?.entry)
+        .map((e) => {
+          const id = e['yt:videoId'];
+          const thumb = e['media:group']?.['media:thumbnail']?.['@_url'];
+          return {
+            id,
+            title: decodeEntities(typeof e.title === 'string' ? e.title : e.title?.['#text'] ?? ''),
+            date: (e.published as string | undefined) ?? null,
+            thumbnail: thumb || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : ''),
+            url: id ? `https://www.youtube.com/watch?v=${id}` : '',
+          };
+        })
+        .filter((v) => v.id)
+        .slice(0, limit);
+    } catch {
+      return null;
+    }
+  });
+  return (videos ?? []).map((v) => ({ ...v, date: v.date ? new Date(v.date) : null }));
 }
 
 export interface Episode {
@@ -92,30 +97,46 @@ export interface Episode {
   link: string;
 }
 
-export async function getPodcastEpisodes(limit = 9): Promise<Episode[]> {
-  const xml = await fetchText(site.media.podcastFeed);
-  if (!xml) return [];
-  try {
-    const channel = parser.parse(xml)?.rss?.channel;
-    return asArray<any>(channel?.item)
-      .map((it) => {
-        const title = typeof it.title === 'string' ? it.title : it.title?.['#text'] ?? '';
-        const desc = typeof it.description === 'string' ? it.description : it.description?.['#text'] ?? '';
-        return {
-          title: decodeEntities(title),
-          subtitle: tidySubtitle(desc),
-          date: it.pubDate ? new Date(it.pubDate) : null,
-          duration: it['itunes:duration'] ? String(it['itunes:duration']) : '',
-          audioUrl: it.enclosure?.['@_url'] ?? '',
-          image: it['itunes:image']?.['@_href'] ?? '',
-          link: it.link ?? '',
-        } as Episode;
-      })
-      .filter((e) => e.title)
-      .slice(0, limit);
-  } catch {
-    return [];
+// The podcast feed lists every episode (300+, ~350 KB), and parsing all of it takes
+// longer than a free Workers request may spend (~28 ms vs 10 ms). Episodes run newest
+// first and only the first few are shown, so cut the feed after the first `n` items.
+function firstItems(xml: string, n: number): string {
+  let end = 0;
+  for (let i = 0; i < n; i++) {
+    const next = xml.indexOf('</item>', end);
+    if (next === -1) return xml;
+    end = next + '</item>'.length;
   }
+  return xml.slice(0, end) + '</channel></rss>';
+}
+
+export async function getPodcastEpisodes(limit = 9): Promise<Episode[]> {
+  const episodes = await cached(`podcast:${limit}`, 15 * 60, async () => {
+    const xml = await fetchText(site.media.podcastFeed);
+    if (!xml) return null;
+    try {
+      const channel = parser.parse(firstItems(xml, limit))?.rss?.channel;
+      return asArray<any>(channel?.item)
+        .map((it) => {
+          const title = typeof it.title === 'string' ? it.title : it.title?.['#text'] ?? '';
+          const desc = typeof it.description === 'string' ? it.description : it.description?.['#text'] ?? '';
+          return {
+            title: decodeEntities(title),
+            subtitle: tidySubtitle(desc),
+            date: (it.pubDate as string | undefined) ?? null,
+            duration: it['itunes:duration'] ? String(it['itunes:duration']) : '',
+            audioUrl: it.enclosure?.['@_url'] ?? '',
+            image: it['itunes:image']?.['@_href'] ?? '',
+            link: it.link ?? '',
+          };
+        })
+        .filter((e) => e.title)
+        .slice(0, limit);
+    } catch {
+      return null;
+    }
+  });
+  return (episodes ?? []).map((e) => ({ ...e, date: e.date ? new Date(e.date) : null }));
 }
 
 // Format an itunes:duration ("00:33:58" or seconds) as "34 min"

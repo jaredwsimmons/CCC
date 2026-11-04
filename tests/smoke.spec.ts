@@ -27,6 +27,24 @@ test('unknown pages get the 404 page', async ({ page }) => {
   await expect(page.locator('h1')).toHaveText("We couldn't find that page");
 });
 
+test('old URLs redirect permanently', async ({ request }) => {
+  for (const [from, to] of [['/history', '/our-story'], ['/home', '/']]) {
+    const res = await request.get(from, { maxRedirects: 0 });
+    expect(res.status(), from).toBe(301);
+    expect(new URL(res.headers()['location'], 'http://x').pathname, from).toBe(to);
+  }
+});
+
+test('the scripture endpoint only looks up scripture references', async ({ request }) => {
+  const notARef = await request.get('/api/esv?ref=' + encodeURIComponent('weather in Chelsea'));
+  expect(notARef.status()).toBe(400);
+  const tooLong = await request.get('/api/esv?ref=' + encodeURIComponent('John 3:16 '.repeat(10)));
+  expect(tooLong.status()).toBe(400);
+  // A real reference is accepted; with no ESV key configured (tests) it's "unavailable".
+  const ref = await request.get('/api/esv?ref=' + encodeURIComponent('John 3:16'));
+  expect([200, 404]).toContain(ref.status());
+});
+
 test('internal links all resolve', async ({ page, request }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'links are the same on every viewport');
   const hrefs = new Set<string>();

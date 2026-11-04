@@ -1,39 +1,19 @@
-// Build-time ESV passage fetch for scripture tooltips.
+// ESV passage lookups for the scripture tooltips.
 // - Reads the church's ESV API key from astro:env (server secret, OPTIONAL).
-// - Caches results on disk (.cache/esv.json, gitignored) so repeat builds + dev are
-//   fast and polite to the API.
+// - Pages never call the ESV API while rendering: the tooltip asks /api/esv for a
+//   verse the first time someone hovers or taps it, and each passage is cached at
+//   the edge for 30 days (src/lib/cache.ts). Rendering a page fetching every verse
+//   would exceed a free Workers request's 50 subrequests on Bylaws (~27 passages).
 // - NEVER throws: if the key is missing or a fetch fails, returns null and the
-//   reference renders as plain text — a hiccup never fails the build (same posture
-//   as src/lib/feeds.ts).
+//   reference stays plain text.
 //
 // ESV text © Crossway; used per the api.esv.org terms. Required attribution is shown
-// on-page (see the Beliefs page). Build-time only — do not import into client code.
+// on-page (see the Beliefs page). Server-only — do not import into client code.
 import { ESV_API_KEY } from 'astro:env/server';
-import fs from 'node:fs';
-import path from 'node:path';
+import { cached } from './cache';
 
-const CACHE_FILE = path.resolve('.cache/esv.json');
-let cache: Record<string, string> | null = null;
-const inflight = new Map<string, Promise<string | null>>();
-
-function loadCache(): Record<string, string> {
-  if (cache) return cache;
-  try {
-    cache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')) as Record<string, string>;
-  } catch {
-    cache = {};
-  }
-  return cache;
-}
-
-function saveCache(): void {
-  try {
-    fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(cache ?? {}, null, 2));
-  } catch {
-    /* cache is best-effort — never block the build on it */
-  }
-}
+/** Whether scripture references should be interactive (an ESV key is configured). */
+export const hasEsvKey = (): boolean => Boolean(ESV_API_KEY);
 
 // Clean, tooltip-friendly text: no verse numbers, footnotes, headings, or copyright line.
 const PARAMS = new URLSearchParams({
@@ -68,27 +48,11 @@ async function fetchESV(ref: string): Promise<string | null> {
   }
 }
 
-/**
- * ESV text for a reference, or null (missing key / bad ref / offline). Build-time only.
- * Memoized in-process and cached to disk so each unique reference is fetched at most once.
- */
+/** ESV text for a reference, or null (missing key / bad ref / offline). Cached 30 days. */
 export async function getPassage(ref: string): Promise<string | null> {
   const key = ref.trim();
-  if (!key) return null;
-  const c = loadCache();
-  if (key in c) return c[key] || null;
-  const pending = inflight.get(key);
-  if (pending) return pending;
-  const p = fetchESV(key).then((text) => {
-    if (text) {
-      c[key] = text;
-      saveCache();
-    }
-    inflight.delete(key);
-    return text;
-  });
-  inflight.set(key, p);
-  return p;
+  if (!key || !ESV_API_KEY) return null;
+  return cached(`esv:${key}`, 30 * 24 * 60 * 60, () => fetchESV(key));
 }
 
 /** Split a "ref; ref; ref" string (as stored in content.ts) into individual references. */

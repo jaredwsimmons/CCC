@@ -32,9 +32,12 @@ export default defineConfig({
     { name: 'mobile', use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
   ],
   webServer: {
-    command: `npm run build && npm run preview -- --host 127.0.0.1 --port ${port}`,
+    // `astro preview` runs the production build in the Workers runtime. --ignore-lock
+    // starts our own server even if an earlier preview left its lock file behind.
+    command: `npm run build && npm run preview -- --host 127.0.0.1 --port ${port} --ignore-lock`,
     url: `http://127.0.0.1:${port}`,
-    // Build without the ESV key so scripture references render the same on every machine.
+    // Snapshots assume no ESV key, so scripture references render as plain text: don't
+    // set ESV_API_KEY in .dev.vars when running the tests.
     env: { ESV_API_KEY: '' },
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

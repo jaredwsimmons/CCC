@@ -4,10 +4,12 @@
 // any visitor already sees), reached with NO Planning Center credentials:
 //   1) POST https://{org}.churchcenter.com/sessions/tokens  -> anonymous org bearer (ort_…)
 //   2) GET  https://api.churchcenter.com/calendar/v2/events  with that bearer
-// Fetched at BUILD time; if anything fails we fall back to the seeded events
-// below so the page never breaks. (Undocumented app API — hence the fallback.)
+// Fetched when the page is visited and cached at the edge for 10 minutes. If a
+// refresh fails, the last good copy is shown (src/lib/cache.ts); with none, the
+// page shows its empty state. (Undocumented app API — hence the fallbacks.)
 
 import { withBase } from '../data/site';
+import { cached } from './cache';
 
 const ORG_SUB = 'chelseachurch.churchcenter.com';
 const CC_API = 'https://api.churchcenter.com/calendar/v2';
@@ -39,21 +41,22 @@ const localDate = (iso: string) =>
 const localTime = (iso: string) =>
   new Date(iso).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
 
-async function fetchLive(timeoutMs = 9000): Promise<ChurchEvent[]> {
+// null = the fetch failed (as opposed to [] = no upcoming events).
+async function fetchLive(timeoutMs = 9000): Promise<ChurchEvent[] | null> {
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), timeoutMs);
     const opts = { signal: ctrl.signal, headers: { 'User-Agent': UA } };
 
     const tokRes = await fetch(`https://${ORG_SUB}/sessions/tokens`, { ...opts, method: 'POST', headers: { ...opts.headers, 'Content-Type': 'application/json' } });
-    if (!tokRes.ok) { clearTimeout(t); return []; }
+    if (!tokRes.ok) { clearTimeout(t); return null; }
     const token = (await tokRes.json())?.data?.attributes?.token;
-    if (!token) { clearTimeout(t); return []; }
+    if (!token) { clearTimeout(t); return null; }
 
     const url = `${CC_API}/events?filter=upcoming,first_occurrence&order=visible_starts_at&per_page=100&include=event_registration_url,location`;
     const res = await fetch(url, { ...opts, headers: { ...opts.headers, Authorization: `Bearer ${token}` } });
     clearTimeout(t);
-    if (!res.ok) return [];
+    if (!res.ok) return null;
     const body = await res.json();
 
     const inc: Record<string, any> = {};
@@ -85,23 +88,18 @@ async function fetchLive(timeoutMs = 9000): Promise<ChurchEvent[]> {
       };
     });
   } catch {
-    return [];
+    return null;
   }
 }
 
-// ── Seeded fallback (used only if the live fetch fails) ──────────────────────
-const SEED: ChurchEvent[] = [
-  { id: 's1', title: 'Sundae Funday Bingo', date: '2026-07-13', timeLabel: '6:00 – 7:30 PM', location: 'Community Room', description: 'Women’s ministry night of bingo, prizes, and ice cream sundaes.', register: 'https://chelseachurch.churchcenter.com/registrations/events/3694679' },
-  { id: 's2', title: 'Men On Fire', date: '2026-08-02', timeLabel: '6:00 PM', location: 'The fire pit', recurrence: 'First Sunday monthly', description: 'Brotherhood, Scripture, and prayer around the fire pit.' },
-  { id: 's3', title: 'Ladies Breakfast', date: '2026-08-22', timeLabel: '8:00 AM', location: 'Community Room', description: 'Breakfast and fellowship for the women of the church.' },
-];
-
 export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
-  const live = await fetchLive();
+  const live = (await cached('calendar-events', 10 * 60, fetchLive)) ?? [];
+  const today = localDate(new Date().toISOString());
   // The Sunday-morning service breakouts (Worship/Preschool/K-5, all "Every
   // Sunday") are covered by the weekly-rhythm cards — drop them so the upcoming
-  // list highlights special + non-weekly-Sunday events.
-  const events = (live.length ? live : SEED).filter((e) => !/^every sunday$/i.test(e.recurrence || ''));
+  // list highlights special + non-weekly-Sunday events. Past dates can only come
+  // from a days-old fallback copy; drop those too.
+  const events = live.filter((e) => e.date >= today && !/^every sunday$/i.test(e.recurrence || ''));
   return events.sort((a, b) => a.date.localeCompare(b.date));
 }
 

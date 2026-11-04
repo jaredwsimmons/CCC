@@ -1,29 +1,33 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
+import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 
-// Pure static site (default output). Deploys to Cloudflare Pages as static assets.
-// Content is pulled from Sanity at BUILD time (see src/lib/sanity.ts) — no server needed.
-//
-// `site`/`base` are overridable via env so the SAME source can also publish to a
-// GitHub Pages *project* site (served from a `/CCC/` subpath) for staff previews,
-// without disturbing the production Cloudflare build (which serves from the root).
-// Production defaults below are used whenever the env vars are unset.
-// Internal links/assets go through withBase() in src/data/site.ts, so a non-root
-// base "just works". See .github/workflows/deploy-pages.yml.
-const site = process.env.SITE_URL || 'https://chelseachurch.com';
-const base = process.env.BASE_PATH || undefined; // e.g. '/CCC' on GitHub Pages
-
+// Server-rendered on Cloudflare Workers: each page is built when it's visited, so
+// Church Center data (and Sanity content) is always current, with no rebuilds.
+// Upstream data is cached at the edge (src/lib/cache.ts) so a visit rarely waits on it.
+// `astro dev` and `astro preview` run the real Workers runtime locally (no account needed).
 export default defineConfig({
-  site,
-  base,
+  site: 'https://chelseachurch.com',
+  output: 'server',
+  adapter: cloudflare({
+    // Plain <img> tags only (Sanity's image CDN does the resizing), so no Cloudflare Images binding.
+    imageService: 'passthrough',
+  }),
+  // No sessions are used; without this the adapter provisions a KV namespace for them.
+  session: false,
   integrations: [sitemap()],
-  // Keep this a multi-page static site. Do NOT add <ClientRouter /> (View Transitions):
+  // Keep this a multi-page site. Do NOT add <ClientRouter /> (View Transitions):
   // is:inline embed scripts (Church Center modal) don't re-execute on client-side nav,
   // which would silently break the giving/registration modals after the first page load.
   trailingSlash: 'ignore',
-  // Build-time secret for the ESV scripture tooltips (src/lib/esv.ts). Optional:
-  // the site builds fine without it — references just render as plain text.
+  // Old URLs whose path changed. Most GoHighLevel slugs are preserved 1:1, so only these.
+  redirects: {
+    '/home': '/',
+    '/history': '/our-story',
+  },
+  // Runtime secret for the ESV scripture tooltips (/api/esv). Optional: without it,
+  // references render as plain text. Local: .dev.vars. Production: `wrangler secret put`.
   env: {
     schema: {
       ESV_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),

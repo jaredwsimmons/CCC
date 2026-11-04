@@ -1,6 +1,6 @@
 ---
 // Auto-tags every scripture reference in a prose string with an ESV hover tooltip.
-// Non-reference text passes through unchanged. Build-time (via ScriptureRef → esv.ts).
+// Non-reference text passes through unchanged. Verses load on demand (ScriptureRef).
 // Use for body copy that cites references without quoting them, e.g.:
 //   <p><Scripturize text={beliefs.pursuit.body[0]} /></p>
 import ScriptureRef from './ScriptureRef.astro';

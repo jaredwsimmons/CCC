@@ -1,0 +1,6 @@
+// Cloudflare Workers config. Astro fills in the entry point and static assets at build time.
+// Secrets (ESV_API_KEY) are set with `npx wrangler secret put <NAME>`; locally they go in .dev.vars.
+{
+  "name": "chelsea-church-website",
+  "compatibility_date": "2026-11-01"
+}

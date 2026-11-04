@@ -11,17 +11,18 @@ Rules (AI-Written Code)`); this is the church-website deployment of it.
 ---
 
 ## The stack (read this first)
-- **Astro 5** — the site. Routes in `src/pages/`, components in `src/components/` (`.astro`), `src/layouts/`.
+- **Astro 7** — the site. Routes in `src/pages/`, components in `src/components/` (`.astro`), `src/layouts/`. Needs Node 22.23.4+ (`.nvmrc`).
 - **Sanity CMS** — content lives in **Sanity, not the repo**. Schemas in `studio/`; queried via `@sanity/client` (GROQ); rendered through `@portabletext/to-html` + `@sanity/image-url`.
-- **Cloudflare Pages** — deploy target. `functions/` = Pages Functions (**edge runtime, not Node** — no `fs` etc. unless `nodejs_compat`). `wrangler` runs it locally.
+- **Cloudflare Workers** — deploy target. Pages render on request (`output: 'server'`, `@astrojs/cloudflare`) in the **edge runtime, not Node** — no `fs` etc. Upstream fetches go through `src/lib/cache.ts`. `astro dev` / `astro preview` run that runtime locally. (`functions/` is a leftover Pages Function, not deployed.)
 - **TypeScript** — `astro check` is the type gate.
 - **Playwright** — e2e tests. This is the verification tool (rule V).
 - **Planning Center (PCO)** — `scripts/pco-fields.mjs`, XML via `fast-xml-parser`.
 - **Secrets** — `.dev.vars` (Cloudflare) + `.env`, both git-ignored. **Never commit them.** A `secret-scan` PreToolUse hook blocks commits containing keys.
 
 ## Commands
-- `npm run dev` — Astro dev server · `npm run dev:fn` — build + Cloudflare Pages runtime (functions)
+- `npm run dev` — dev server (Workers runtime) · `npm run preview` — the production build in the Workers runtime
 - `npm run build` — production build · `npm run check` — `astro check` (types)
+- Astro 7 keeps dev/preview servers running in the background; "already running" → `npx astro dev stop` / `npx astro preview stop`
 - `npm test` — Playwright e2e tests (builds + serves the site; baselines in `tests/__snapshots__` and `tests/__screenshots__`) · `npm run test:update` — accept an intended change
 - Run the **Playwright** e2e tests before calling a change done.
 
@@ -35,7 +36,7 @@ Rules (AI-Written Code)`); this is the church-website deployment of it.
 4. **Surgical changes.** Smallest diff the task allows. **Don't reformat**, match the existing style, don't touch what you weren't asked to. `astro check` stays clean. Justify every changed line by the task — "while I was in there" → revert it.
 5. **Verification.** Playwright is here — use it. Fixing a bug → **write the failing test first, then fix.** `npm run build` + `npm run check` must pass before "done." Test behavior that can break, not that a constructor set a field. Hard to test = information about the design, not permission to skip.
 6. **Goal-driven execution.** A success criterion **before** code ("the events page renders upcoming PCO events, handles the empty state, and passes a Playwright check"). Multi-step → state the plan first.
-7. **Debugging.** Read the whole error + stack trace. **Reproduce** (`npm run dev` / `npm run dev:fn`) before changing anything; change one thing at a time. Don't paper over a null — a missing Sanity field or an empty PCO response is a real case; find out *why* it's null.
+7. **Debugging.** Read the whole error + stack trace. **Reproduce** (`npm run dev` / `npm run preview`) before changing anything; change one thing at a time. Don't paper over a null — a missing Sanity field or an empty PCO response is a real case; find out *why* it's null.
 8. **Dependencies.** Every dep is permanent code you don't control. Astro + Sanity already do a lot (sitemap, image URLs, Portable Text) — reach for those before adding a package. When you add one, **say why.**
 9. **Communication.** Say what you did and why, not just a code block. Flag concerns even when you did exactly what was asked. Be precise about uncertainty ("I'm not sure Cloudflare Functions support this API" — not "I think this works").
 10. **Catch the named failure modes** — **Kitchen Sink** (restructuring half the repo while you're in there) · **Wrong Abstraction** (abstracting before the copy-paste happens twice) · **Optimistic Path** (happy path handled, the Sanity/PCO fetch failure or Cloudflare 500 ignored) · **Runaway Refactor** (a fix cascading across files). Caught in one → **stop, don't push through.**
@@ -44,7 +45,7 @@ Rules (AI-Written Code)`); this is the church-website deployment of it.
 
 ## Repo-specific hard rules
 - **Content is Sanity-owned** — don't hardcode copy/images that belong in the CMS; add/adjust a schema in `studio/` and query it.
-- **Functions run on the edge** — no Node-only APIs unless `nodejs_compat` is enabled; keep them small and env-driven.
+- **Everything runs on the edge** (Cloudflare Workers, free plan) — no Node-only APIs; a request gets ~10 ms of CPU and 50 subrequests. Don't fetch per item while rendering (cache it, or load it on demand like `/api/esv`), and don't parse big payloads whole (see the podcast feed in `src/lib/feeds.ts`).
 - **Secrets live in `.dev.vars` / `.env` only** — never inline a Sanity token, PCO key, or Cloudflare secret. The `secret-scan` hook enforces this at commit; don't work around it.
 - **External fetches (Sanity, PCO) handle the non-200 path** — that's rule 10's Optimistic Path; never assume a field or response exists.
 
