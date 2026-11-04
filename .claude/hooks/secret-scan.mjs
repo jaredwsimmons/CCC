@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// secret-scan — PreToolUse(Bash) reflex for this repo.
+// secret-scan — PreToolUse(Bash, PowerShell) reflex for this repo.
 // Gates `git commit`: scans the staged diff (plus the working tree for `commit -a`)
 // for real-looking credentials and blocks the commit if any survive the placeholder
 // filter. .gitignore stays the primary control (.env, studio/.env, *Credentials*);
@@ -7,7 +7,7 @@
 // ordinary tracked file. Cross-platform: pure Node, no jq/bash needed.
 //
 // Wiring (Jared, in .claude/settings.json — the agent can't self-grant hook execution):
-//   { "hooks": { "PreToolUse": [ { "matcher": "Bash",
+//   { "hooks": { "PreToolUse": [ { "matcher": "Bash|PowerShell",
 //       "hooks": [ { "type": "command", "command": "node .claude/hooks/secret-scan.mjs" } ] } ] } }
 //
 // Contract: exit 0 = allow; exit 2 = block + stderr fed back to Claude.
