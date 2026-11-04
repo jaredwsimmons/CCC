@@ -1,11 +1,25 @@
-import { defineConfig } from 'sanity';
+import { defineConfig, isDev } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { schemaTypes } from './schemaTypes';
+import { pageTemplates } from './schemaTypes/templates';
 
 // Set SANITY_STUDIO_PROJECT_ID in studio/.env (copy from studio/.env.example).
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || '';
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production';
+
+// One document each, reached from the menu below; staff can't create, duplicate or delete them.
+const SINGLETON_TYPES = new Set(['siteSettings', 'home', 'fixedPage']);
+const SINGLETON_ACTIONS = new Set(['publish', 'discardChanges', 'restore']);
+
+// The fixed pages and their document IDs (the website looks them up by these IDs).
+export const FIXED_PAGES = [
+  { id: 'fixed-calendar', title: 'Calendar' },
+  { id: 'fixed-groups', title: 'Community Groups' },
+  { id: 'fixed-media', title: 'Media' },
+  { id: 'fixed-give', title: 'Give' },
+  { id: 'fixed-leaders', title: 'Leaders' },
+];
 
 export default defineConfig({
   name: 'default',
@@ -13,7 +27,6 @@ export default defineConfig({
   projectId,
   dataset,
   plugins: [
-    // Custom desk structure: "Site Settings" is a single document (singleton), not a list.
     structureTool({
       structure: (S) =>
         S.list()
@@ -23,14 +36,35 @@ export default defineConfig({
               .title('Site Settings')
               .id('siteSettings')
               .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+            S.listItem().title('Home page').id('home').child(S.document().schemaType('home').documentId('home')),
             S.divider(),
             S.documentTypeListItem('page').title('Pages'),
-            S.documentTypeListItem('event').title('Events'),
-            S.documentTypeListItem('sermon').title('Sermons'),
-            S.documentTypeListItem('staff').title('Leaders & Staff'),
+            S.listItem()
+              .title('Fixed pages')
+              .id('fixedPages')
+              .child(
+                S.list()
+                  .title('Fixed pages')
+                  .items(
+                    FIXED_PAGES.map((p) =>
+                      S.listItem().title(p.title).id(p.id).child(S.document().schemaType('fixedPage').documentId(p.id)),
+                    ),
+                  ),
+              ),
+            S.divider(),
+            S.documentTypeListItem('leader').title('Leaders'),
+            S.documentTypeListItem('ministry').title('Ministries & Deacons'),
           ]),
     }),
-    visionTool(),
+    // The GROQ query playground is for developers; staff don't see it in the deployed Studio.
+    ...(isDev ? [visionTool()] : []),
   ],
-  schema: { types: schemaTypes },
+  schema: {
+    types: schemaTypes,
+    templates: (prev) => [...prev.filter((t) => !SINGLETON_TYPES.has(t.schemaType)), ...pageTemplates],
+  },
+  document: {
+    actions: (prev, { schemaType }) =>
+      SINGLETON_TYPES.has(schemaType) ? prev.filter(({ action }) => action && SINGLETON_ACTIONS.has(action)) : prev,
+  },
 });

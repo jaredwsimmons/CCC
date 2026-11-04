@@ -1,0 +1,39 @@
+import { defineArrayMember } from 'sanity';
+import textSection from './textSection';
+import textPhotoSection from './textPhotoSection';
+import cardsSection from './cardsSection';
+import scheduleSection from './scheduleSection';
+import stepsSection from './stepsSection';
+import gallerySection from './gallerySection';
+import scriptureSection from './scriptureSection';
+import ctaBandSection from './ctaBandSection';
+import weeklyRhythmSection from './weeklyRhythmSection';
+import longTextSection from './longTextSection';
+import registrationCardSection from './registrationCardSection';
+import openRegistrationsSection from './openRegistrationsSection';
+import groupsSection from './groupsSection';
+import featuredEventsSection from './featuredEventsSection';
+import latestMessageSection from './latestMessageSection';
+
+// The approved section list: 10 content sections, then the live ones. The order here
+// is the order of the "Add section" menu.
+export const sectionTypes = [
+  textSection,
+  textPhotoSection,
+  cardsSection,
+  scheduleSection,
+  stepsSection,
+  gallerySection,
+  scriptureSection,
+  ctaBandSection,
+  weeklyRhythmSection,
+  longTextSection,
+  registrationCardSection,
+  openRegistrationsSection,
+  groupsSection,
+  featuredEventsSection,
+  latestMessageSection,
+];
+
+/** The members of a `sections` array field. */
+export const sectionMembers = sectionTypes.map((t) => defineArrayMember({ type: t.name }));

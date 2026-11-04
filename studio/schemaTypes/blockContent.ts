@@ -1,4 +1,5 @@
 import { defineType, defineArrayMember } from 'sanity';
+import { imageMember } from './fields';
 
 // Rich text ("Portable Text"). This is the Word-like body editor staff use on pages.
 export default defineType({
@@ -41,10 +42,6 @@ export default defineType({
         ],
       },
     }),
-    defineArrayMember({
-      type: 'image',
-      options: { hotspot: true },
-      fields: [{ name: 'alt', type: 'string', title: 'Alt text', description: 'Describe the image for screen readers & SEO' }],
-    }),
+    imageMember,
   ],
 });

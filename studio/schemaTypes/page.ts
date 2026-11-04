@@ -1,76 +1,77 @@
-import { defineType, defineField } from 'sanity';
+import { defineField, defineType } from 'sanity';
+import { sectionMembers } from './sections';
 
-// A generic content page — this powers every nav page (Beliefs, Kids, Groups, Missions, ...).
+// Addresses owned by the fixed pages, the API and the old-URL redirects.
+const RESERVED = new Set(['calendar', 'groups', 'media', 'give', 'leaders', 'api', 'home', 'history']);
+
+// A page staff build from sections. New pages can start from a template (templates.ts).
 export default defineType({
   name: 'page',
   title: 'Page',
   type: 'document',
   fields: [
-    defineField({
-      name: 'title',
-      title: 'Page title',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
-    }),
+    defineField({ name: 'title', title: 'Page title', type: 'string', validation: (Rule) => Rule.required() }),
     defineField({
       name: 'slug',
-      title: 'URL path',
+      title: 'Web address',
       type: 'slug',
-      description: 'The address of the page. "beliefs" makes it live at /beliefs.',
+      description: 'The page’s address: “vbs-2027” makes it live at /vbs-2027. Changing it breaks old links.',
       options: { source: 'title', maxLength: 96 },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.required().custom((slug) =>
+          slug?.current && RESERVED.has(slug.current) ? `“${slug.current}” is already used by the site.` : true,
+        ),
     }),
+    defineField({ name: 'header', title: 'Page header', type: 'pageHeader' }),
     defineField({
-      name: 'tagline',
-      title: 'Tagline',
-      type: 'string',
-      description: 'A short sentence shown under the page title in the header.',
-    }),
-    defineField({
-      name: 'hero',
-      title: 'Hero image',
-      type: 'image',
-      options: { hotspot: true },
-      description: 'Optional banner image. Drag the focal point so it crops well on phones.',
-      fields: [{ name: 'alt', type: 'string', title: 'Alt text' }],
-    }),
-    defineField({
-      name: 'body',
-      title: 'Body',
-      type: 'blockContent',
-    }),
-    defineField({
-      name: 'cta',
-      title: 'Call-to-action button',
-      type: 'object',
-      description: 'Optional button in the page header (e.g. a Church Center form or registration).',
-      options: { collapsible: true, collapsed: true },
-      fields: [
-        { name: 'label', title: 'Button text', type: 'string' },
-        { name: 'url', title: 'Link (Church Center or external URL)', type: 'url' },
-        {
-          name: 'openInModal',
-          title: 'Open in Church Center pop-up?',
-          type: 'boolean',
-          initialValue: false,
-          description: 'Turn on for Church Center giving / forms / registration links.',
+      name: 'sections',
+      title: 'Sections',
+      type: 'array',
+      of: sectionMembers,
+      options: {
+        insertMenu: {
+          groups: [
+            {
+              name: 'content',
+              title: 'Content',
+              of: [
+                'textSection',
+                'textPhotoSection',
+                'cardsSection',
+                'scheduleSection',
+                'stepsSection',
+                'gallerySection',
+                'scriptureSection',
+                'ctaBandSection',
+                'weeklyRhythmSection',
+                'longTextSection',
+              ],
+            },
+            {
+              name: 'live',
+              title: 'Live from Church Center',
+              of: [
+                'registrationCardSection',
+                'openRegistrationsSection',
+                'groupsSection',
+                'featuredEventsSection',
+                'latestMessageSection',
+              ],
+            },
+          ],
         },
-      ],
+      },
     }),
     defineField({
       name: 'seo',
-      title: 'SEO',
+      title: 'Search engines',
       type: 'object',
       options: { collapsible: true, collapsed: true },
-      fields: [{ name: 'description', title: 'Meta description', type: 'text', rows: 2 }],
+      fields: [defineField({ name: 'description', title: 'Description', type: 'text', rows: 2 })],
     }),
   ],
   preview: {
-    select: { title: 'title', subtitle: 'slug.current', media: 'hero' },
-    prepare: ({ title, subtitle, media }) => ({
-      title,
-      subtitle: subtitle ? `/${subtitle}` : 'no url yet',
-      media,
-    }),
+    select: { title: 'title', subtitle: 'slug.current', media: 'header.image' },
+    prepare: ({ title, subtitle, media }) => ({ title, subtitle: subtitle ? `/${subtitle}` : 'no address yet', media }),
   },
 });
