@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
-import { background, eyebrow, heading, sectionPreview } from '../fields';
+import { background, buttons, eyebrow, heading, sectionPreview } from '../fields';
 
 export default defineType({
   name: 'cardsSection',
@@ -36,7 +36,7 @@ export default defineType({
             defineField({ name: 'title', title: 'Title', type: 'string', validation: (Rule) => Rule.required() }),
             defineField({ name: 'text', title: 'Text', type: 'text', rows: 3 }),
             defineField({ name: 'bullets', title: 'Bullet list', type: 'array', of: [{ type: 'string' }] }),
-            defineField({ name: 'button', title: 'Button', type: 'button' }),
+            { ...buttons(2), title: 'Links' },
           ],
           preview: { select: { title: 'title', subtitle: 'label' } },
         }),

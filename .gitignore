@@ -18,6 +18,7 @@ studio/node_modules/
 
 # sanity
 studio/.sanity/
+migration/
 
 # playwright run output (baselines in tests/__snapshots__ and tests/__screenshots__ ARE committed)
 test-results/

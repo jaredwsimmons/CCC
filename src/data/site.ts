@@ -6,7 +6,8 @@
 // GitHub Pages project preview BASE_URL is "/CCC/" so links/assets resolve correctly.
 // Use for every INTERNAL href/src. External URLs (http…) must NOT go through this.
 export const withBase = (path: string): string => {
-  const base = import.meta.env.BASE_URL.replace(/\/$/, ''); // '' at root, '/CCC' on Pages
+  // '' at root, '/CCC' on Pages; import.meta.env is absent outside Astro (scripts/export-sanity.ts)
+  const base = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '');
   const p = path.startsWith('/') ? path : `/${path}`;
   return `${base}${p}`;
 };

@@ -93,9 +93,13 @@ export default defineType({
       name: 'url',
       title: 'Website address',
       type: 'url',
-      description: 'Opens in a new tab.',
+      description: 'Opens in a new tab. A path like /bylaws opens a page of this site that isn’t in Sanity.',
       hidden: ({ parent }) => parent?.kind !== 'url',
-      validation: (Rule) => Rule.custom(requiredFor('url', 'Paste the website address.')),
+      validation: (Rule) =>
+        Rule.custom(requiredFor('url', 'Paste the website address.')).uri({
+          allowRelative: true,
+          scheme: ['http', 'https', 'mailto', 'tel'],
+        }),
     }),
   ],
   preview: {

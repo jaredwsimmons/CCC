@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { buttons, eyebrow, heading, sectionPreview } from '../fields';
 
+// Text and buttons beside a schedule card, e.g. “Get Ready For Sunday” on Kids.
 export default defineType({
   name: 'scheduleSection',
   title: 'Schedule',
@@ -8,6 +9,9 @@ export default defineType({
   fields: [
     eyebrow,
     heading,
+    defineField({ name: 'intro', title: 'Text beside the schedule', type: 'text', rows: 3 }),
+    buttons(2),
+    defineField({ name: 'cardTitle', title: 'Schedule title', type: 'string', description: 'e.g. “Sunday Schedule”' }),
     defineField({
       name: 'rows',
       title: 'Times',
@@ -27,8 +31,7 @@ export default defineType({
         }),
       ],
     }),
-    defineField({ name: 'note', title: 'Note', type: 'text', rows: 2 }),
-    buttons(1),
+    defineField({ name: 'cardLink', title: 'Link under the schedule', type: 'button' }),
   ],
   preview: sectionPreview('Schedule'),
 });
