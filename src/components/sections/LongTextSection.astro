@@ -1,0 +1,46 @@
+---
+// Long documents: a table of contents built from the text's Headings, beside the text.
+import RichText from '../RichText.astro';
+const { s } = Astro.props;
+type Block = { _type: string; _key: string; style?: string; children?: { text?: string }[] };
+const slug = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const textOf = (b: Block) => (b.children ?? []).map((c) => c.text ?? '').join('');
+const isHeading = (b: Block) => b._type === 'block' && b.style === 'h2';
+const blocks = (s.body ?? []) as Block[];
+const toc = blocks.filter(isHeading).map((b) => ({ id: slug(textOf(b)), text: textOf(b) }));
+// Split the text at each Heading so every part can carry its anchor id.
+const parts: { id?: string; blocks: Block[] }[] = [{ blocks: [] }];
+for (const b of blocks) {
+  if (isHeading(b)) parts.push({ id: slug(textOf(b)), blocks: [] });
+  parts.at(-1)!.blocks.push(b);
+}
+---
+<div class="wrap longtext">
+  {toc.length > 0 && (
+    <aside class="toc" aria-label="Table of contents">
+      <p class="toc-title">Contents</p>
+      <ol class="toc-list">{toc.map((t) => <li><a href={`#${t.id}`}>{t.text}</a></li>)}</ol>
+    </aside>
+  )}
+  <div class="longtext__body">
+    {parts.filter((p) => p.blocks.length).map((p) => (
+      <section class="article" id={p.id}><RichText value={p.blocks} /></section>
+    ))}
+  </div>
+</div>
+
+<style>
+  .longtext { display: grid; grid-template-columns: 240px 1fr; gap: clamp(2rem, 5vw, 3.5rem); align-items: start; padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .toc { position: sticky; top: calc(var(--hdr-h) + 1rem); align-self: start; }
+  .toc-title { font-family: var(--display); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.75rem; }
+  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+  .toc-list a { display: block; font-family: var(--display); font-size: 0.82rem; font-weight: 500; color: var(--navy); text-decoration: none; padding: 0.42rem 0.7rem; border-radius: 8px; border-left: 2px solid transparent; }
+  .toc-list a:hover { background: var(--paper); color: var(--blue); border-left-color: var(--gold); }
+  .longtext__body { min-width: 0; max-width: 72ch; }
+  .article { scroll-margin-top: calc(var(--hdr-h) + 1rem); }
+  .article + .article { border-top: 1px solid var(--hair); margin-top: 2.5rem; padding-top: 2.5rem; }
+  @media (max-width: 900px) {
+    .longtext { grid-template-columns: 1fr; gap: 1.5rem; }
+    .toc { position: static; background: #fff; border: 1px solid var(--hair); border-radius: var(--r); padding: 1.1rem 1.25rem; box-shadow: var(--shadow); }
+  }
+</style>

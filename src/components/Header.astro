@@ -1,5 +1,8 @@
 ---
-import { site, nav, withBase } from '../data/site';
+import { site, withBase } from '../data/site';
+type NavItem = { label: string; href: string; children?: { label: string; href: string }[] };
+interface Props { menu: NavItem[]; } // from Site Settings (Base.astro)
+const nav = Astro.props.menu;
 const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
 // Strip any deploy base (e.g. "/CCC") so comparisons work against the raw nav hrefs.
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');

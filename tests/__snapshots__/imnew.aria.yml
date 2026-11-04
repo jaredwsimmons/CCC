@@ -34,10 +34,10 @@
   - paragraph: Before you arrive
   - heading "Let Us Know You're Coming!" [level=2]
   - paragraph: We can’t wait to meet you! Before you arrive, we’d love for you to share just a little bit of contact information with us. Don’t worry — we’ll keep it safe and only use it to thank you for visiting and to share any information you’d like to know about us.
-  - link "Let Us Know You're Coming!":
-    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
   - heading "Prefer to connect in person?" [level=3]
   - paragraph: If you’re not ready to fill out the form or prefer to connect in person, that’s okay too! Be sure to stop by our Connections Desk — it’s just past the Worship Room. There, you can learn more about who we are, what we’re about, and pick up a special gift we’ve prepared just for you. We’re so glad you’re here!
+  - link "Let Us Know You're Coming!":
+    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
   - img "Guests and members connecting in the church lobby on a Sunday morning"
   - heading "Join us this Sunday" [level=2]
   - paragraph: The best way to get to know us is a Sunday morning. We'd love to meet you.

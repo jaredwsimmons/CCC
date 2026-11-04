@@ -31,3 +31,9 @@ test('media shows its page header', async ({ page }) => {
   await page.goto('/media');
   await expect(page.getByRole('heading', { level: 1, name: 'Watch & Listen' })).toBeVisible();
 });
+
+test("women shows its open registrations around the page's fixed content", async ({ page }) => {
+  await page.goto('/women');
+  await expect(page.getByRole('heading', { level: 1, name: 'Women' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: "Questions about Women's Ministry?" })).toBeVisible();
+});

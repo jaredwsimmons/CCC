@@ -1,0 +1,35 @@
+---
+// Text and buttons beside a schedule card (or just the card).
+import Section from '../Section.astro';
+import Buttons from '../Buttons.astro';
+import { buttonLink } from '../../lib/links';
+const { s } = Astro.props;
+type Row = { _key: string; time?: string; what?: string; place?: string };
+const rows = (s.rows ?? []) as Row[];
+const cardLink = buttonLink(s.cardLink);
+const beside = Boolean(s.intro || s.buttons?.length);
+---
+<Section eyebrow={s.eyebrow} title={s.heading}>
+  <div class:list={[beside && 'split']}>
+    {beside && (
+      <div data-reveal>
+        {s.intro && <p class="measure">{s.intro}</p>}
+        <Buttons list={s.buttons} />
+      </div>
+    )}
+    <div class="card sched" data-reveal>
+      {s.cardTitle && <h3>{s.cardTitle}</h3>}
+      <ul>
+        {rows.map((r) => <li><b>{r.time}</b> — {r.what}{r.place && ` · ${r.place}`}</li>)}
+      </ul>
+      {cardLink && s.cardLink?.label && (
+        <a href={cardLink.href} target={cardLink.newTab ? '_blank' : undefined} rel={cardLink.newTab ? 'noopener noreferrer' : undefined}>{s.cardLink.label}</a>
+      )}
+    </div>
+  </div>
+</Section>
+
+<style>
+  .sched ul { list-style: none; margin: 0.5rem 0 1rem; display: grid; gap: 0.4rem; }
+  .sched b { color: var(--blue); }
+</style>

@@ -38,9 +38,9 @@
   - paragraph: We believe the next great event of human history will be the personal return of Jesus Christ. This is the blessed hope for which all those who love Christ yearn. While the exact time of Christ’s return is unknown, it is imminent and certain.
   - heading "Church Bylaws" [level=3]
   - paragraph: How we govern ourselves as a congregation — Christ ruled, elder led, and congregationally accountable.
-  - link "Read our church bylaws →":
-    - /url: /bylaws
-  - paragraph: /Scripture quotations are from the ESV® Bible \(The Holy Bible, English Standard Version®\), copyright © \d+ by Crossway, a publishing ministry of Good News Publishers\. Used by permission\. All rights reserved\./
+  - paragraph:
+    - link "Read our church bylaws →":
+      - /url: /bylaws
   - heading "Come and see" [level=2]
   - paragraph: The best way to get to know us is a Sunday morning. We'd love to meet you.
   - link "Plan a Visit":

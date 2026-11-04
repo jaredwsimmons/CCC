@@ -1,0 +1,36 @@
+---
+// Sanity rich text (Portable Text) → HTML: photos, the site's link rules, and scripture
+// references as tooltips when an ESV key is configured. Styled by `.prose` in global.css.
+import { toHTML, escapeHTML, uriLooksSafe } from '@portabletext/to-html';
+import { imageUrl, type SanityImage } from '../lib/image';
+import { hasEsvKey, tagScriptureHtml } from '../lib/esv';
+import { withBase } from '../data/site';
+
+interface Props {
+  value: unknown;
+  class?: string;
+}
+const { value, class: cls = '' } = Astro.props;
+
+const components = {
+  types: {
+    image: ({ value }: { value: SanityImage }) => {
+      const url = imageUrl(value, 1200);
+      return url ? `<img src="${escapeHTML(url)}" alt="${escapeHTML(value?.alt ?? '')}" loading="lazy" />` : '';
+    },
+  },
+  marks: {
+    link: ({ children, value }: { children: string; value?: { href?: string } }) => {
+      const href = value?.href ?? '';
+      if (!href || !uriLooksSafe(href)) return children;
+      const external = /^https?:/.test(href);
+      const target = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+      return `<a href="${escapeHTML(href.startsWith('/') ? withBase(href) : href)}"${target}>${children}</a>`;
+    },
+  },
+};
+
+let html = Array.isArray(value) && value.length ? toHTML(value as never, { components } as never) : '';
+if (html && hasEsvKey()) html = tagScriptureHtml(html);
+---
+{html && <div class:list={['prose', cls]} set:html={html} />}

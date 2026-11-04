@@ -1,0 +1,50 @@
+---
+// Short items side by side. A card's small label can hold Bible references (tooltips).
+import Section from '../Section.astro';
+import Scripturize from '../Scripturize.astro';
+import { buttonLink, variantFor, type Button } from '../../lib/links';
+const { s } = Astro.props;
+type Card = { _key: string; label?: string; title?: string; text?: string; bullets?: string[]; buttons?: Button[] | null };
+const cards = ((s.cards ?? []) as Card[]).map((c) => ({
+  ...c,
+  links: (c.buttons ?? []).flatMap((b) => {
+    const link = buttonLink(b);
+    return link && b.label ? [{ label: b.label, ...link }] : [];
+  }),
+}));
+---
+<Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading} lead={s.intro} center={Boolean(s.heading)}>
+  <div class={`grid cols-${s.columns ?? 3}`}>
+    {cards.map((c) => (
+      <div class="card" style="text-align:left" data-reveal>
+        {c.label && <span class="scripture"><Scripturize text={c.label} /></span>}
+        <h3>{c.title}</h3>
+        {c.text && <p>{c.text}</p>}
+        {c.bullets && c.bullets.length > 0 && <ul class="list">{c.bullets.map((b) => <li>{b}</li>)}</ul>}
+        {c.links.length > 0 && (
+          <p class="links">
+            {c.links.map((l) => (
+              <a href={l.href} target={l.newTab ? '_blank' : undefined} rel={l.newTab ? 'noopener noreferrer' : undefined}>{l.label}</a>
+            ))}
+          </p>
+        )}
+      </div>
+    ))}
+  </div>
+</Section>
+
+<style>
+  .list { list-style: none; display: grid; gap: 0.55rem; margin-top: 0.5rem; }
+  .list li { padding-left: 1.1rem; position: relative; font-size: 0.98rem; color: var(--mid); }
+  .list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.6rem; font-size: 0.92rem; }
+</style>

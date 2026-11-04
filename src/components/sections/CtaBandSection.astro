@@ -1,0 +1,8 @@
+---
+import CTABand from '../CTABand.astro';
+import Buttons from '../Buttons.astro';
+const { s } = Astro.props;
+---
+<CTABand title={s.heading} text={s.text}>
+  <Buttons list={s.buttons} dark large bare />
+</CTABand>

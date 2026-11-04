@@ -1,20 +1,12 @@
-// Calendar data layer — LIVE from Church Center's PUBLIC calendar API.
-//
-// This is the exact public API the church's own calendar embed uses (the data
-// any visitor already sees), reached with NO Planning Center credentials:
-//   1) POST https://{org}.churchcenter.com/sessions/tokens  -> anonymous org bearer (ort_…)
-//   2) GET  https://api.churchcenter.com/calendar/v2/events  with that bearer
+// Calendar data layer — LIVE from Church Center's PUBLIC calendar API (src/lib/churchcenter.ts),
+// the exact data the church's own calendar embed shows.
 // Fetched when the page is visited and cached at the edge for 10 minutes. If a
 // refresh fails, the last good copy is shown (src/lib/cache.ts); with none, the
 // page shows its empty state. (Undocumented app API — hence the fallbacks.)
 
 import { withBase } from '../data/site';
 import { cached } from './cache';
-
-const ORG_SUB = 'chelseachurch.churchcenter.com';
-const CC_API = 'https://api.churchcenter.com/calendar/v2';
-const TZ = 'America/Chicago';
-const UA = 'ChelseaCommunityChurch-site/1.0';
+import { ccGet, localDate, localTime, stripHtml } from './churchcenter';
 
 export interface ChurchEvent {
   id: string;
@@ -26,38 +18,16 @@ export interface ChurchEvent {
   description?: string;
   register?: string;
   publicUrl?: string;
+  featured?: boolean; // marked "featured" in Planning Center Calendar
 }
 
-const stripHtml = (s: string) =>
-  (s || '')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'")
-    .replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-const localDate = (iso: string) =>
-  new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(iso));
-const localTime = (iso: string) =>
-  new Date(iso).toLocaleTimeString('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
-
 // null = the fetch failed (as opposed to [] = no upcoming events).
-async function fetchLive(timeoutMs = 9000): Promise<ChurchEvent[] | null> {
+async function fetchLive(): Promise<ChurchEvent[] | null> {
   try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), timeoutMs);
-    const opts = { signal: ctrl.signal, headers: { 'User-Agent': UA } };
-
-    const tokRes = await fetch(`https://${ORG_SUB}/sessions/tokens`, { ...opts, method: 'POST', headers: { ...opts.headers, 'Content-Type': 'application/json' } });
-    if (!tokRes.ok) { clearTimeout(t); return null; }
-    const token = (await tokRes.json())?.data?.attributes?.token;
-    if (!token) { clearTimeout(t); return null; }
-
-    const url = `${CC_API}/events?filter=upcoming,first_occurrence&order=visible_starts_at&per_page=100&include=event_registration_url,location`;
-    const res = await fetch(url, { ...opts, headers: { ...opts.headers, Authorization: `Bearer ${token}` } });
-    clearTimeout(t);
-    if (!res.ok) return null;
-    const body = await res.json();
+    const body = await ccGet(
+      '/calendar/v2/events?filter=upcoming,first_occurrence&order=visible_starts_at&per_page=100&include=event_registration_url,location',
+    );
+    if (!body) return null;
 
     const inc: Record<string, any> = {};
     for (const i of body.included ?? []) inc[`${i.type}:${i.id}`] = i;
@@ -85,6 +55,7 @@ async function fetchLive(timeoutMs = 9000): Promise<ChurchEvent[] | null> {
         description: stripHtml(a.description || '') || undefined,
         register: reg || undefined,
         publicUrl: a.public_url || undefined,
+        featured: Boolean(a.featured),
       };
     });
   } catch {

@@ -21,7 +21,7 @@ npm install
 npm run dev      # http://localhost:4321
 ```
 
-The site runs immediately with **placeholder pages** for every nav item and **live Church Center** calendar/giving. It builds fine before Sanity is connected.
+The site runs immediately with **today's content** and **live Church Center** calendar, groups and registrations. Until Sanity is connected, pages render from `src/data/migration.ts` (today's content, already in Sanity's document format) through the same queries the live site uses.
 
 ```bash
 npm run build    # Workers bundle + static assets → ./dist
@@ -47,7 +47,13 @@ npm test         # Playwright tests (builds + previews the site)
    npm run dev               # http://localhost:3333  — the editing UI
    npm run deploy            # publishes it to https://<name>.sanity.studio (free hosting for staff)
    ```
-4. Add content in the Studio. The website reads it **when each page is visited**, so a published change is live within seconds — no rebuild.
+4. Load today's content into the new project (once; the import asks you to log in the first time and uploads the photos from `public/images`):
+   ```bash
+   npm run export:sanity     # in the repo root → migration/dataset.ndjson
+   cd studio && npx sanity dataset import ../migration/dataset.ndjson production
+   ```
+   From then on content is edited **in the Studio only**: `src/data/migration.ts` and `src/data/content.ts` are used only while no project ID is set.
+5. Edit in the Studio. The website reads it **when each page is visited**, so a published change is live within seconds — no rebuild.
 
 ## How Church Center and the live data work
 
@@ -67,15 +73,19 @@ npm test         # Playwright tests (builds + previews the site)
 
 ```
 ├─ src/
-│  ├─ data/site.ts          # church constants, nav, Church Center URLs  ← edit me first
-│  ├─ layouts/Base.astro    # <head>, header, footer, fonts, CC modal script
-│  ├─ components/           # Header, Footer, ChurchCenterCalendar, PortableText, ...
-│  ├─ lib/                  # Sanity client + GROQ queries + image helper
+│  ├─ data/site.ts          # church constants, Church Center URLs
+│  ├─ data/migration.ts     # today's content as Sanity documents (used until Sanity is connected)
+│  ├─ layouts/Base.astro    # <head>, header + footer (menu and church details from Site Settings)
+│  ├─ components/           # Header, Footer, PageHeader, Buttons, RichText, ...
+│  │  └─ sections/          # one component per Sanity section type (Sections.astro picks them)
+│  ├─ lib/                  # Sanity fetch + GROQ queries, button links, images, edge cache, Church Center + feeds
 │  ├─ pages/
-│  │  ├─ index.astro        # homepage
-│  │  ├─ [...slug].astro    # every CMS page (falls back to placeholders pre-CMS)
-│  │  ├─ calendar.astro     # Church Center calendar embed
-│  │  └─ give.astro         # Church Center giving
+│  │  ├─ index.astro        # homepage (Home page + Site Settings)
+│  │  ├─ [...slug].astro    # every page staff build in Sanity
+│  │  ├─ calendar, groups, media, give, leaders .astro   # fixed pages: live data + a Sanity header and sections
+│  │  ├─ bylaws.astro       # the bylaws (still in code)
+│  │  ├─ sitemap.xml.ts     # the sitemap, built on request
+│  │  └─ api/esv.ts         # verses for the scripture tooltips
 │  └─ styles/global.css     # brand system (blue #005291 / gold #F0C334, Poppins/Nunito)
 ├─ studio/                  # Sanity Studio (schemas + config) — staff editing UI
 └─ public/                  # favicon, robots.txt, images (old-URL redirects live in astro.config.mjs)
@@ -87,4 +97,4 @@ Everything is edited in the **Studio** (`<name>.sanity.studio`) — no code. Pic
 
 ---
 
-_Scaffolded 2026-07-03. Placeholder content + TODOs (address, socials, real page copy) are intentional — see `src/data/site.ts`._
+_Scaffolded 2026-07-03._

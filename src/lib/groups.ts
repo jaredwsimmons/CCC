@@ -1,14 +1,11 @@
-// Groups data layer — LIVE from Church Center's PUBLIC groups API (no token),
+// Groups data layer — LIVE from Church Center's PUBLIC groups API (src/lib/churchcenter.ts),
 // the same feed the church publishes for people to browse/join. Fetched when
 // the page is visited and cached at the edge for 30 minutes, falling back to
 // the last good copy (src/lib/cache.ts); full (enrollment closed) groups are
 // hidden per request, sorted by meeting day/time (Mon→Sun).
 
 import { cached } from './cache';
-
-const ORG_SUB = 'chelseachurch.churchcenter.com';
-const CC_API = 'https://api.churchcenter.com/groups/v2';
-const UA = 'ChelseaCommunityChurch-site/1.0';
+import { ccGet, stripHtml } from './churchcenter';
 
 export interface Group {
   name: string;
@@ -30,10 +27,6 @@ export const TYPES = ['Community Groups', "Women's Groups", 'Ministry Groups'];
 const DAY_ORDER: Record<string, number> = {
   monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 7,
 };
-
-const stripHtml = (s: string) =>
-  (s || '').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
-    .replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
 
 function typeFromUrl(url: string): string {
   const m = (url || '').match(/\/groups\/([^/]+)\//);
@@ -59,21 +52,10 @@ function sortKey(schedule?: string): number {
 }
 
 // null = the fetch failed (as opposed to [] = no open groups).
-async function fetchLive(timeoutMs = 9000): Promise<Group[] | null> {
+async function fetchLive(): Promise<Group[] | null> {
   try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), timeoutMs);
-    const opts = { signal: ctrl.signal, headers: { 'User-Agent': UA } };
-
-    const tokRes = await fetch(`https://${ORG_SUB}/sessions/tokens`, { ...opts, method: 'POST', headers: { ...opts.headers, 'Content-Type': 'application/json' } });
-    if (!tokRes.ok) { clearTimeout(t); return null; }
-    const token = (await tokRes.json())?.data?.attributes?.token;
-    if (!token) { clearTimeout(t); return null; }
-
-    const res = await fetch(`${CC_API}/groups?per_page=100`, { ...opts, headers: { ...opts.headers, Authorization: `Bearer ${token}` } });
-    clearTimeout(t);
-    if (!res.ok) return null;
-    const body = await res.json();
+    const body = await ccGet('/groups/v2/groups?per_page=100');
+    if (!body) return null;
 
     return (body.data ?? [])
       .filter((g: any) => g.attributes?.enrollment_open !== false) // hide full/closed

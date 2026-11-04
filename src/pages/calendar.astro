@@ -1,34 +1,32 @@
 ---
+// Calendar: the header and the sections below the events come from the Calendar page in
+// Sanity, the weekly tiles from Site Settings, and the events live from Church Center.
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import CTABand from '../components/CTABand.astro';
+import PageHeader from '../components/PageHeader.astro';
+import RhythmTiles from '../components/RhythmTiles.astro';
+import EventList from '../components/EventList.astro';
+import Sections from '../components/sections/Sections.astro';
 import { site } from '../data/site';
-import { rhythm, getUpcomingEvents, groupByMonth, dateParts, buildMonthGrids } from '../lib/calendar';
+import { sanityFetch } from '../lib/sanity';
+import { fixedPageQuery, settingsQuery } from '../lib/queries';
+import { inModal } from '../lib/links';
+import { getUpcomingEvents, buildMonthGrids } from '../lib/calendar';
 
-const events = await getUpcomingEvents();
-const months = groupByMonth(events);
+const [page, settings, events] = await Promise.all([
+  sanityFetch<any>(fixedPageQuery, { id: 'fixed-calendar' }),
+  sanityFetch<any>(settingsQuery),
+  getUpcomingEvents(),
+]);
 const monthGrids = buildMonthGrids(events);
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 ---
-<Base title="Calendar" description="What's happening at Chelsea Community Church — the rhythm of our week plus upcoming events, live from Church Center.">
-  <PageHero eyebrow="What's happening" title="Calendar"
-    lead="The rhythms of our week and what's coming up. See something you'd like to be part of? You're always welcome." />
+<Base title={page?.title ?? 'Calendar'} description={page?.seo?.description}>
+  <PageHeader header={page?.header} title={page?.title ?? 'Calendar'} />
 
   <!-- Rhythm of our week -->
   <Section eyebrow="Every week" title="The rhythm of our week">
-    <div class="grid cols-4">
-      {rhythm.map((t) => (
-        <div class="card weekly" data-reveal>
-          <span class="tag-cat">{t.category}</span>
-          <h3>{t.title}</h3>
-          <p class="weekly__time">{t.time}</p>
-          <p class="weekly__loc">{t.location}</p>
-          <p>{t.description}</p>
-          {t.link && <a class="weekly__link" href={t.link.href}>{t.link.label}</a>}
-        </div>
-      ))}
-    </div>
+    <RhythmTiles tiles={settings?.weeklyRhythm} />
   </Section>
 
   <!-- Upcoming events — List / Month toggle -->
@@ -52,38 +50,7 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     <!-- LIST view -->
     <div data-view="list">
-      {months.map((m) => (
-        <div class="month" data-reveal>
-          <h3 class="month__label">{m.month}</h3>
-          <ul class="events">
-            {m.events.map((e) => {
-              const d = dateParts(e.date);
-              return (
-                <li class="event">
-                  <div class="event__date" aria-hidden="true">
-                    <span class="event__wd">{d.weekday}</span>
-                    <span class="event__day">{d.day}</span>
-                    <span class="event__mo">{d.month}</span>
-                  </div>
-                  <div class="event__body">
-                    <div class="event__head">
-                      <h4>{e.title}</h4>
-                      {e.recurrence && <span class="tag-cat">{e.recurrence}</span>}
-                    </div>
-                    <p class="event__meta">{e.timeLabel}{e.location && ` · ${e.location}`}</p>
-                    {e.description && <p class="event__desc">{e.description}</p>}
-                    {e.register ? (
-                      <a class="event__rsvp" href={`${e.register}?open-in-church-center-modal=true`}>Register →</a>
-                    ) : e.publicUrl ? (
-                      <a class="event__rsvp" href={e.publicUrl} target="_blank" rel="noopener noreferrer">Details →</a>
-                    ) : null}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
+      <EventList events={events} />
     </div>
 
     <!-- MONTH view -->
@@ -98,7 +65,7 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                 <div class={`cal-cell${cell.events.length ? ' has-ev' : ''}`}>
                   <span class="cal-day">{cell.day}</span>
                   {cell.events.slice(0, 3).map((e) => {
-                    const href = e.register ? `${e.register}?open-in-church-center-modal=true` : e.publicUrl;
+                    const href = e.register ? inModal(e.register) : e.publicUrl;
                     return href
                       ? <a class="cal-ev" href={href} target={e.register ? undefined : '_blank'} rel="noopener noreferrer" title={e.title}>{e.title}</a>
                       : <span class="cal-ev" title={e.title}>{e.title}</span>;
@@ -117,9 +84,7 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     </p>
   </Section>
 
-  <CTABand title="Plan your visit" text="New here? Let us know you're coming and we'll have a gift waiting.">
-    <a class="btn btn--gold btn--lg" href={`${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`}>Plan a Visit</a>
-  </CTABand>
+  <Sections list={page?.sections} settings={settings} />
 </Base>
 
 <script is:inline>
@@ -137,16 +102,6 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 </script>
 
 <style>
-  .tag-cat {
-    display: inline-block; font-family: var(--display); font-size: 0.66rem; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue);
-    background: rgba(0,82,145,0.08); padding: 0.22rem 0.6rem; border-radius: 999px;
-  }
-  .weekly .tag-cat { margin-bottom: 0.6rem; }
-  .weekly__time { font-family: var(--display); font-weight: 600; color: var(--navy); margin-top: 0.1rem; }
-  .weekly__loc { font-size: 0.9rem; color: var(--mid); margin-bottom: 0.5rem; }
-  .weekly__link { display: inline-block; margin-top: 0.7rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
-
   /* view toggle */
   .ev-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
   .viewtoggle { display: inline-flex; background: #fff; border: 1px solid var(--hair); border-radius: 999px; padding: 0.2rem; box-shadow: var(--shadow); }
@@ -156,23 +111,8 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   }
   .viewtoggle button.is-active { background: var(--navy); color: var(--cream); }
 
-  /* list view */
   .month + .month { margin-top: 2rem; }
   .month__label { font-size: 1.1rem; color: var(--navy); margin-bottom: 0.9rem; }
-  .events { list-style: none; display: grid; gap: 0.9rem; }
-  .event {
-    display: grid; grid-template-columns: 76px 1fr; gap: 1.25rem; align-items: start;
-    background: #fff; border: 1px solid var(--hair); border-radius: var(--r); padding: 1.1rem 1.3rem; box-shadow: var(--shadow);
-  }
-  .event__date { display: grid; place-items: center; text-align: center; background: var(--navy); color: var(--cream); border-radius: 10px; padding: 0.5rem 0.3rem; }
-  .event__wd { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); font-family: var(--display); font-weight: 600; }
-  .event__day { font-family: var(--display); font-weight: 700; font-size: 1.5rem; line-height: 1; }
-  .event__mo { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(251,249,244,0.7); font-family: var(--display); }
-  .event__head { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
-  .event__head h4 { font-size: 1.1rem; }
-  .event__meta { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.9rem; margin-top: 0.25rem; }
-  .event__desc { font-size: 0.95rem; color: var(--mid); margin-top: 0.4rem; }
-  .event__rsvp { display: inline-block; margin-top: 0.6rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
 
   /* month grid view */
   .cal-scroll { overflow-x: auto; }
@@ -191,5 +131,4 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   .cal-more { font-size: 0.66rem; color: var(--mid); font-weight: 600; }
 
   .note { margin-top: 1.75rem; font-size: 0.95rem; color: var(--mid); }
-  @media (max-width: 480px) { .event { grid-template-columns: 60px 1fr; gap: 1rem; padding: 1rem; } }
 </style>

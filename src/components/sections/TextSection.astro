@@ -1,0 +1,14 @@
+---
+import Section from '../Section.astro';
+import RichText from '../RichText.astro';
+import Buttons from '../Buttons.astro';
+import { variantFor } from '../../lib/links';
+const { s } = Astro.props;
+const variant = variantFor(s.background);
+---
+<Section variant={variant} eyebrow={s.eyebrow} title={s.heading}>
+  <div class="measure" data-reveal>
+    <RichText value={s.body} />
+    <Buttons list={s.buttons} dark={variant === 'navy'} />
+  </div>
+</Section>

@@ -1,0 +1,33 @@
+---
+// Buttons from Sanity (link rules in src/lib/links.ts). The first is the main gold
+// button, the rest are outlines. `dark` = on a navy or blue band; `bare` = no wrapper
+// (for slots that already lay buttons out, like PageHero and CTABand).
+import { buttonLink, type Button } from '../lib/links';
+
+interface Props {
+  list?: Button[] | null;
+  dark?: boolean;
+  large?: boolean;
+  bare?: boolean;
+  class?: string;
+}
+const { list, dark = false, large = false, bare = false, class: cls = '' } = Astro.props;
+const items = (list ?? []).flatMap((b) => {
+  const link = buttonLink(b);
+  return link && b.label ? [{ label: b.label, ...link }] : [];
+});
+const style = (i: number) =>
+  ['btn', i === 0 ? 'btn--gold' : dark ? 'btn--outline-light' : 'btn--outline', large && 'btn--lg'].filter(Boolean).join(' ');
+const links = items.map((it, i) => ({ ...it, cls: style(i) }));
+---
+{links.length > 0 && (bare ? (
+  links.map((l) => (
+    <a class={l.cls} href={l.href} target={l.newTab ? '_blank' : undefined} rel={l.newTab ? 'noopener noreferrer' : undefined}>{l.label}</a>
+  ))
+) : (
+  <div class:list={['btn-row', cls]}>
+    {links.map((l) => (
+      <a class={l.cls} href={l.href} target={l.newTab ? '_blank' : undefined} rel={l.newTab ? 'noopener noreferrer' : undefined}>{l.label}</a>
+    ))}
+  </div>
+))}

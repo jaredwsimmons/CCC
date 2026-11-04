@@ -1,0 +1,17 @@
+---
+// One Church Center registration, live; nothing shows once registration closes.
+import Section from '../Section.astro';
+import RegistrationCard from '../RegistrationCard.astro';
+import { getRegistrationByUrl } from '../../lib/registrations';
+const { s } = Astro.props;
+const reg = await getRegistrationByUrl(s.url);
+---
+{reg && (
+  <Section tight>
+    <div class="one"><RegistrationCard reg={reg} /></div>
+  </Section>
+)}
+
+<style>
+  .one { max-width: 34rem; }
+</style>

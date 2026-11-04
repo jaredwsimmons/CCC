@@ -18,9 +18,11 @@ export default defineType({
       description: 'The page’s address: “vbs-2027” makes it live at /vbs-2027. Changing it breaks old links.',
       options: { source: 'title', maxLength: 96 },
       validation: (Rule) =>
-        Rule.required().custom((slug) =>
-          slug?.current && RESERVED.has(slug.current) ? `“${slug.current}” is already used by the site.` : true,
-        ),
+        Rule.required().custom((slug) => {
+          if (!slug?.current) return true;
+          if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug.current)) return 'Use lowercase letters, numbers and dashes only, e.g. “vbs-2027”.';
+          return RESERVED.has(slug.current) ? `“${slug.current}” is already used by the site.` : true;
+        }),
     }),
     defineField({ name: 'header', title: 'Page header', type: 'pageHeader' }),
     defineField({

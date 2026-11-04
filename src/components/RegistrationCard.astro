@@ -1,0 +1,27 @@
+---
+// One Church Center registration: image, name, when, price, status, Register button.
+import { inModal } from '../lib/links';
+import type { Registration } from '../lib/registrations';
+
+interface Props { reg: Registration; }
+const { reg } = Astro.props;
+---
+<article class="card reg" data-reveal>
+  {reg.image && <div class="reg__img"><img src={reg.image} alt="" loading="lazy" /></div>}
+  <div class="reg__body">
+    <h3>{reg.name}</h3>
+    {reg.when && <p class="reg__when">{reg.when}</p>}
+    <p class="reg__meta">{[reg.price, reg.full ? 'Full' : 'Open'].filter(Boolean).join(' · ')}</p>
+    {reg.summary && <p>{reg.summary}</p>}
+    <a class="btn btn--blue mt-1" href={inModal(reg.url)}>{reg.full ? 'Join the waitlist' : 'Register'}</a>
+  </div>
+</article>
+
+<style>
+  .reg { padding: 0; overflow: hidden; display: flex; flex-direction: column; text-align: left; }
+  .reg__img { aspect-ratio: 16 / 9; background: var(--paper-2); }
+  .reg__img img { width: 100%; height: 100%; object-fit: cover; }
+  .reg__body { padding: 1.2rem 1.4rem 1.4rem; display: flex; flex-direction: column; align-items: flex-start; }
+  .reg__when { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.95rem; }
+  .reg__meta { font-size: 0.9rem; }
+</style>

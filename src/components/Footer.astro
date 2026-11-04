@@ -1,9 +1,19 @@
 ---
+// Church details come from Site Settings in Sanity (passed in by Base.astro); an item
+// whose field is empty is left out rather than linking nowhere.
 import { site, withBase } from '../data/site';
+import { hasEsvKey } from '../lib/esv';
+import { shortTimes, telHref } from '../lib/format';
+interface Props { settings: any; } // Site Settings, from Base.astro
+const { settings } = Astro.props;
 const year = new Date().getFullYear();
 const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
 const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
-const address = `${site.address.line1}, ${site.address.city}, ${site.address.state} ${site.address.zip}`;
+const a = settings?.address;
+const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
+const social = settings?.social ?? {};
+const times = shortTimes(settings?.serviceTimes);
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 <footer class="site-footer">
   <div class="wrap top">
@@ -11,24 +21,30 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
       <img src={withBase('/images/icon-white.png')} alt="" width="64" height="64" loading="lazy" />
       <p class="name">Chelsea Community<br />Church</p>
       <p class="tagline">Pursuing God. <b>Pursuing others.</b></p>
-      <p class="times">Sundays · 9:00 &amp; 10:30 AM</p>
+      {times && <p class="times">Sundays · {times}</p>}
     </div>
 
     <div class="col" aria-labelledby="ftr-touch">
       <h2 id="ftr-touch">Get in Touch</h2>
       <ul>
-        <li>
-          <span class="label">Address</span>
-          <a href={site.address.maps} target="_blank" rel="noopener noreferrer">{address}</a>
-        </li>
-        <li>
-          <span class="label">Phone</span>
-          <a href={`tel:+1${site.phone.replaceAll('-', '')}`}>{site.phone}</a>
-        </li>
-        <li>
-          <span class="label">Email us</span>
-          <a href={`mailto:${site.email}`}>Get in touch with us, we're here to listen!</a>
-        </li>
+        {address && (
+          <li>
+            <span class="label">Address</span>
+            {a.mapsUrl ? <a href={a.mapsUrl} {...ext}>{address}</a> : address}
+          </li>
+        )}
+        {settings?.phone && (
+          <li>
+            <span class="label">Phone</span>
+            <a href={telHref(settings.phone)}>{settings.phone}</a>
+          </li>
+        )}
+        {settings?.email && (
+          <li>
+            <span class="label">Email us</span>
+            <a href={`mailto:${settings.email}`}>Get in touch with us, we're here to listen!</a>
+          </li>
+        )}
         <li>
           <span class="label">Prayer</span>
           <a href={prayerForm}>Let us know how we can pray for you.</a>
@@ -39,12 +55,12 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
     <div class="col" aria-labelledby="ftr-connect">
       <h2 id="ftr-connect">Connect</h2>
       <ul>
-        <li><a href={site.social.facebook} target="_blank" rel="noopener noreferrer">Facebook</a></li>
-        <li><a href={site.social.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>
-        <li><a href={site.social.youtube} target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        {social.facebook && <li><a href={social.facebook} {...ext}>Facebook</a></li>}
+        {social.instagram && <li><a href={social.instagram} {...ext}>Instagram</a></li>}
+        {social.youtube && <li><a href={social.youtube} {...ext}>YouTube</a></li>}
         <li><a href={withBase('/media')}>Media</a></li>
-        <li><a href={site.textSignup} target="_blank" rel="noopener noreferrer">Text updates</a></li>
-        <li><a href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Church Center app</a></li>
+        {social.textSignup && <li><a href={social.textSignup} {...ext}>Text updates</a></li>}
+        <li><a href={site.churchCenter.appSetup} {...ext}>Church Center app</a></li>
       </ul>
     </div>
 
@@ -67,6 +83,9 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
 
   <div class="wrap bottom">
     <p>Copyright © {year}. All rights reserved. Chelsea Community Church</p>
+    {hasEsvKey() && (
+      <p class="esv">Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.</p>
+    )}
   </div>
 </footer>
 
@@ -121,4 +140,5 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
     margin-top: auto; /* pin copyright to the bottom edge when the footer stretches */
   }
   .bottom p { font-size: 0.85rem; color: rgba(251, 249, 244, 0.6); }
+  .bottom .esv { margin-top: 0.4rem; font-size: 0.75rem; }
 </style>

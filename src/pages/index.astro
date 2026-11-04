@@ -1,30 +1,56 @@
 ---
+// The homepage keeps its hand-tuned layout; its words and photos come from the Home page
+// document in Sanity, and the series, service times and church details from Site Settings.
 import Base from '../layouts/Base.astro';
 import Section from '../components/Section.astro';
 import { site, withBase } from '../data/site';
-import { home } from '../data/content';
+import { sanityFetch } from '../lib/sanity';
+import { homeQuery, settingsQuery } from '../lib/queries';
+import { imagePosition, imageUrl } from '../lib/image';
+import { shortTimes, telHref } from '../lib/format';
+
+const [home, settings] = await Promise.all([sanityFetch<any>(homeQuery), sanityFetch<any>(settingsQuery)]);
+const hero = home?.hero ?? {};
+const welcome = home?.welcome ?? {};
+const app = home?.app ?? {};
+const series = settings?.currentSeries;
+const social = settings?.social ?? {};
+const a = settings?.address;
+const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
+const times: string[] = settings?.serviceTimes ?? [];
+const titleLines: string[] = (hero.title ?? '').split('\n').filter(Boolean);
+const heroImage = imageUrl(hero.image, 2000);
+const seriesImage = imageUrl(series?.image, 1200);
+const appImage = imageUrl(app.image, 1200);
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 
 const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
-const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
 const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
-const address = `${site.address.line1}, ${site.address.city}, ${site.address.state} ${site.address.zip}`;
 ---
-<Base>
+<Base description={home?.seo?.description}>
+  {settings?.announcement && (
+    <div class="announcement" role="status">
+      <div class="wrap">{settings.announcement}</div>
+    </div>
+  )}
+
   <!-- Hero — the current site's background video over a real photo fallback.
        The photo paints first (and stays for reduced-motion / JS-off / slow
        connections); the video fades over it once it can play. -->
   <section class="hero home-hero">
     <div class="hero__img">
-      <img src={home.hero.image} alt={home.hero.imageAlt} loading="eager" fetchpriority="high" />
+      {heroImage && <img src={heroImage} alt={hero.image?.alt ?? ''} style={imagePosition(hero.image)} loading="eager" fetchpriority="high" />}
       <video class="hero__video" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
         <source src={withBase('/videos/hero.mp4')} type="video/mp4" />
       </video>
     </div>
     <div class="wrap inner">
-      <p class="eyebrow on-dark">A church family in Chelsea, Alabama</p>
-      <h1>Pursuing God.<br />Pursuing others.</h1>
+      {hero.eyebrow && <p class="eyebrow on-dark">{hero.eyebrow}</p>}
+      <h1>{titleLines.map((line, i) => <>{i > 0 && <br />}{line}</>)}</h1>
       <div class="rule" aria-hidden="true"></div>
-      <p class="sub">{home.hero.sub} · <b>{home.hero.times}</b></p>
+      {(hero.subline || times.length > 0) && (
+        <p class="sub">{hero.subline}{hero.subline && times.length > 0 && ' · '}{times.length > 0 && <b>{times.join(' & ')}</b>}</p>
+      )}
       <div class="actions">
         <a class="btn btn--gold btn--lg" href={planVisit}>Plan a Visit</a>
         <a class="btn btn--outline-light btn--lg" href={withBase('/imnew')}>I'm New</a>
@@ -33,86 +59,111 @@ const address = `${site.address.line1}, ${site.address.city}, ${site.address.sta
   </section>
 
   <!-- Blue band — this Sunday -->
-  <div class="band">
-    <div class="wrap">
-      <span class="dot" aria-hidden="true"></span>
-      <span>This Sunday · 9:00 &amp; 10:30 AM</span>
-      <span class="band-addr">{address}</span>
-      <a href={site.address.maps} target="_blank" rel="noopener noreferrer">Get directions</a>
+  {(times.length > 0 || address) && (
+    <div class="band">
+      <div class="wrap">
+        <span class="dot" aria-hidden="true"></span>
+        {times.length > 0 && <span>This Sunday · {shortTimes(times)}</span>}
+        {address && <span class="band-addr">{address}</span>}
+        {a?.mapsUrl && <a href={a.mapsUrl} {...ext}>Get directions</a>}
+      </div>
     </div>
-  </div>
+  )}
 
   <!-- Welcome -->
-  <Section eyebrow="Welcome" title="Welcome to Chelsea Community Church" center>
-    <p class="lead measure" data-reveal>{home.welcome.body}</p>
+  <Section eyebrow={welcome.eyebrow} title={welcome.heading} center>
+    {welcome.text && <p class="lead measure" data-reveal>{welcome.text}</p>}
     <div class="welcome-actions" data-reveal>
       <a class="btn btn--blue" href={withBase('/imnew')}>I'm New</a>
       <a class="btn btn--outline" href={withBase('/beliefs')}>Learn More</a>
     </div>
   </Section>
 
-  <!-- Current series -->
-  <Section variant="navy">
-    <div class="split">
-      <div class="photo" data-reveal>
-        <img src={home.series.art} alt={home.series.artAlt} loading="lazy" />
-      </div>
-      <div data-reveal>
-        <p class="eyebrow on-dark">{home.series.eyebrow}</p>
-        <h2>Jesus Storyteller</h2>
-        <p style="margin-top:0.9rem">{home.series.body}</p>
-        <div class="series-actions">
-          <a class="btn btn--gold" href={site.media.seriesPlaylist} target="_blank" rel="noopener noreferrer">Watch Service</a>
-          <a class="btn btn--outline-light" href={site.social.spotify} target="_blank" rel="noopener noreferrer">Listen on Spotify</a>
+  <!-- Current series (Site Settings); hidden when no series is set -->
+  {series?.title && (
+    <Section variant="navy">
+      <div class="split">
+        {seriesImage && (
+          <div class="photo" data-reveal>
+            <img src={seriesImage} alt={series.image?.alt ?? ''} loading="lazy" />
+          </div>
+        )}
+        <div data-reveal>
+          <p class="eyebrow on-dark">Current sermon series</p>
+          <h2>{series.title}</h2>
+          {series.description && <p style="margin-top:0.9rem">{series.description}</p>}
+          {(series.watchUrl || series.listenUrl) && (
+            <div class="series-actions">
+              {series.watchUrl && <a class="btn btn--gold" href={series.watchUrl} {...ext}>Watch Service</a>}
+              {series.listenUrl && (
+                <a class="btn btn--outline-light" href={series.listenUrl} {...ext}>
+                  {series.listenUrl.includes('spotify.com') ? 'Listen on Spotify' : 'Listen'}
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
-    </div>
-  </Section>
+    </Section>
+  )}
 
   <!-- App spotlight -->
-  <Section variant="white" eyebrow="Spotlight" title="New church app">
+  <Section variant="white" eyebrow={app.eyebrow} title={app.heading}>
     <div class="split">
       <div data-reveal>
-        <p class="measure">{home.app.body}</p>
+        {app.text && <p class="measure">{app.text}</p>}
         <div class="app-actions">
-          <a class="btn btn--blue" href={site.app.ios} target="_blank" rel="noopener noreferrer">App Store</a>
-          <a class="btn btn--blue" href={site.app.android} target="_blank" rel="noopener noreferrer">Google Play</a>
-          <a class="btn btn--outline" href={site.churchCenter.appSetup} target="_blank" rel="noopener noreferrer">Set up Church Center</a>
+          <a class="btn btn--blue" href={site.app.ios} {...ext}>App Store</a>
+          <a class="btn btn--blue" href={site.app.android} {...ext}>Google Play</a>
+          <a class="btn btn--outline" href={site.churchCenter.appSetup} {...ext}>Set up Church Center</a>
         </div>
       </div>
-      <div class="photo photo--plain" data-reveal>
-        <img src={home.app.image} alt={home.app.imageAlt} loading="lazy" />
-      </div>
+      {appImage && (
+        <div class="photo photo--plain" data-reveal>
+          <img src={appImage} alt={app.image?.alt ?? ''} loading="lazy" />
+        </div>
+      )}
     </div>
   </Section>
 
   <!-- Get in touch — the current site's footer tiles, as cards -->
   <Section eyebrow="Get in touch" title="We're here to listen" center>
     <div class="grid cols-4">
-      <a class="card touch" href={`mailto:${site.email}`} data-reveal>
-        <h3>Email Us</h3>
-        <p>Get in touch with us, we're here to listen!</p>
-      </a>
+      {settings?.email && (
+        <a class="card touch" href={`mailto:${settings.email}`} data-reveal>
+          <h3>Email Us</h3>
+          <p>Get in touch with us, we're here to listen!</p>
+        </a>
+      )}
       <a class="card touch" href={prayerForm} data-reveal>
         <h3>Prayer</h3>
         <p>Let us know how we can pray for you.</p>
       </a>
-      <a class="card touch" href={site.social.facebook} target="_blank" rel="noopener noreferrer" data-reveal>
-        <h3>Facebook</h3>
-        <p>Connect with us and stay up-to-date!</p>
-      </a>
-      <a class="card touch" href={site.social.instagram} target="_blank" rel="noopener noreferrer" data-reveal>
-        <h3>Instagram</h3>
-        <p>Connect with us and stay up-to-date!</p>
-      </a>
+      {social.facebook && (
+        <a class="card touch" href={social.facebook} {...ext} data-reveal>
+          <h3>Facebook</h3>
+          <p>Connect with us and stay up-to-date!</p>
+        </a>
+      )}
+      {social.instagram && (
+        <a class="card touch" href={social.instagram} {...ext} data-reveal>
+          <h3>Instagram</h3>
+          <p>Connect with us and stay up-to-date!</p>
+        </a>
+      )}
     </div>
-    <p class="visit-line" data-reveal>
-      <b>{address}</b> · <a href={`tel:+1${site.phone.replaceAll('-', '')}`}>{site.phone}</a>
-    </p>
+    {(address || settings?.phone) && (
+      <p class="visit-line" data-reveal>
+        {address && <b>{address}</b>}{address && settings?.phone && ' · '}{settings?.phone && <a href={telHref(settings.phone)}>{settings.phone}</a>}
+      </p>
+    )}
   </Section>
 </Base>
 
 <style>
+  .announcement { background: var(--gold); color: var(--navy); font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
+  .announcement .wrap { padding-block: 0.7rem; text-align: center; }
+
   .home-hero .inner { padding-block: clamp(4.5rem, 13vw, 8.5rem); }
   .hero__video {
     position: absolute;

@@ -6,7 +6,7 @@
     - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
   - paragraph: Deacon
   - paragraph: Liz Clayton
-  - paragraph: Serving and praying over our prayer ministry — reach out anytime.
+  - paragraph: Serving and praying over this ministry — reach out anytime.
   - paragraph: Share a request
   - heading "How can we pray with you?" [level=2]
   - paragraph: Whatever you're carrying — a burden or a blessing — we'd be honored to pray with you. Share as much or as little as you'd like.
@@ -18,11 +18,17 @@
   - paragraph: Join the prayer team
   - heading "How to get involved" [level=2]
   - list:
-    - listitem: Download the Church Center App from your phone’s app store.
-    - listitem: Open the app and search for Chelsea Community Church.
-    - listitem: Select our church, then log in using the email address or phone number connected to your Planning Center profile.
-    - listitem: Tap the “Groups” icon at the bottom of the screen.
-    - listitem: You’ll find Prayer Team under “Ministry Teams.”
-    - listitem: Tap “request to join.”
+    - listitem:
+      - paragraph: Download the Church Center App from your phone’s app store.
+    - listitem:
+      - paragraph: Open the app and search for Chelsea Community Church.
+    - listitem:
+      - paragraph: Select our church, then log in using the email address or phone number connected to your Planning Center profile.
+    - listitem:
+      - paragraph: Tap the “Groups” icon at the bottom of the screen.
+    - listitem:
+      - paragraph: You’ll find Prayer Team under “Ministry Teams.”
+    - listitem:
+      - paragraph: Tap “request to join.”
   - heading "A note on privacy" [level=3]
   - paragraph: Because many of the needs we share are personal or sensitive, we will verify that you are a member or regular attendee of Chelsea Community Church. This helps keep the Prayer Team a safe and private community where hearts can be honest and burdens shared in love. Once your request to join the group is approved, you’ll receive updates and prayer requests via Church Center app notifications — knowing that what’s shared here remains within our circle of prayer.

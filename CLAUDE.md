@@ -12,7 +12,7 @@ Rules (AI-Written Code)`); this is the church-website deployment of it.
 
 ## The stack (read this first)
 - **Astro 7** — the site. Routes in `src/pages/`, components in `src/components/` (`.astro`), `src/layouts/`. Needs Node 22.23.4+ (`.nvmrc`).
-- **Sanity CMS** — content lives in **Sanity, not the repo**. Schemas in `studio/`; queried via `@sanity/client` (GROQ); rendered through `@portabletext/to-html` + `@sanity/image-url`.
+- **Sanity CMS** — content lives in **Sanity, not the repo**. Schemas in `studio/`; queried via `src/lib/sanity.ts` + `src/lib/queries.ts` (GROQ); rendered through `@portabletext/to-html` + `@sanity/image-url`. Each section type has a component in `src/components/sections/` (registered in `Sections.astro`). With no `PUBLIC_SANITY_PROJECT_ID`, the same GROQ runs locally (groq-js) against `src/data/migration.ts` — today's content, which `npm run export:sanity` turns into an import file.
 - **Cloudflare Workers** — deploy target. Pages render on request (`output: 'server'`, `@astrojs/cloudflare`) in the **edge runtime, not Node** — no `fs` etc. Upstream fetches go through `src/lib/cache.ts`. `astro dev` / `astro preview` run that runtime locally. (`functions/` is a leftover Pages Function, not deployed.)
 - **TypeScript** — `astro check` is the type gate.
 - **Playwright** — e2e tests. This is the verification tool (rule V).

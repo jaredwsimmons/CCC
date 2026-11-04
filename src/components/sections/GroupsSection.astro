@@ -1,0 +1,13 @@
+---
+// Church Center groups open to join, optionally of one type, live.
+import Section from '../Section.astro';
+import GroupCards from '../GroupCards.astro';
+import { getGroups } from '../../lib/groups';
+const { s } = Astro.props;
+const groups = (await getGroups()).filter((g) => !s.groupType || g.type === s.groupType);
+---
+{groups.length > 0 && (
+  <Section eyebrow={s.eyebrow} title={s.heading}>
+    <GroupCards groups={groups} />
+  </Section>
+)}

@@ -1,0 +1,46 @@
+---
+// A page's sections from Sanity, each drawn by its component. An unknown type is
+// skipped, so a new section type in the Studio can't break a page before its
+// component exists.
+import TextSection from './TextSection.astro';
+import TextPhotoSection from './TextPhotoSection.astro';
+import CardsSection from './CardsSection.astro';
+import ScheduleSection from './ScheduleSection.astro';
+import StepsSection from './StepsSection.astro';
+import GallerySection from './GallerySection.astro';
+import ScriptureSection from './ScriptureSection.astro';
+import CtaBandSection from './CtaBandSection.astro';
+import WeeklyRhythmSection from './WeeklyRhythmSection.astro';
+import LongTextSection from './LongTextSection.astro';
+import RegistrationCardSection from './RegistrationCardSection.astro';
+import OpenRegistrationsSection from './OpenRegistrationsSection.astro';
+import GroupsSection from './GroupsSection.astro';
+import FeaturedEventsSection from './FeaturedEventsSection.astro';
+import LatestMessageSection from './LatestMessageSection.astro';
+
+const COMPONENTS: Record<string, any> = {
+  textSection: TextSection,
+  textPhotoSection: TextPhotoSection,
+  cardsSection: CardsSection,
+  scheduleSection: ScheduleSection,
+  stepsSection: StepsSection,
+  gallerySection: GallerySection,
+  scriptureSection: ScriptureSection,
+  ctaBandSection: CtaBandSection,
+  weeklyRhythmSection: WeeklyRhythmSection,
+  longTextSection: LongTextSection,
+  registrationCardSection: RegistrationCardSection,
+  openRegistrationsSection: OpenRegistrationsSection,
+  groupsSection: GroupsSection,
+  featuredEventsSection: FeaturedEventsSection,
+  latestMessageSection: LatestMessageSection,
+};
+
+interface Props { list?: { _type: string; _key: string }[] | null; settings?: unknown; }
+const { list, settings } = Astro.props;
+const sections = (list ?? []).filter((s) => COMPONENTS[s._type]);
+---
+{sections.map((s) => {
+  const Component = COMPONENTS[s._type];
+  return <Component s={s} settings={settings} />;
+})}

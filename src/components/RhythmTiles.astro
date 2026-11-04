@@ -1,0 +1,32 @@
+---
+// "The rhythm of our week" tiles, from Site Settings (Calendar, I'm New, Weekly rhythm sections).
+import { buttonLink, type Button } from '../lib/links';
+
+export type Tile = { category?: string; title?: string; time?: string; location?: string; description?: string; button?: Button | null };
+interface Props { tiles?: Tile[] | null; }
+const tiles = (Astro.props.tiles ?? []).map((t) => ({ ...t, link: buttonLink(t.button) }));
+---
+<div class="grid cols-4">
+  {tiles.map((t) => (
+    <div class="card weekly" data-reveal>
+      {t.category && <span class="tag-cat">{t.category}</span>}
+      <h3>{t.title}</h3>
+      {t.time && <p class="weekly__time">{t.time}</p>}
+      {t.location && <p class="weekly__loc">{t.location}</p>}
+      {t.description && <p>{t.description}</p>}
+      {t.link && t.button?.label && <a class="weekly__link" href={t.link.href}>{t.button.label}</a>}
+    </div>
+  ))}
+</div>
+
+<style>
+  .tag-cat {
+    display: inline-block; font-family: var(--display); font-size: 0.66rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue);
+    background: rgba(0,82,145,0.08); padding: 0.22rem 0.6rem; border-radius: 999px;
+  }
+  .weekly .tag-cat { margin-bottom: 0.6rem; }
+  .weekly__time { font-family: var(--display); font-weight: 600; color: var(--navy); margin-top: 0.1rem; }
+  .weekly__loc { font-size: 0.9rem; color: var(--mid); margin-bottom: 0.5rem; }
+  .weekly__link { display: inline-block; margin-top: 0.7rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+</style>

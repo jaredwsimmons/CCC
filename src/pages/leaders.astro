@@ -1,19 +1,30 @@
 ---
+// Leaders: the header and any sections come from the Leaders page in Sanity, the people
+// from the Leader documents, and the deacons from the Ministry documents.
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import { leaders } from '../data/content';
-import { site } from '../data/site';
+import PageHeader from '../components/PageHeader.astro';
+import Sections from '../components/sections/Sections.astro';
+import { sanityFetch } from '../lib/sanity';
+import { deaconsQuery, fixedPageQuery, leadersQuery, settingsQuery } from '../lib/queries';
+import { imagePosition, imageUrl } from '../lib/image';
+
+const [page, settings, leaders, deacons] = await Promise.all([
+  sanityFetch<any>(fixedPageQuery, { id: 'fixed-leaders' }),
+  sanityFetch<any>(settingsQuery),
+  sanityFetch<any[]>(leadersQuery),
+  sanityFetch<{ name: string; deacons: string[] }[]>(deaconsQuery),
+]);
 ---
-<Base title="Leaders" description="The elders, pastors, staff, and deacons of Chelsea Community Church.">
-  <PageHero eyebrow="About" title="Leaders" />
+<Base title={page?.title ?? 'Leaders'} description={page?.seo?.description}>
+  <PageHeader header={page?.header} title={page?.title ?? 'Leaders'} />
 
   <Section>
     <div class="grid cols-4 staff">
-      {leaders.staff.map((p) => (
+      {(leaders ?? []).map((p) => (
         <div class="person" data-reveal>
           <div class="person__photo">
-            <img src={p.image} alt={`${p.name} — ${p.role}`} loading="lazy" />
+            {p.photo && <img src={imageUrl(p.photo, 600)} alt={p.photo.alt || `${p.name} — ${p.role}`} style={imagePosition(p.photo)} loading="lazy" />}
           </div>
           <h3>{p.name}</h3>
           <p>{p.role}</p>
@@ -22,19 +33,27 @@ import { site } from '../data/site';
     </div>
   </Section>
 
-  <Section variant="alt" eyebrow="Deacons" title="Serving the Body" center>
-    <div class="deacons" data-reveal>
-      {leaders.deacons.map((d) => (
-        <div class="deacon">
-          <span class="area">{d.area}</span>
-          <span class="names">{d.names}</span>
+  {(deacons?.length || settings?.email) && (
+    <Section variant="alt" eyebrow="Deacons" title="Serving the Body" center>
+      {deacons?.length > 0 && (
+        <div class="deacons" data-reveal>
+          {deacons.map((d) => (
+            <div class="deacon">
+              <span class="area">{d.name}</span>
+              <span class="names">{d.deacons.join(', ')}</span>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-    <p class="note" data-reveal>
-      Questions about our leadership? <a href={`mailto:${site.email}`}>Email the church office</a>.
-    </p>
-  </Section>
+      )}
+      {settings?.email && (
+        <p class="note" data-reveal>
+          Questions about our leadership? <a href={`mailto:${settings.email}`}>Email the church office</a>.
+        </p>
+      )}
+    </Section>
+  )}
+
+  <Sections list={page?.sections} settings={settings} />
 </Base>
 
 <style>

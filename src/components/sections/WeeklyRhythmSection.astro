@@ -1,0 +1,9 @@
+---
+// The weekly rhythm tiles kept in Site Settings.
+import Section from '../Section.astro';
+import RhythmTiles from '../RhythmTiles.astro';
+const { s, settings } = Astro.props;
+---
+<Section eyebrow={s.eyebrow} title={s.heading}>
+  <RhythmTiles tiles={settings?.weeklyRhythm} />
+</Section>

@@ -6,13 +6,20 @@
 // waits a minute before trying again, so an outage doesn't slow every page view.
 // Outside the Workers runtime (no `caches.default`) it just calls `load()`.
 //
-// The Cache API does nothing on *.workers.dev addresses; it works on the custom domain.
+// The Cache API does nothing on *.workers.dev addresses (it works on the custom domain),
+// so each running Worker also keeps entries in memory: repeat visits it serves don't
+// refetch either way.
 
 const KEEP_SECONDS = 7 * 24 * 60 * 60; // how long an entry survives without a successful refresh
 const RETRY_SECONDS = 60; // how long to wait after a failed refresh
 const KEY_BASE = 'https://chelseachurch.com/__edge-cache/';
 
 type Entry<T> = { at: number; data: T | null };
+
+const memory = new Map<string, Entry<unknown>>();
+
+/** Forget the in-memory entries (tests). */
+export const clearMemoryCache = () => memory.clear();
 
 export async function cached<T>(
   key: string,
@@ -22,15 +29,22 @@ export async function cached<T>(
   const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default;
   if (!cache) return load();
 
+  const isFresh = (e: Entry<T> | null) => e !== null && Date.now() - e.at < ttl * 1000;
+  let last = (memory.get(key) as Entry<T> | undefined) ?? null;
+  if (isFresh(last)) return last!.data;
+
   const req = new Request(KEY_BASE + encodeURIComponent(key));
-  let last: Entry<T> | null = null;
   try {
     const hit = await cache.match(req);
-    if (hit) last = (await hit.json()) as Entry<T>;
+    const edge = hit ? ((await hit.json()) as Entry<T>) : null;
+    if (edge && (!last || edge.at > last.at)) last = edge;
   } catch {
     // An unreadable entry is treated as a miss.
   }
-  if (last && Date.now() - last.at < ttl * 1000) return last.data;
+  if (isFresh(last)) {
+    memory.set(key, last!);
+    return last!.data;
+  }
 
   const fresh = await load();
   // On failure, keep the last good copy (or remember there is none) and look fresh
@@ -39,6 +53,7 @@ export async function cached<T>(
     fresh !== null
       ? { at: Date.now(), data: fresh }
       : { at: Date.now() - Math.max(ttl - RETRY_SECONDS, 0) * 1000, data: last?.data ?? null };
+  memory.set(key, entry);
   try {
     await cache.put(
       req,

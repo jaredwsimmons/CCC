@@ -1,21 +1,18 @@
 ---
-// Small on-brand card naming the deacon(s) who serve a given ministry.
-// Data comes from the real deacon roster in content.ts (no API needed).
-import { leaders } from '../data/content';
+// Small on-brand card naming the deacon(s) who serve a ministry (the page header's
+// "Deacon card" in Sanity).
 import { withBase } from '../data/site';
-interface Props { area: string; blurb?: string; }
-const { area, blurb } = Astro.props;
-const d = leaders.deacons.find((x) => x.area === area);
-const plural = d ? d.names.includes(',') : false;
+interface Props { deacons?: string[] | null; blurb?: string; }
+const { deacons, blurb } = Astro.props;
 ---
-{d && (
+{deacons && deacons.length > 0 && (
   <div class="deacon" data-reveal>
     <div class="deacon__mark" aria-hidden="true">
       <img src={withBase('/images/icon-gold.png')} alt="" width="30" height="30" />
     </div>
     <div>
-      <p class="deacon__label">{plural ? 'Deacons' : 'Deacon'}</p>
-      <p class="deacon__names">{d.names}</p>
+      <p class="deacon__label">{deacons.length > 1 ? 'Deacons' : 'Deacon'}</p>
+      <p class="deacon__names">{deacons.join(', ')}</p>
       <p class="deacon__blurb">{blurb ?? 'Serving and praying over this ministry — reach out anytime.'}</p>
     </div>
   </div>

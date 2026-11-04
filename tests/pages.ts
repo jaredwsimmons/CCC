@@ -1,4 +1,4 @@
-// Every route the site builds. `live` pages show Church Center or feed data that
+// Every route the site has. `live` pages show Church Center or feed data that
 // changes from day to day, so their content is checked by structure, not snapshot.
 export const pages: { name: string; path: string; live?: boolean }[] = [
   { name: 'home', path: '/' },
@@ -15,7 +15,7 @@ export const pages: { name: string; path: string; live?: boolean }[] = [
   { name: 'prayer', path: '/prayer' },
   { name: 'preschool', path: '/preschool' },
   { name: 'students', path: '/students' },
-  { name: 'women', path: '/women' },
+  { name: 'women', path: '/women', live: true },
   { name: 'worship', path: '/worship' },
   { name: 'give', path: '/give' },
   { name: 'calendar', path: '/calendar', live: true },

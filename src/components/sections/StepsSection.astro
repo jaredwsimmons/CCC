@@ -1,0 +1,55 @@
+---
+// A numbered how-to.
+import Section from '../Section.astro';
+const { s } = Astro.props;
+type Step = { _key: string; title?: string; text?: string };
+const steps = (s.steps ?? []) as Step[];
+---
+<Section eyebrow={s.eyebrow} title={s.heading}>
+  <ol class="steps" data-reveal>
+    {steps.map((st) => (
+      <li>
+        <div>
+          {st.title && <h3>{st.title}</h3>}
+          <p>{st.text}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+  {s.closing && <p class="measure closing" data-reveal>{s.closing}</p>}
+</Section>
+
+<style>
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    display: grid;
+    gap: 0.9rem;
+    max-width: 62ch;
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 3rem;
+    min-height: 2.2rem;
+    display: flex;
+    align-items: center;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: var(--display);
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+  }
+  .steps h3 { font-size: 1.05rem; margin-bottom: 0.2rem; }
+  .closing { margin-top: 2rem; font-style: italic; color: var(--mid); }
+</style>

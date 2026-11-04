@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { cached } from '../src/lib/cache';
+import { cached, clearMemoryCache } from '../src/lib/cache';
 
 // The edge cache's behavior when upstreams (Church Center, feeds, ESV) succeed and fail,
 // against an in-memory stand-in for Cloudflare's caches.default and a controllable clock.
@@ -12,6 +12,7 @@ const realNow = Date.now;
 const g = globalThis as { caches?: unknown };
 
 test.beforeEach(() => {
+  clearMemoryCache();
   now = 1_000_000;
   Date.now = () => now;
   const store = new Map<string, string>();
@@ -69,6 +70,15 @@ test('remembers a failure with no copy for a minute instead of retrying every vi
   expect(load.calls).toBe(1);
   now += 31_000;
   expect(await cached('k', 600, load)).toEqual(['finally']);
+});
+
+test('still caches when the edge cache drops writes (*.workers.dev)', async () => {
+  g.caches = { default: { match: async () => undefined, put: async () => {} } };
+  const load = loader(['a'], ['b']);
+  expect(await cached('k', 600, load)).toEqual(['a']);
+  now += 300_000;
+  expect(await cached('k', 600, load)).toEqual(['a']);
+  expect(load.calls).toBe(1);
 });
 
 test('without an edge cache, every call loads', async () => {

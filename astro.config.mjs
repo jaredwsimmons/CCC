@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
-import sitemap from '@astrojs/sitemap';
 
 // Server-rendered on Cloudflare Workers: each page is built when it's visited, so
 // Church Center data (and Sanity content) is always current, with no rebuilds.
@@ -16,7 +15,6 @@ export default defineConfig({
   }),
   // No sessions are used; without this the adapter provisions a KV namespace for them.
   session: false,
-  integrations: [sitemap()],
   // Keep this a multi-page site. Do NOT add <ClientRouter /> (View Transitions):
   // is:inline embed scripts (Church Center modal) don't re-execute on client-side nav,
   // which would silently break the giving/registration modals after the first page load.

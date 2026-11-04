@@ -1,0 +1,38 @@
+---
+// Church Center groups open to join (the Groups page and the Groups section).
+import { withBase } from '../data/site';
+import type { Group } from '../lib/groups';
+
+interface Props { groups: Group[]; }
+const { groups } = Astro.props;
+---
+<div class="grid cols-3 gcards">
+  {groups.map((g) => (
+    <article class="gcard" data-type={g.type} data-reveal>
+      <div class="gcard__img">
+        {g.image ? <img src={g.image} alt="" loading="lazy" /> : <div class="gcard__ph" aria-hidden="true"><img src={withBase('/images/icon-gold.png')} alt="" width="34" height="34" /></div>}
+      </div>
+      <div class="gcard__body">
+        <span class="tag-cat">{g.type.replace(' Groups', '')} · Open</span>
+        <h3>{g.name}</h3>
+        {g.schedule && <p class="gcard__sched">{g.schedule}</p>}
+        {g.description && <p class="gcard__desc">{g.description}</p>}
+        <a class="gcard__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer">Request to join →</a>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .gcards { align-items: start; }
+  .gcard { background: #fff; border: 1px solid var(--hair); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .gcard__img { aspect-ratio: 16 / 9; background: linear-gradient(135deg, #eef4fa, #fff); overflow: hidden; }
+  .gcard__img img { width: 100%; height: 100%; object-fit: cover; }
+  .gcard__ph { width: 100%; height: 100%; display: grid; place-items: center; }
+  .gcard__body { padding: 1.1rem 1.25rem 1.3rem; display: flex; flex-direction: column; }
+  .tag-cat { display: inline-block; align-self: flex-start; font-family: var(--display); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-deep); background: rgba(240,195,52,0.16); padding: 0.22rem 0.6rem; border-radius: 999px; margin-bottom: 0.55rem; }
+  .gcard h3 { font-size: 1.12rem; }
+  .gcard__sched { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.9rem; margin-top: 0.25rem; }
+  .gcard__desc { font-size: 0.94rem; color: var(--mid); margin-top: 0.5rem; }
+  .gcard__join { align-self: flex-start; margin-top: 0.9rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+</style>

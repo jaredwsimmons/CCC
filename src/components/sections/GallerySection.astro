@@ -1,0 +1,19 @@
+---
+import Section from '../Section.astro';
+import { imagePosition, imageUrl, type SanityImage } from '../../lib/image';
+const { s } = Astro.props;
+const photos = ((s.photos ?? []) as NonNullable<SanityImage>[])
+  .map((p) => ({ src: imageUrl(p, 800), alt: p.alt ?? '', style: imagePosition(p) }))
+  .filter((p) => p.src);
+---
+<Section tight title={s.heading}>
+  <div class="gallery" data-reveal>
+    {photos.map((p) => <div class="photo"><img src={p.src} alt={p.alt} style={p.style} loading="lazy" /></div>)}
+  </div>
+</Section>
+
+<style>
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .gallery .photo { aspect-ratio: 4/3; }
+  @media (max-width: 700px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+</style>

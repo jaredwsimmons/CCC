@@ -1,0 +1,15 @@
+---
+// The newest sermon from the podcast or YouTube, live.
+import LatestMessage, { type Message } from '../LatestMessage.astro';
+import { getPodcastEpisodes, getYouTubeVideos } from '../../lib/feeds';
+import { imageUrl } from '../../lib/image';
+const { s, settings } = Astro.props;
+let message: Message | undefined;
+if (s.source === 'video') {
+  const v = (await getYouTubeVideos(1))[0];
+  if (v) message = { title: v.title, date: v.date, image: v.thumbnail, videoUrl: v.url };
+} else {
+  message = (await getPodcastEpisodes(1))[0];
+}
+---
+{message && <LatestMessage message={message} eyebrow={s.eyebrow || 'Latest message'} fallbackImage={imageUrl(settings?.currentSeries?.image, 900)} />}

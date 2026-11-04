@@ -105,3 +105,30 @@ export function findRefs(text: string): RefPart[] {
   if (last < text.length) out.push({ t: 'text', v: text.slice(last) });
   return out;
 }
+
+/** Tooltip markup for one reference; ScriptureTooltips.astro styles it and loads the verse. */
+export const scriptureRefHtml = (ref: string) =>
+  `<span class="sref" tabindex="0" data-ref="${ref}"><span class="sref-label">${ref}</span>` +
+  `<span class="sref-pop" role="tooltip"><span class="sref-text">Loading…</span><cite class="sref-cite">ESV</cite></span></span>`;
+
+/**
+ * Wraps the scripture references in rendered HTML (rich text from Sanity) with tooltip
+ * markup. Only text between tags is touched, and never link text.
+ */
+export function tagScriptureHtml(html: string): string {
+  let inLink = 0;
+  return html
+    .split(/(<[^>]+>)/)
+    .map((part) => {
+      if (part.startsWith('<')) {
+        if (/^<a[\s>]/i.test(part)) inLink++;
+        else if (/^<\/a>/i.test(part)) inLink = Math.max(0, inLink - 1);
+        return part;
+      }
+      if (inLink) return part;
+      return findRefs(part)
+        .map((p) => (p.t === 'ref' ? scriptureRefHtml(p.v) : p.v))
+        .join('');
+    })
+    .join('');
+}

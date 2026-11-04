@@ -1,0 +1,30 @@
+---
+// The page header from Sanity (label, title, intro, photo, buttons, deacon card),
+// drawn with PageHero.
+import PageHero from './PageHero.astro';
+import DeaconNote from './DeaconNote.astro';
+import Buttons from './Buttons.astro';
+import { imageUrl, type SanityImage } from '../lib/image';
+import type { Button } from '../lib/links';
+
+export type Header = {
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+  image?: SanityImage;
+  buttons?: Button[] | null;
+  ministry?: { deacons?: string[] } | null;
+} | null | undefined;
+
+interface Props {
+  header: Header;
+  /** The page title, used when the header has no title of its own. */
+  title: string;
+}
+const { header, title } = Astro.props;
+const image = imageUrl(header?.image, 1800) ?? undefined;
+---
+<PageHero eyebrow={header?.eyebrow} title={header?.title || title} lead={header?.intro} image={image} imageAlt={header?.image?.alt}>
+  <DeaconNote deacons={header?.ministry?.deacons} slot="aside" />
+  <Buttons list={header?.buttons} large bare dark={Boolean(image)} />
+</PageHero>

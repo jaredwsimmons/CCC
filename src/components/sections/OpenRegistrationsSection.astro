@@ -1,0 +1,13 @@
+---
+// Every open Church Center registration (optionally matching a word), live.
+import Section from '../Section.astro';
+import RegistrationCard from '../RegistrationCard.astro';
+import { getOpenRegistrations } from '../../lib/registrations';
+const { s } = Astro.props;
+const regs = await getOpenRegistrations(s.match);
+---
+{regs.length > 0 && (
+  <Section variant="alt" eyebrow={s.eyebrow} title={s.heading} center>
+    <div class="grid cols-3">{regs.map((r) => <RegistrationCard reg={r} />)}</div>
+  </Section>
+)}

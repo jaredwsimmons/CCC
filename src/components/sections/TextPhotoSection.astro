@@ -1,0 +1,44 @@
+---
+// Text beside 1–3 photos; several photos stack.
+import Section from '../Section.astro';
+import RichText from '../RichText.astro';
+import Buttons from '../Buttons.astro';
+import { variantFor } from '../../lib/links';
+import { imagePosition, imageUrl, type SanityImage } from '../../lib/image';
+const { s } = Astro.props;
+const variant = variantFor(s.background);
+const dark = variant === 'navy';
+const photos = ((s.photos ?? []) as NonNullable<SanityImage>[])
+  .map((p) => ({ src: imageUrl(p, 1000), alt: p.alt ?? '', style: imagePosition(p) }))
+  .filter((p) => p.src);
+const photoFirst = s.photoSide === 'left';
+---
+<Section variant={variant}>
+  <div class="split">
+    {photoFirst && photos.length > 0 && (
+      <div class:list={[photos.length > 1 ? 'stack' : 'photo']} data-reveal>
+        {photos.length > 1
+          ? photos.map((p) => <div class="photo"><img src={p.src} alt={p.alt} style={p.style} loading="lazy" /></div>)
+          : <img src={photos[0].src} alt={photos[0].alt} style={photos[0].style} loading="lazy" />}
+      </div>
+    )}
+    <div data-reveal>
+      {s.eyebrow && <p class:list={['eyebrow', dark && 'on-dark']}>{s.eyebrow}</p>}
+      {s.heading && <h2>{s.heading}</h2>}
+      <RichText value={s.body} class={s.heading ? 'measure tp-body' : 'measure'} />
+      <Buttons list={s.buttons} dark={dark} />
+    </div>
+    {!photoFirst && photos.length > 0 && (
+      <div class:list={[photos.length > 1 ? 'stack' : 'photo']} data-reveal>
+        {photos.length > 1
+          ? photos.map((p) => <div class="photo"><img src={p.src} alt={p.alt} style={p.style} loading="lazy" /></div>)
+          : <img src={photos[0].src} alt={photos[0].alt} style={photos[0].style} loading="lazy" />}
+      </div>
+    )}
+  </div>
+</Section>
+
+<style>
+  .stack { display: grid; gap: 1.25rem; }
+  :global(.tp-body) { margin-top: 0.9rem; }
+</style>

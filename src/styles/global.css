@@ -116,6 +116,19 @@ p + p { margin-top: 0.9em; }
 .mt-1 { margin-top: 1rem; }
 .mt-2 { margin-top: 2rem; }
 
+/* a row of buttons (src/components/Buttons.astro) */
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
+
+/* ---- rich text from Sanity (src/components/RichText.astro) ---- */
+.prose > * + * { margin-top: 0.9em; }
+.prose h2, .prose h3, .prose h4 { margin-top: 1.4em; }
+.prose > :first-child { margin-top: 0; }
+.prose ul, .prose ol { padding-left: 1.3rem; display: grid; gap: 0.4rem; }
+.prose li::marker { color: var(--gold-deep); }
+.prose blockquote { border-left: 3px solid var(--gold); padding-left: 1rem; font-style: italic; }
+.prose img { border-radius: var(--r); }
+.section--navy .prose li::marker { color: var(--gold); }
+
 /* ---- buttons — pill, Poppins 600 ---- */
 .btn {
   display: inline-flex;
@@ -187,6 +200,10 @@ p + p { margin-top: 0.9em; }
 .section--navy h1, .section--navy h2, .section--navy h3 { color: var(--cream); }
 .section--navy p { color: rgba(251, 249, 244, 0.85); }
 .section--navy .lead { color: rgba(251, 249, 244, 0.8); }
+/* Two sections in a row on the same background (Sanity pages) read as one: no double gap. */
+.section:not(.section--alt, .section--white, .section--navy) + .section:not(.section--alt, .section--white, .section--navy),
+.section--alt + .section--alt,
+.section--navy + .section--navy { padding-top: 0; }
 .section-head { margin-bottom: 2rem; max-width: 46rem; }
 .center .section-head, .section-head.center { margin-inline: auto; }
 

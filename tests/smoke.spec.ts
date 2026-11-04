@@ -27,6 +27,14 @@ test('unknown pages get the 404 page', async ({ page }) => {
   await expect(page.locator('h1')).toHaveText("We couldn't find that page");
 });
 
+test('the sitemap lists every page', async ({ request }) => {
+  const res = await request.get('/sitemap.xml');
+  expect(res.status()).toBe(200);
+  expect(res.headers()['content-type']).toContain('application/xml');
+  const listed = [...(await res.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+  expect(listed.sort()).toEqual(pages.map((p) => p.path).sort());
+});
+
 test('old URLs redirect permanently', async ({ request }) => {
   for (const [from, to] of [['/history', '/our-story'], ['/home', '/']]) {
     const res = await request.get(from, { maxRedirects: 0 });

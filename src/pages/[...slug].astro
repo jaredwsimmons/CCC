@@ -1,0 +1,19 @@
+---
+// Every page staff build in Sanity, at /<its web address>. The fixed pages (Calendar,
+// Groups, Media, Give, Leaders), Home and Bylaws have their own files, which take
+// precedence over this route.
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Sections from '../components/sections/Sections.astro';
+import { sanityFetch } from '../lib/sanity';
+import { pageQuery, settingsQuery } from '../lib/queries';
+
+const slug = Astro.params.slug;
+const page = slug ? await sanityFetch<any>(pageQuery, { slug }) : null;
+if (!page) return Astro.rewrite('/404');
+const settings = await sanityFetch<any>(settingsQuery);
+---
+<Base title={page.title} description={page.seo?.description}>
+  <PageHeader header={page.header} title={page.title} />
+  <Sections list={page.sections} settings={settings} />
+</Base>

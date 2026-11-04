@@ -1,44 +1,36 @@
 ---
+// Media: the header and any sections below come from the Media page in Sanity; the
+// messages are built from PUBLIC feeds — no token. (Live PCO Publishing API swaps in here later.)
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
 import Section from '../components/Section.astro';
-import { media, home } from '../data/content';
-import { site } from '../data/site';
+import PageHeader from '../components/PageHeader.astro';
+import LatestMessage from '../components/LatestMessage.astro';
+import Sections from '../components/sections/Sections.astro';
+import { sanityFetch } from '../lib/sanity';
+import { fixedPageQuery, settingsQuery } from '../lib/queries';
+import { imageUrl } from '../lib/image';
 import { getYouTubeVideos, getPodcastEpisodes, fmtDuration } from '../lib/feeds';
 
-// Built from PUBLIC feeds — no token. (Live PCO Publishing API swaps in here later.)
-const [videos, episodes] = await Promise.all([getYouTubeVideos(6), getPodcastEpisodes(7)]);
+const [page, settings, videos, episodes] = await Promise.all([
+  sanityFetch<any>(fixedPageQuery, { id: 'fixed-media' }),
+  sanityFetch<any>(settingsQuery),
+  getYouTubeVideos(6),
+  getPodcastEpisodes(7),
+]);
 const latest = episodes[0];
 const rest = episodes.slice(1);
+const social = settings?.social ?? {};
+// Episodes without their own art show the current series art.
+const seriesArt = imageUrl(settings?.currentSeries?.image, 800);
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const fmtDate = (d: Date | null) =>
   d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 ---
-<Base title="Media" description="Watch Chelsea Community Church worship services and listen to the sermon podcast — recent messages, updated automatically.">
-  <PageHero eyebrow="Media" title="Watch & Listen" lead={media.intro[0]} />
+<Base title={page?.title ?? 'Media'} description={page?.seo?.description}>
+  <PageHeader header={page?.header} title={page?.title ?? 'Media'} />
 
   <!-- Latest message -->
-  {latest && (
-    <Section variant="navy" tight>
-      <div class="latest" data-reveal>
-        <div class="latest__art">
-          <img src={latest.image || home.series.art} alt={latest.title} loading="eager" />
-        </div>
-        <div class="latest__body">
-          <p class="eyebrow on-dark">Latest message</p>
-          <h2>{latest.title}</h2>
-          {latest.subtitle && <p class="latest__sub">{latest.subtitle}</p>}
-          <p class="latest__meta">{fmtDate(latest.date)}{latest.duration && ` · ${fmtDuration(latest.duration)}`}</p>
-          {latest.audioUrl && (
-            <audio class="latest__audio" controls preload="none" src={latest.audioUrl}></audio>
-          )}
-          <div class="latest__cta">
-            <a class="btn btn--gold" href={site.social.youtube} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
-            {latest.link && <a class="btn btn--outline-light" href={latest.link} target="_blank" rel="noopener noreferrer">Listen</a>}
-          </div>
-        </div>
-      </div>
-    </Section>
-  )}
+  {latest && <LatestMessage message={latest} fallbackImage={seriesArt} />}
 
   <!-- Watch (YouTube) -->
   {videos.length > 0 && (
@@ -57,9 +49,11 @@ const fmtDate = (d: Date | null) =>
           </a>
         ))}
       </div>
-      <p class="mt-2" data-reveal>
-        <a class="btn btn--outline" href={site.social.youtube} target="_blank" rel="noopener noreferrer">See all on YouTube</a>
-      </p>
+      {social.youtube && (
+        <p class="mt-2" data-reveal>
+          <a class="btn btn--outline" href={social.youtube} {...ext}>See all on YouTube</a>
+        </p>
+      )}
     </Section>
   )}
 
@@ -69,7 +63,7 @@ const fmtDate = (d: Date | null) =>
       <div class="eps">
         {rest.map((e) => (
           <a class="ep" href={e.link} target="_blank" rel="noopener noreferrer" data-reveal>
-            <img class="ep__art" src={e.image || home.series.art} alt="" loading="lazy" />
+            {(e.image || seriesArt) && <img class="ep__art" src={e.image || seriesArt} alt="" loading="lazy" />}
             <div class="ep__body">
               <h3>{e.title}</h3>
               {e.subtitle && <p class="ep__sub">{e.subtitle}</p>}
@@ -79,43 +73,35 @@ const fmtDate = (d: Date | null) =>
         ))}
       </div>
       <div class="pods mt-2" data-reveal>
-        <a class="btn btn--outline" href={site.social.spotify} target="_blank" rel="noopener noreferrer">Spotify</a>
-        <a class="btn btn--outline" href={site.social.applePodcasts} target="_blank" rel="noopener noreferrer">Apple Podcasts</a>
-        <a class="btn btn--outline" href={site.social.amazonMusic} target="_blank" rel="noopener noreferrer">Amazon Music</a>
+        {social.spotify && <a class="btn btn--outline" href={social.spotify} {...ext}>Spotify</a>}
+        {social.applePodcasts && <a class="btn btn--outline" href={social.applePodcasts} {...ext}>Apple Podcasts</a>}
+        {social.amazonMusic && <a class="btn btn--outline" href={social.amazonMusic} {...ext}>Amazon Music</a>}
       </div>
     </Section>
   )}
 
-  <!-- Fallback if both feeds are unavailable at build -->
+  <!-- Fallback if both feeds are unavailable -->
   {videos.length === 0 && episodes.length === 0 && (
     <Section>
       <div class="grid cols-2">
         <div class="card" data-reveal>
           <h3>Watch our worship service</h3>
-          <p>{media.intro[1]}</p>
-          <a class="btn btn--blue mt-1" href={site.social.youtube} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+          <p>Our worship services are streamed live on YouTube each Sunday morning, then uploaded to our channel.</p>
+          {social.youtube && <a class="btn btn--blue mt-1" href={social.youtube} {...ext}>Watch on YouTube</a>}
         </div>
         <div class="card" data-reveal>
           <h3>Listen to our sermon podcast</h3>
-          <p>{media.intro[2]}</p>
-          <a class="btn btn--outline mt-1" href={site.social.spotify} target="_blank" rel="noopener noreferrer">Listen on Spotify</a>
+          <p>You can also find our sermons in podcast form on all major streaming platforms!</p>
+          {social.spotify && <a class="btn btn--outline mt-1" href={social.spotify} {...ext}>Listen on Spotify</a>}
         </div>
       </div>
     </Section>
   )}
+
+  <Sections list={page?.sections} settings={settings} />
 </Base>
 
 <style>
-  /* latest */
-  .latest { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
-  .latest__art { border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 16/9; }
-  .latest__art img { width: 100%; height: 100%; object-fit: cover; }
-  .latest__sub { margin-top: 0.6rem; color: rgba(251,249,244,0.9); font-weight: 600; }
-  .latest__meta { margin-top: 0.3rem; color: rgba(251,249,244,0.6); font-size: 0.9rem; }
-  .latest__audio { margin-top: 1rem; width: 100%; max-width: 460px; height: 40px; }
-  .latest__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.2rem; }
-  @media (max-width: 800px) { .latest { grid-template-columns: 1fr; } }
-
   /* watch grid */
   .vid { text-decoration: none; display: block; }
   .vid__thumb { position: relative; aspect-ratio: 16/9; border-radius: var(--r); overflow: hidden; border: 1px solid var(--hair); box-shadow: var(--shadow); }
