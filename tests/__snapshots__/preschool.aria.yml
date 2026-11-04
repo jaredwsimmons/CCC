@@ -1,0 +1,35 @@
+- main:
+  - paragraph: Ministries
+  - heading "Preschool" [level=1]
+  - paragraph: Deacons
+  - paragraph: Marianne Dacey, Randi Street
+  - paragraph: Serving and praying over this ministry — reach out anytime.
+  - paragraph: First time?
+  - heading "Get Ready For Sunday" [level=2]
+  - paragraph: If you are coming to worship with us for the first time soon, please click the button below to pre-register your family with us. This will make your check-in time very quick on Sunday morning! Our Preschool Check-In desk is through the entrance on the right side of the building, past the Worship Room.
+  - link "Pre-Register Your Family":
+    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+  - heading "Sunday Schedule" [level=3]
+  - list:
+    - listitem: /9:\d+ AM — Preschool Worship/
+    - listitem: /\d+:\d+ AM — Preschool Community Groups/
+  - link "Check out our monthly newsletter →":
+    - /url: https://us20.campaign-archive.com/home/?u=6fa2b34c88de2cd28223fc41e&id=a20c63fb53
+  - paragraph: Good to know
+  - heading "Making Sunday mornings easy" [level=2]
+  - heading "Drop-Off Tips" [level=3]
+  - paragraph: It’s completely normal for little ones to feel a bit unsure during drop-off. From our experience, a quick goodbye usually helps them adjust faster. If you have special instructions or requests, please let us know. We want your child to feel safe and secure, and for you to feel at ease.
+  - heading "What to Bring" [level=3]
+  - paragraph: We have diapers and wipes if you need them. Just pack a labeled bottle or water cup for your child.
+  - heading "What to Wear" [level=3]
+  - paragraph: Your child will love playing outside (weather permitting) and getting creative with crafts like painting and coloring. Comfortable, easy-to-clean clothes are perfect.
+  - img "Preschool ministry at Chelsea Community Church — photo 1"
+  - img "Preschool ministry at Chelsea Community Church — photo 2"
+  - img "Preschool ministry at Chelsea Community Church — photo 3"
+  - img "Preschool ministry at Chelsea Community Church — photo 4"
+  - img "Preschool ministry at Chelsea Community Church — photo 5"
+  - img "Preschool ministry at Chelsea Community Church — photo 6"
+  - heading "Questions about Preschool?" [level=2]
+  - paragraph: We'd love to help your family feel at home.
+  - link "Email us for more information!":
+    - /url: mailto:ben@chelseachurch.com

@@ -1,0 +1,25 @@
+- main:
+  - paragraph: Ministries
+  - heading "Men" [level=1]
+  - paragraph: Deacon
+  - paragraph: Stephen Thomas
+  - paragraph: Serving and praying over this ministry — reach out anytime.
+  - paragraph: Discipleship
+  - heading "Growing together in the Word" [level=2]
+  - list:
+    - listitem: Topic Based Studies
+    - listitem: Monthly Fire Pit
+    - listitem: Community Groups
+  - 'img /Men’s Bible Study weekly gatherings: Monday 6:\d+ AM at Bojangles, Thursday 6:\d+ AM at Mt\. Laurel O’Henry’s, Thursday 6:\d+ PM and Friday 6:\d+ AM at the Church Commons/'
+  - img "Men On Fire — first Sunday every month at 6 PM"
+  - paragraph: First Sunday · 6 PM
+  - heading "Men On Fire" [level=2]
+  - paragraph: On the first Sunday of every month, all men gather around the fire pit — one place, one purpose. It’s a time for brotherhood, real conversation about Scripture, and powerful prayer.
+  - heading "Relationships" [level=3]
+  - paragraph: We host two to three events each year that enable men to hang out with other men. This is an enjoyable time to have fun, deepen friendships, get to know one another and encourage one another.
+  - heading "Service" [level=3]
+  - paragraph: We are fortunate to have partnered with multiple local ministries and strive to lead our men to participate in opportunities to support and serve alongside our mission partners.
+  - heading "Join the brotherhood" [level=2]
+  - paragraph: Studies, the fire pit, serving shoulder-to-shoulder — there's a seat for you.
+  - link "Email Brian for more information!":
+    - /url: mailto:brian@chelseachurch.com

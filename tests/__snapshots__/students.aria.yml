@@ -1,0 +1,20 @@
+- main:
+  - paragraph: Ministries · Students
+  - heading "Welcome to C3SM!" [level=1]
+  - paragraph: C3SM is our church's ministry to middle and high school students. We disciple students to become lifelong proclaimers of the good news of Jesus!
+  - paragraph: Deacons
+  - paragraph: Andrew Hill, Courtney Hill
+  - paragraph: Serving and praying over this ministry — reach out anytime.
+  - img "C3SM students and leaders on a summer trip"
+  - heading "Sunday Mornings" [level=3]
+  - paragraph: Community groups (divided by age and gender) in the Community Room at 9 AM
+  - heading "Wednesday Nights" [level=3]
+  - paragraph: Games, student-led worship, and Bible teaching in the Worship Room at 6 PM
+  - link "Let us know your family is coming!":
+    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+  - link "Summer events calendar":
+    - /url: /calendar
+  - heading "Questions about C3SM?" [level=2]
+  - paragraph: Drew Blake, our Pastor of Students & Worship, would love to connect.
+  - link "Get in touch with Pastor Drew!":
+    - /url: mailto:drew@chelseachurch.com

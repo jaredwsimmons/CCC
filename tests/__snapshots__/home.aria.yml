@@ -1,0 +1,59 @@
+- main:
+  - img "The Chelsea Community Church family standing in worship on Sunday morning"
+  - paragraph: A church family in Chelsea, Alabama
+  - heading "Pursuing God. Pursuing others." [level=1]
+  - paragraph: /Worship & Community Groups · 9:\d+ AM & \d+:\d+ AM/
+  - link "Plan a Visit":
+    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+  - link "I'm New":
+    - /url: /imnew
+  - text: /This Sunday · 9:\d+ & \d+:\d+ AM \d+ Chelsea Park Dr\., Chelsea, AL \d+/
+  - link "Get directions":
+    - /url: https://maps.app.goo.gl/2eQ6opgKF2mtYANx8
+  - paragraph: Welcome
+  - heading "Welcome to Chelsea Community Church" [level=2]
+  - paragraph: Chelsea Community Church exists to pursue God and pursue others, and we desire to be known as a people who love God and love others well. Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.
+  - link "I'm New":
+    - /url: /imnew
+  - link "Learn More":
+    - /url: /beliefs
+  - img "Jesus Storyteller — Learning from the Parables of Jesus, current sermon series art"
+  - paragraph: Current sermon series
+  - heading "Jesus Storyteller" [level=2]
+  - paragraph: "/This summer, join us for Jesus Storyteller: Learning from the Parables of Jesus — a journey through the unforgettable stories Jesus used to reveal truth, challenge hearts, and invite people into the Kingdom of God\\. From lost sons and good Samaritans to persistent widows and mustard seeds, these timeless parables still speak powerfully today\\. Come discover how the stories Jesus told can transform the way we live, love, and follow Him\\. Join us Sunday at 9:\\d+ or \\d+:\\d+ AM!/"
+  - link "Watch Service":
+    - /url: https://youtube.com/playlist?list=PLcnuF3joGnBHLhefAXRk4zswRf2Ti73Hx&si=bEs8rxO9QK1nLbbv
+  - link "Listen on Spotify":
+    - /url: https://open.spotify.com/show/4Hx7Zb0hZtARV8p3q0J4lA
+  - paragraph: Spotlight
+  - heading "New church app" [level=2]
+  - paragraph: Give, sign up for events, connect with a community, check your family in, and more! Download the Church Center app today, search for Chelsea Community Church, and log in with the email or phone number connected to your Planning Center profile.
+  - link "App Store":
+    - /url: https://apps.apple.com/us/app/church-center-app/id1357742931
+  - link "Google Play":
+    - /url: https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter
+  - link "Set up Church Center":
+    - /url: https://chelseachurch.churchcenter.com/setup
+  - img "The Church Center app for Chelsea Community Church on a phone, with App Store and Google Play badges"
+  - paragraph: Get in touch
+  - heading "We're here to listen" [level=2]
+  - link "Email Us Get in touch with us, we're here to listen!":
+    - /url: mailto:rebecca@chelseachurch.com
+    - heading "Email Us" [level=3]
+    - paragraph: Get in touch with us, we're here to listen!
+  - link "Prayer Let us know how we can pray for you.":
+    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
+    - heading "Prayer" [level=3]
+    - paragraph: Let us know how we can pray for you.
+  - link "Facebook Connect with us and stay up-to-date!":
+    - /url: https://www.facebook.com/share/1ERuoVkBVp/
+    - heading "Facebook" [level=3]
+    - paragraph: Connect with us and stay up-to-date!
+  - link "Instagram Connect with us and stay up-to-date!":
+    - /url: https://www.instagram.com/chelseacommunitychurch
+    - heading "Instagram" [level=3]
+    - paragraph: Connect with us and stay up-to-date!
+  - paragraph:
+    - text: /\d+ Chelsea Park Dr\., Chelsea, AL \d+ ·/
+    - link /\d+-\d+-\d+/:
+      - /url: tel:+12052010759

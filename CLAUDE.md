@@ -22,6 +22,7 @@ Rules (AI-Written Code)`); this is the church-website deployment of it.
 ## Commands
 - `npm run dev` — Astro dev server · `npm run dev:fn` — build + Cloudflare Pages runtime (functions)
 - `npm run build` — production build · `npm run check` — `astro check` (types)
+- `npm test` — Playwright e2e tests (builds + serves the site; baselines in `tests/__snapshots__` and `tests/__screenshots__`) · `npm run test:update` — accept an intended change
 - Run the **Playwright** e2e tests before calling a change done.
 
 ---

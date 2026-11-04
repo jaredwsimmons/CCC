@@ -1,0 +1,15 @@
+- main:
+  - paragraph: Ministries
+  - heading "Worship" [level=1]
+  - paragraph: Deacon
+  - paragraph: Tanner Cain
+  - paragraph: Serving and praying over this ministry — reach out anytime.
+  - heading "A blend of all generations" [level=2]
+  - paragraph: All of our Sunday worship services feature a blended worship style, including elements of both traditional and contemporary music. Our worship reflects our congregation which is a blend of all generations.
+  - paragraph: Behind the scenes our tech team makes sure sound, lights, and video run smoothly. This ensures a worship environment free of distraction.
+  - img "A vocalist leading sung worship"
+  - img "The production team’s audio console during a service"
+  - heading "Serve with music or tech" [level=2]
+  - paragraph: Musicians, vocalists, and behind-the-scenes hands all help make Sunday distraction-free.
+  - link "Click to serve with music or tech!":
+    - /url: mailto:tech@chelseachurch.com

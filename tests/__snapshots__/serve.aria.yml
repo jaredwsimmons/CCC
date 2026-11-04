@@ -1,0 +1,36 @@
+- main:
+  - paragraph: Ministries
+  - heading "Serve" [level=1]
+  - paragraph: /“But be doers of the word, and not hearers only, deceiving yourselves\.” \(James 1:\d+\)/
+  - paragraph: Teams Mobilizer
+  - heading "Find your place. Know your purpose." [level=2]
+  - paragraph: We invite you to join us on this journey of pursuit by checking out our Teams Mobilizer tool. This resource assists us in finding our place, knowing our purpose and being a people of pursuit.
+  - paragraph: It's not a spiritual gifts inventory, and it doesn't sign you up to serve on a team. You'll get an email with your results, and you'll be contacted by Brian Marbury to talk more about where God might be calling you to serve.
+  - link "Click here to take the survey":
+    - /url: https://volunteeraccelerator.ministryarchitects.com/DOCC/survey.php
+  - img "Teams Mobilizer — find your place, know your purpose, be people of pursuit"
+  - heading "It Is:" [level=3]
+  - list:
+    - listitem: A way to match people to ministry positions within the local church.
+    - listitem: Through a quick survey, our leadership can learn your unique skills and desires and you can learn which serving opportunities are the best match for you!
+  - heading "It Is Not:" [level=3]
+  - list:
+    - listitem: An automatic, team member sign up. (By completing the survey, you are not signing up for anything.)
+    - listitem: A new church database. (This doesn't have addresses or any financial information; this is just names, emails, phone numbers, and what you say you have a heart for.)
+    - listitem: A spiritual gifts inventory. (This tool matches the practical skills that you possess, along with your interests, with a real ministry opportunity in the church where you can serve.)
+  - paragraph: Instructions
+  - heading "Three simple steps" [level=2]
+  - paragraph: Step 1
+  - heading "Be honest" [level=3]
+  - paragraph: This is a self-assessment. Only you truly know what you enjoy doing. So, for example, if working with kids isn’t your strength or you aren't great at music — it’s ok, choose an honest answer — not the answer that you think you're expected to answer.
+  - paragraph: Step 2
+  - heading "See this as an opportunity" [level=3]
+  - paragraph: Your results will be sent to your email. Once you get your results, we're asking that you pray about them. That's it, for now. Consider what the next season of serving and ministry looks like for you — and give yourself permission to try something new, if that could be a better fit.
+  - paragraph: Step 3
+  - heading "Have some conversations" [level=3]
+  - paragraph: Remember, this is not a sign up. Our hope is that this new tool will help us to enter into conversations about how the Lord has gifted and equipped you for ministry and how we can, as your pastors and leaders, join with you in your journey in helping you find your place, know your purpose and be a people of pursuit. Once you have completed the survey, our leadership will be in contact to talk about where you feel led to serve. And we hope you'll be open to having those conversations with us.
+  - paragraph: Our hope and prayer has been and will be that we, as a body of believers, will receive all that God has given us and share that with each other. In so doing, we all get to participate in what the Spirit of God is doing among us.
+  - heading "Questions about serving?" [level=2]
+  - paragraph: Brian Marbury, our Pastor of Missions & Service, is the one to ask.
+  - link "Email Brian for more information!":
+    - /url: mailto:brian@chelseachurch.com

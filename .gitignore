@@ -22,6 +22,10 @@ studio/node_modules/
 # sanity
 studio/.sanity/
 
+# playwright run output (baselines in tests/__snapshots__ and tests/__screenshots__ ARE committed)
+test-results/
+playwright-report/
+
 # os / editor
 .DS_Store
 Thumbs.db

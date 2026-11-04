@@ -1,0 +1,19 @@
+- main:
+  - paragraph: Generosity
+  - heading "Give" [level=1]
+  - paragraph: Thank you for partnering in the mission of our church. Giving is handled securely through Church Center.
+  - link "Give now":
+    - /url: https://chelseachurch.churchcenter.com/giving?open-in-church-center-modal=true
+  - link "Open in a new tab":
+    - /url: https://chelseachurch.churchcenter.com/giving
+  - paragraph: Simple & secure
+  - heading "Ways to give" [level=2]
+  - heading "Online" [level=3]
+  - paragraph: Give a one-time gift or set up recurring giving in seconds — securely through Church Center.
+  - heading "In the app" [level=3]
+  - paragraph: Download the Church Center app to give and stay connected from anywhere.
+  - heading "In person" [level=3]
+  - paragraph: Give during either Sunday gathering as an act of worship together.
+  - figure "2 Corinthians 9:7":
+    - blockquote: “Each one must give as he has decided in his heart, not reluctantly or under compulsion, for God loves a cheerful giver.”
+    - text: ""

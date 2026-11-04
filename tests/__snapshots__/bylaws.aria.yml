@@ -1,0 +1,309 @@
+- main:
+  - paragraph: About
+  - heading "Church Bylaws" [level=1]
+  - paragraph: The governing document of Chelsea Community Church, Chelsea, Alabama — reproduced in full below.
+  - link "Official document ↗":
+    - /url: https://docs.google.com/document/u/0/d/1p3udrhBXFaMOThxqw3sV-UnbVTGa0NkPWo589Z9jeRc/mobilebasic
+  - complementary "Table of contents":
+    - paragraph: Contents
+    - list:
+      - listitem:
+        - link "I. Name":
+          - /url: "#name"
+      - listitem:
+        - link "II. Constitution & Bylaws":
+          - /url: "#constitution"
+      - listitem:
+        - link "III. Organization & Offices":
+          - /url: "#organization"
+      - listitem:
+        - link "IV. Congregational Authority":
+          - /url: "#authority"
+      - listitem:
+        - link "V. Church Membership":
+          - /url: "#membership"
+      - listitem:
+        - link "VI. Officers":
+          - /url: "#officers"
+      - listitem:
+        - link "VII. Church Meetings":
+          - /url: "#meetings"
+      - listitem:
+        - link "VIII. Ordinances":
+          - /url: "#ordinances"
+      - listitem:
+        - link "IX. Standing Resource Teams":
+          - /url: "#resource-teams"
+      - listitem:
+        - link "X. Other Church-Life Teams":
+          - /url: "#other-teams"
+      - listitem:
+        - link "XI. The Budget & Funds":
+          - /url: "#budget-funds"
+      - listitem:
+        - link "XII. Indemnification":
+          - /url: "#indemnification"
+      - listitem:
+        - link "XIII. Amendments":
+          - /url: "#amendments"
+  - paragraph: Article I
+  - heading "Name" [level=2]
+  - paragraph: This organization shall be known as "Chelsea Community Church."
+  - paragraph: Article II
+  - heading "Constitution and Bylaws" [level=2]
+  - paragraph: The Constitution of Chelsea Community Church (hereinafter may be referred to as Church) declares who we are and consists of our purpose, our statement of faith, our covenant of fellowship, and our core values. These Bylaws prescribe the governance of the Church, under the leadership of the Holy Spirit, as vested in its members and administered by the Board of Elders and our pastoral staff. Wherever possible, these Bylaws shall be interpreted so as to be consistent with the Constitution. Should any bylaw be found to contradict a provision of the Constitution, the Constitution shall control.
+  - paragraph: Article III
+  - heading "Organization, Incorporation and Offices" [level=2]
+  - paragraph: A. Organization. Chelsea Community Church is organized and incorporated under the laws of the state of Alabama.
+  - paragraph: "/B\\. Offices\\. Although Chelsea Community Church meets regularly for worship services and community groups on multiple campuses, its legal and official address is: \\d+ Chelsea Park Drive, Chelsea, Alabama \\d+\\./"
+  - paragraph: Article IV
+  - heading "Congregational Authority" [level=2]
+  - paragraph: "Chelsea Community Church shall be Christ ruled, elder led, and congregationally accountable, with its governance vested in its members and administered by the Board of Elders and the pastoral staff. To that end, the members shall have the sole authority to be exercised in the manner set forth in these Bylaws and to perform the following actions:"
+  - list:
+    - listitem: Calling of the Senior Pastor and members of the pastoral staff
+    - listitem: Electing members of the Board of Elders
+    - listitem: Electing Members of the Board of Trustees and Church Clerk
+    - listitem: Adopting an annual budget
+    - listitem: Buying or selling property
+    - listitem: Borrowing money in excess of 5% of the annual church budget
+    - listitem: Amending the Constitution
+    - listitem: Amending these Bylaws
+    - listitem: Addressing any other matter that in the opinion of the Board of Elders should come before the congregation for approval.
+  - paragraph: Article V
+  - heading "Church Membership" [level=2]
+  - heading "A. How Members are Received." [level=3]
+  - paragraph: "1) Chelsea Community Church will strive to be body of believers comprised of persons who profess a personal faith and belief in the Lord Jesus Christ, having received baptism in a church as defined in the New Testament, and who actively follow the Lord Jesus Christ in discipleship. Chelsea Community Church will receive into its membership those individuals who come as a result of the Lord's leadership and who are willing to meet the following requirements:"
+  - list:
+    - listitem: Express a personal faith in Jesus Christ as Lord and Savior as evidenced by a changed life and a growing desire for intimacy and holiness before God.
+    - listitem: In an effort to fully understand the values and teachings of Chelsea Community Church, new and prospective church members will be invited and strongly encouraged to participate in the church's new member orientation program. At a minimum they will be made aware of the history, doctrine and governance of Chelsea Community Church as well as learning about opportunities for service.
+    - listitem: Meet with the Senior Pastor or his designee to discuss the above items and any other concerns a prospective member might have.
+    - listitem: An individual shall be considered a candidate for membership once they complete the steps outlined above and present themselves before the congregation for membership based on the recommendation of the Senior Pastor or his designee. At such time, the candidate for membership will be formally accepted and confirmed by the church body.
+  - paragraph: "2) Individuals may be received into the membership of the church by the following means:"
+  - list:
+    - listitem: Baptism following a public profession of faith
+    - listitem: Statement of faith
+    - listitem: Restoration following an action of church discipline.
+  - heading "B. Rights of Members." [level=3]
+  - paragraph: Every member of the Church is entitled to vote at all elections and on all questions submitted to the Church in conference, provided the member is present. Proxy voting is prohibited. Every member of the Church is eligible for consideration by the membership as a candidate for the elective offices in the Church in accordance with Scripture.
+  - heading "C. Responsibilities of Members." [level=3]
+  - paragraph: "/While many of the expectations of membership are outlined in the new member orientation program sessions as mentioned in Section A\\.1\\)\\.b\\. above, members are generally expected to joyfully participate in the following activities: \\(See Malachi 3:8-\\d+; John \\d+:\\d+-\\d+; Acts 2:\\d+-\\d+; Romans \\d+:\\d+-\\d+, \\d+:\\d+; 1 Corinthians \\d+:\\d+; Galatians 6:1; Ephesians 4:\\d+-\\d+, 6:\\d+-\\d+; 1 Thessalonians 3:\\d+, 4:9-\\d+; Hebrews \\d+:\\d+-\\d+, \\d+:\\d+-\\d+; James 5:\\d+; 1 Peter 4:\\d+-\\d+; 1 John 4:7-8\\)/"
+  - list:
+    - listitem: Be present during worship and prayer services.
+    - listitem: Be in prayer for the leadership of the church, one another, and brothers and sisters in Christ around the world.
+    - listitem: Exhibit love for all the body.
+    - listitem: Be involved in true Christian community through our community groups and/or other means.
+    - listitem: Serve the congregation as individually gifted and impassioned.
+    - listitem: Provide financially for the ministries of the church through tithes and offerings.
+    - listitem: Be watchful over and encourage one another toward holiness.
+  - heading "D. How Members May Be Dismissed." [level=3]
+  - list:
+    - listitem: Membership may be terminated for an individual member through death, transfer of membership to another church, or voluntary resignation.
+    - listitem: /If a member does not attend any service of worship, Bible study or prayer meeting for an extended period of time, and, after having been contacted about their non-attendance, continues to be absent for an additional three \(3\) months, Church membership may be reluctantly terminated\. Exceptions to this action will be made for the aged, homebound, those serving in the military, or for individuals away at college\. \(See Hebrews \d+:\d+-\d+\.\)/
+    - listitem: Any member being found guilty and unrepentant after the administration of Church Discipline as outlined in Section E below may be dismissed by the vote of the Church and as specified in Section E below.
+  - heading "E. Church Discipline and the Restoration Process." [level=3]
+  - list:
+    - listitem: /Recognizing that the Bride of Christ is called to be pure and holy and realizing that we are called to gently, lovingly, but firmly correct those in error, Chelsea Community Church will administer, when necessary, church discipline as outlined in Scripture\. \(See Matthew \d+:\d+-\d+; 1 Corinthians 5:1-5, \d+; Galatians 6:1-5; 1 Timothy 1:\d+; Titus 3:\d+-\d+; 1 Peter 4:\d+\.\)/
+    - listitem: Church disciplinary actions will be directed towards any member who is known to be committing acts not characteristic of Christian conduct, or who consistently upsets the unity of the church, therefore resulting in the defamation of both the Name of Christ and the witness of the Church.
+    - listitem: We believe that church discipline, far from being unloving, is necessary to honor the name of Christ, protect the congregant as well as the flock, educate and edify the body, and ensure the purity of the Church. Church discipline is pursued in the hope that an erring brother or sister in Christ will repent and be restored into proper fellowship with the Lord and the Church.
+    - listitem: Administrating church discipline will be the responsibility of the Board of Elders. The Board of Elders will bring any recommendation that is necessary before the Church concerning an individual member.
+    - listitem:
+      - text: "The discipline and restoration process includes the following actions:"
+      - list:
+        - listitem: An initial, private, one-on-one admonition by a congregational member who has personal knowledge of ongoing improper Christian conduct will take place.
+        - listitem: If step a. above does not reveal the accusation to be false, or result in repentance and restoration if true, a second admonition in the presence of one or two Elders will be given.
+        - listitem: A reasonable effort must be made to secure a private resolution of personal offense in the hope that public censure by the Church will not be required.
+        - listitem: If steps a.-c, as outlined above do not result in repentance and restoration, and if the Board of Elders so recommends, there will be a call for public correction before the gathered church at a special called meeting. If this action of administering church discipline also fails, then the member can be (1) Publicly admonished, (2) Removed from any leadership positions, (3) Expelled from fellowship, (4) Restricted from participating in Communion, and (5) Have his/her membership terminated with a two/thirds (2/3) majority of the voting members of the Church present.
+        - listitem: If along the way and throughout this process, the accused repents and makes any appropriate restitution that may be applicable, restoration will be considered accomplished.
+    - listitem: If, after having been dismissed through church discipline, an individual (1) becomes repentant and publicly confesses their previous wrongdoing, and (2) makes any appropriate restitution that may be applicable, the Church will consider the sin to be dealt with and the offense removed. The disciplinary process will be considered ended, and the individual may again request membership within the body pursuant to the membership procedure referenced in Article V. Section A above.
+  - paragraph: Article VI
+  - heading "Officers" [level=2]
+  - paragraph: "Certain responsibilities and authority are designated for various church offices for the purpose of glorifying Christ and effectively leading and caring for the Church. The officers of the Church shall serve together in humility, cooperation, and collaboration in order to fulfill these purposes. To that end, the Officers of Chelsea Community Church are as follows:"
+  - list:
+    - listitem: According to scripture, the biblical officers in the church are the pastoral staff, Elders, and Deacons.
+    - listitem: In addition, under these Bylaws, our Church recognizes the administrative positions of Trustee, Clerk and Treasurer as officers.
+  - paragraph: All Officers must be members of the Church in good and regular standing prior to their nomination. The following sections expand on the roles and responsibilities of these officers.
+  - heading "A. Pastoral Staff" [level=3]
+  - heading "1) Senior Pastor." [level=4]
+  - paragraph: /The Senior Pastor shall be a permanent voting Elder of the Church and shall perform the duties of an Elder described in Article VI[\d,.]+[bkmBKM]+\. He shall be recognized by the church as one who, in response to God's call, has devoted his vocational life, full-time, to the ministry of the Word and prayer in the service of the church of Christ\. The Senior Pastor shall be qualified as an elder, of satisfactory biblical training, high moral reputation, and evident spiritual discernment and gifts, who is or will become independent of any denominational authority and who will subscribe without mental reservation to the Statement of Faith and the Constitution and these Bylaws of the Church\./
+  - paragraph: a. Selection. Upon notice of a vacancy in the Senior Pastorate, an Advisory Senior Pastor Search Committee shall be constituted by the Board of Elders to assist in the identification of a new Senior Pastor. The Advisory Senior Pastor Search committee shall be comprised of no less than three but no more than five Church members in good standing. Spouses of active elders and anyone in the regular pay of the church may not serve on the Advisory Senior Pastor Search Committee.
+  - paragraph: Members of the Advisory Senior Pastor Search Committee shall be appointed by the Board of Elders and should to the extent possible reflect a cross-section of the membership inclusive of all church campuses by taking into account such factors as spiritual maturity, leadership, church involvement, age, race and gender.
+  - paragraph: The Advisory Senior Pastor Search Committee shall make a recommendation of a candidate to the Board of Elders for their consideration. It shall be the responsibility of the Board of Elders to choose a candidate to recommend to the congregation for the position of Senior Pastor. After being interviewed by the Board of Elders and recommended to the Church by them, the candidate for Senior Pastor shall be elected by a majority of votes cast by members at a congregational meeting duly called and constituted for the express purpose of considering such a recommendation. Compensation for the Senior Pastor shall be set by the Board of Elders in consultation with the Personnel Team within the limits of the budget as adopted by the congregation.
+  - paragraph: b. Role. The counsel and advice of the Senior Pastor shall be sought and considered by the officers of the Church and by all the ministries of the Church; the position of Senior Pastor shall be held in honor and respect by all Church members. The Senior Pastor, along with the Board of Elders and other pastoral staff members, shall oversee the spiritual welfare of the congregation and exercise watchful care for the needs of the congregation.
+  - paragraph: "c. Duties. The Senior Pastor shall have the duties and authority delegated to him by the Board of Elders which may include, but are not limited to, the duties and authorities given in this paragraph. The Board of Elders shall be responsible for establishing standards for evaluating the Senior Pastor's performance and for making salary adjustments or recommendations. Specific duties of the Senior Pastor include, but are not necessarily limited to the following:"
+  - list:
+    - listitem: The Senior Pastor has responsibility for the teaching ministry in Sunday morning worship.
+    - listitem: The Senior Pastor may be given responsibility for recommending to the Board of Elders the creation, termination, or change of duties for pastoral and ministerial positions.
+    - listitem: He may be given responsibility for appointing other staff, including the parameters of employment, assignments, and compensation, within the constraints of the budget as adopted by the congregation.
+    - listitem: The Senior Pastor may delegate to staff members, teams, committees, officers or members such of these duties as he finds necessary for the effectual oversight of the activities of the Church. The Senior Pastor shall retain oversight of duties he has delegated to others.
+    - listitem: The Board of Elders shall retain oversight of the duties of the Senior Pastor. During any period of time that any of the duties listed in this paragraph are not delegated to a Senior Pastor, such duties shall be the responsibility of the Board of Elders, either to be performed directly or delegated to an appropriate member of the pastoral staff.
+  - paragraph: d. Termination. The Senior Pastor may at any time dissolve the pastoral relationship. He should in good faith give one month's notice of such intention to the congregation unless a shorter period of time is agreed upon by the Senior Pastor and the Board of Elders.
+  - paragraph: "e. Handling a grievance against the Senior Pastor. Any member of the Church may bring a grievance against the Senior Pastor to the Board of Elders. The grievance may involve either his preaching or teaching that is perceived to be contrary to the beliefs of this Church or to alleged conduct on his part unfitting an elder. If the Board of Elders, after thoroughly investigating and considering the issues involved, believe the grievance to be true and substantial, they shall call for a special meeting of the Congregation. The vocational call of the Senior Pastor may be terminated at such a meeting given all of the following conditions:"
+  - list:
+    - listitem: A recommendation from the Board of Elders for removal
+    - listitem: /Attendance of at least thirty percent \(\d+%\) of the voting membership is present/
+    - listitem: A two-thirds (2/3) majority vote by ballot is reached
+  - paragraph: /If these three conditions are met, the termination of the Senior Pastor shall be immediate and any compensation due shall be rendered in not more than thirty \(\d+\) days\. Unless otherwise recommended by the Board of Elders, the church will compensate the Senior Pastor so removed with not less than one-twelfth of his total annual compensation\./
+  - heading "2) Other Pastoral Staff." [level=4]
+  - paragraph: In addition to the Senior Pastor, upon recommendation of the Board of Elders, the congregation may call other pastoral staff as deemed necessary for the most effective ministry of the Church. In general, these additional pastoral staff will be comprised of individuals who are charged with the direction and oversight of a particular ministry of the church.
+  - paragraph: a. Selection. It shall be the responsibility of the Board of Elders to choose a candidate to recommend to the congregation for a pastoral position. The pastoral candidate shall meet the same qualifications as an elder, have satisfactory biblical training, possess a high moral reputation, demonstrate spiritual discernment and gifts, be or will become independent of any denomination, and who will subscribe without mental reservation to the Statement of Faith and the Constitution and these Bylaws of the Church.
+  - paragraph: After being interviewed by the Board of Elders and recommended to the Church by them, the pastoral candidate shall be elected by a majority of votes cast by members at a congregational meeting duly called and constituted for the express purpose of considering a pastoral recommendation. Compensation for the pastor shall be set by the Board of Elders in consultation with the Personnel Team within the limits of the budget as adopted by the congregation.
+  - paragraph: b. Duties and Privileges. Members of the pastoral staff shall be spiritual leaders of the Church and held in respect by all members of the Church. In coordination with the Board of Elders, the pastoral staff shall oversee the spiritual welfare and the needs of the congregation. The individual responsibilities of a staff pastor shall be stipulated in writing by the Board of Elders, according to the manifest needs of the Church and the gifts and ministries entrusted by God to each one. These individual pastoral job descriptions shall be subject to at least annual review by the Board of Elders or as delegated to the Personnel Team, who will consider changes in response to the dynamic needs of the Church.
+  - paragraph: /c\. Termination\. Any member of the pastoral staff may at any time dissolve the pastoral relationship, and should in good faith give one month's notice of such intention to the congregation unless a shorter period of time is agreed upon by the staff pastor and the Board of Elders\. Except for the Senior Pastor, the Board of Elders may terminate a pastoral relationship by an eighty percent \(\d+%\) majority vote of all of the voting members of the Board of Elders\. The member of the pastoral staff so terminated may be entitled to a severance payment as may be determined by the Board of Elders\./
+  - heading "B. Board of Elders" [level=3]
+  - paragraph: The Board of Elders shall consist of lay elders from the congregation at large and staff elders from the paid pastoral staff with the primary responsibility to provide spiritual oversight of the body. The Board of Elders shall be comprised of no less than five (5) but no more than nine (9) Church members who are in good standing and who meet the qualifications set forth in I Timothy 3:1-7 and Titus 1:5-9. The majority of the Board of Elders shall be lay elders that are not paid staff members of the Church.
+  - paragraph: "Each elder shall lead his life as a Christ-like example by: 1) Consistently modeling spiritual character, attitudes, values, and behavior among the congregation; 2) Providing and inviting the opportunity for frequent and ongoing contact with members of the congregation; and, 3) Conducting the affairs of the church in an atmosphere of openness and mutual sensitivity, focusing as much on nurturing one another as on decision-making. All decisions made by the Board of Elders shall be reached after prayerful consideration, voting in a spirit of humility, with each elder regarding one another before himself, and moving toward the goal of unity. (Philippians 2:3-4)"
+  - heading "1) Lay Elders." [level=4]
+  - paragraph: /The lay elders shall be men who are members of the Church who are twenty-five \(\d+\) years of age or older, have been a member of the Church for at least three \(3\) years, and who are elected by the congregation at a properly called business meeting\. They shall be men who feel called by the Holy Spirit to the office of overseer\/shepherd and who are dutifully examined and recognized by the existing Board of Elders as qualified to serve under the stipulations of I Timothy 3:1-7 and Titus 1:5-9\. Lay elders are to be voting elders and shall in all cases constitute a majority on the Board of Elders\./
+  - paragraph: a. Selection of Lay Elders. Candidates for lay elder shall be nominated for service by the Senior Pastor. Upon satisfactory review and examination of the candidate's qualifications and suitability for office by the full Elder Board, the candidate shall be referred to the congregation for confirmation by a majority vote of the Church.
+  - paragraph: b. Term of Office. Lay elders shall be elected for terms of three years unless otherwise specified at the time of election. At the conclusion of an Elder's elected term, the elder may be reappointed to an additional three year term by the Senior Pastor. Thereafter, the Lay Elder may continue to serve another three year term upon nomination by the Senior Pastor and an affirmative vote by the congregation upon the recommendation of Board of Elders.
+  - heading "2) Staff Elders." [level=4]
+  - paragraph: The Senior Pastor shall be a permanent voting member of the Board of Elders. Other members of the pastoral staff may also serve in the office of Elder from time to time subject to the qualifications and stipulations of I Timothy 3:1-7 and Titus 1:5-9. With the exception of the Senior Pastor as noted above, staff elders shall serve in a non-voting status.
+  - paragraph: a. Selection of Staff Elders. Staff Elders shall be men who are nominated for service by the Senior Pastor. Upon satisfactory review and examination of the candidate's qualifications and suitability for office by the full Elder Board, the candidate shall be referred to the congregation for confirmation by a majority vote of the church.
+  - paragraph: b. Term of Office. Staff elders shall be elected for terms of three years unless otherwise specified at the time of election. At the conclusion of an Elder's elected term, the elder may be reappointed to an additional three year term by the Senior Pastor. Thereafter, the Staff Elder may be eligible to serve another three year term upon nomination by the Senior Pastor and an affirmative vote by the congregation upon the recommendation of Board of Elders.
+  - heading "3) Organization, Meetings, and Quorum." [level=4]
+  - paragraph: Annually, the Board of Elders shall elect from their number a chair, a vice-chair, and such other officers as they require. The regular meetings of the Board of Elders shall be held monthly at such time and place as the Elder Board may determine. Special meetings may be called at the request of the chair or vice-chair of the Elder Board, or by a majority of the elders. Notice of a regular or special meeting of the Elder Board shall be given in person, by telephone, or by electronic means at least one day prior to the meeting. Notice may be waived if approved by all members of the Board of Elders in writing, including by electronic means.
+  - paragraph: A majority of all the members of the Elder Board shall constitute a quorum of the Elder Board provided there are at least three voting members present. The acts of the majority of the voting elders present and voting shall be considered acts of the entire Elder Board, unless otherwise specifically required by law or by the Constitution or these Bylaws. The Board of Elders shall keep records of their meetings and decisions. The Board of Elders shall inform the congregation of all major decisions made in their meetings.
+  - heading "4) Duties." [level=4]
+  - paragraph: The Board of Elders shall have the power and authority to act in and on behalf of the Church, except as limited within these Bylaws, either directly or through delegation to the appropriate pastoral staff, Church member(s), or committee(s).
+  - paragraph: "a. Spiritual Oversight. In providing spiritual oversight for the Church, the Board of Elders shall have, but not be limited to, the following responsibilities:"
+  - list:
+    - listitem: Care for the Church in its spiritual condition, guard the purity of doctrine and life of the Church, and, when necessary, discipline the Church in accordance with the Word of God.
+    - listitem: Ensure that all who seek membership in the Church are properly examined pursuant to the membership provisions set forth in Article V.
+    - listitem: Act on behalf of the Church in the acceptance and dismissal of Church members, and maintain an active Church membership roll in conjunction with the Church Clerk.
+    - listitem: Counsel the erring and needy, comfort the sick and afflicted, and share in the responsibility of supplying the pulpit.
+    - listitem: Be responsible for the regular services of the Church and the observance of the ordinances of Baptism and The Lord's Supper.
+    - listitem: Ordain, commission, and/or license a minister, according to the needs of the Church and requirements of law.
+  - paragraph: b. Direction for Use of Resources. It shall be the duty of the Board of Elders to provide guidance for the pastoral staff for its use in the development of the Church budget to be presented to the members. The Board of Elders shall provide pastoral staff direction for the Church and establish priorities for the use of resources to the extent resources are available, including recommendations, if any, for the creation of any pastoral or ministerial positions that may be required to carry on the business and core values of the Church.
+  - paragraph: c. Funds Oversight. The Board of Elders shall have direct oversight of Church funds designated for benevolence and for missions pursuant to Article XI below. Where desirable, the Board of Elders may delegate authority for benevolence funds and mission funds,
+  - paragraph: d. Committee Oversight and Delegation. The Board of Elders may delegate authority to a committee or team as the Board of Elders deems necessary for the effectual oversight of the activities of the Church. For any such designated committee or team there shall be a written policy or resolution that includes a clear description of the committee's makeup, responsibilities, authority, and duration. These policies and resolutions shall be made available to the Church by the Church Clerk. Decisions made by Elder-appointed committees and teams are subject to review and approval by the Board of Elders at its discretion.
+  - heading "5) Limitations." [level=4]
+  - paragraph: The Board of Elders shall not assume any of the prerogatives, as given in Article IV above, reserved to the Church members unless otherwise provided for by the Constitution or these Bylaws, or unless the Board of Elders has been given expressed congregational consent to exercise such authority.
+  - heading "6) Termination." [level=4]
+  - paragraph: /The office of elder shall be considered vacant upon the death or resignation of an elder, or upon removal from office by the Board of Elders\. The Board of Elders may remove an elder from office by an eighty percent \(\d+%\) majority vote of all of the other voting members of the Board of Elders\. Grounds for termination include, but are not limited to, the following:/
+  - list:
+    - listitem: Refusal or failure to fulfill the responsibilities designated in the Constitution or these Bylaws, including excessive absences from business and elder meetings that effect his ability to serve well
+    - listitem: If an elder shows himself by person or attitude to be disturbing the purity, peace, or unity of the Church
+    - listitem: If an elder has admitted to changing his views regarding the Statement of Faith
+    - listitem: If an elder fails to live in harmony with the standards expressed in the Constitution and these Bylaws of the Church.
+  - heading "C. Deacons" [level=3]
+  - paragraph: "/1\\) Qualifications and Appointment\\. Deacons shall consist of individuals who are: \\(1\\) Members of the Church, \\(2\\) Twenty-one \\(\\d+\\) years of age or older, \\(3\\) Recommended by the congregation, \\(4\\) Examined by the Board of Elders for suitability for office pursuant to the requirements set forth in I Timothy 3:8-\\d+ and exemplified in Acts 6:1-7, and \\(4\\) Appointed, in accordance with their individual giftings, by the Board of Elders\\./"
+  - paragraph: 2) Selection. At any time, any member of the Church may recommend to any Elder a church member for consideration as a Deacon. From the names submitted, the Board of Elders shall select nominees who, in the opinion of the Board of Elders, possess the qualifications of a Deacon, have agreed to submit to an examination process, and will serve willingly if elected.
+  - paragraph: 3) Term of Office. Deacons shall be appointed for terms of one year unless otherwise specified at the time of appointment.
+  - paragraph: "4) Duties. The principal duty of Deacons is to form and lead the various Deacon Teams, which the Board of Elders have established for the care of congregational members. The total number of active Deacons at any given time shall be that needed to staff the Deacon Teams, as determined by the Board of Elders. Examples of Deacon Teams include, but are not limited to, teams such as:"
+  - list:
+    - listitem: Shut Ins
+    - listitem: Outreach
+    - listitem: Hospital Visitation
+    - listitem: Widows and Widowers
+    - listitem: Member Care
+    - listitem: Benevolence
+  - paragraph: 5) Limitations. Deacons shall not assume any of the prerogatives, as given in Article IV above, reserved to the congregation unless otherwise provided for by the Constitution or these Bylaws, or unless the Deacons have been given expressed congregational consent to exercise such authority.
+  - paragraph: /6\) Termination\. The office of Deacon shall be considered vacant upon the death or resignation of a Deacon, or upon removal from office by the Board of Elders\. The Board of Elders may remove a Deacon from office by an eighty percent \(\d+%\) majority vote of all of the voting members of the Board of Elders\. Grounds for termination include, but are not limited to, the following:/
+  - list:
+    - listitem: Refusal or failure to fulfill the responsibilities designated in the Constitution or these Bylaws
+    - listitem: If a Deacon shows himself by person or attitude to be disturbing the purity, peace, or unity of the Church
+    - listitem: If a Deacon has admitted to changing his view regarding the Statement of Faith
+    - listitem: If a Deacon fails to live in harmony with the standards expressed in the Constitution and these Bylaws of the Church.
+  - heading "D. Other Officers and Leadership Positions." [level=3]
+  - heading "1. Church Clerk." [level=4]
+  - paragraph: The Church Clerk shall be elected by the congregation upon a recommendation by the Board of Elders for a three-year term, and may serve successive terms. The Church Clerk must be a member of the Church, may be a member of the staff, and is responsible for keeping and publishing Church records. The Church Clerk shall keep the current list of members as determined by the Board of Elders. The Church Clerk shall record or have recorded the minutes of all congregational meetings and keep records of all official correspondence for the Church.
+  - paragraph: He or she shall provide for the safekeeping of all papers and documents of the Church. The Church Clerk shall ensure that the members have access to all Church governing documents, including the Constitution and these Bylaws and all policies, resolutions, and other governing documents adopted by the congregation, the Board of Elders, Deacon Teams, or any committee, team, officer or individual who has or has been delegated any form of governing authority.
+  - paragraph: Termination or removal of an individual from the office of Church Clerk shall be by the same process as termination or removal of a Deacon as given above in the paragraphs governing Deacons.
+  - heading "2. Church Treasurer." [level=4]
+  - paragraph: The Church Treasurer shall be the Lay Elder designated to serve as the Chairman of the Finance Team. The Church Treasurer shall ensure that all authorized bills are paid and that a full account is kept of all monies received and paid out. He shall submit regular reports to the Board of Elders or their designee of the financial condition of the Church, and shall prepare a written annual report reflecting the financial activities of the Church at the close of each fiscal year.
+  - paragraph: The Church Treasurer shall ensure that the financial records of the Church are reconciled annually, whether by audit or other satisfactory means, and shall make the financial records of the Church available for examination at any time upon request by the Board of Elders.
+  - heading "3. Board of Trustees." [level=4]
+  - paragraph: The Board of Trustees shall be comprised of those Elders currently in service and who are not in the regular pay of the church and no more than three (3) church members in good standing who shall be elected at-large by the congregation upon a recommendation by the Board of Elders. At large members of the Board of Trustees shall serve three year terms and may serve successive terms. Members of the Board of Trustees shall be bonded for the protection of all interests of the Church.
+  - paragraph: In general, members of the Board of Trustees are expected to exhibit a general knowledge and basic understanding in the legal and financial operations of the church. As such, the Board of Trustees shall be legally responsible for the legal and financial interests of the Church and all real property of the Church. The Board of Trustees shall, as provided by law and by the action of the Church as set forth and provided for in the Church Constitution and these Bylaws, hold in trust the titles and legal papers to all the properties of the Church. The originals of these titles and papers are to be kept in a bank safe deposit box and copies are to be securely stored in the Church office.
+  - paragraph: The Board of Trustees shall serve as signatories in legal and financial matters on behalf of the church, particularly as property and financial contracts are involved. The signatures of at least two members of the Board of Trustees, one of which must be that of a member–at-large, are required to enter into any legal contract of any kind on behalf of the Church.
+  - heading "E. Ministers." [level=3]
+  - paragraph: Ministers are ministry leaders that are not considered officers of the Church.
+  - paragraph: 1. Selection. Upon recommendation of the Board of Elders, the congregation may call individuals as ministers in the Church in response to specific manifest needs and in recognition of the special spiritual gifts entrusted by God to those individuals. The Board of Elders may delegate the selection of a minister candidate to the Senior Pastor or to a search team commissioned by the Board of Elders and established for that particular purpose. Where appropriate, members expected to be involved in the candidate's ministry shall be invited to offer their input. A minister shall be called by a majority of votes cast at a duly called and constituted congregational meeting upon the recommendation of the Board of Elders.
+  - paragraph: 2. Duties. The responsibilities of ministers shall be stipulated in writing and reviewed at least annually by the individual ministers and the Board of Elders, or by the Senior Pastor or his designee if so delegated by the Board of Elders, to consider changes in response to the changing needs of the Church.
+  - paragraph: /3\. Termination\. A minister may dissolve the ministerial relationship with the Church and should in good faith give one month's notice of such intention to the Board of Elders, or less if mutually agreed upon\. The Board of Elders may terminate a ministerial relationship by an eighty percent \(\d+%\) majority vote of the voting members of the Board of Elders\. The member of the ministerial staff so terminated may be entitled to a severance payment as may be determined by the Board of Elders\./
+  - paragraph: Article VII
+  - heading "Church Meetings" [level=2]
+  - paragraph: A. Worship Services. The Church shall meet regularly each Sunday morning at all campus locations and on specifically scheduled Wednesday evening services for the purposes of preaching, teaching, evangelism, and the worship of Almighty God. These meetings will be open to everyone and shall be conducted under the direction of the Senior Pastor. Exceptions can be made by recommendation of the Board of Elders.
+  - paragraph: B. Special Services. All Church meetings that are essential to the promotion of the objectives and core values of the Church shall be placed on the Church calendar, published in the Church bulletin and website at least once prior to the meeting being held, and announced at all services on the Sunday prior to the special service being held.
+  - paragraph: C. Regular Business Meetings. A business meeting shall be held at least annually to consider, but not be limited to, such matters as the adoption of an annual Church budget and the election of Elders. Notice of the meeting, date, time, and location must be published in the Church bulletin and on the Church website at least one week before the meeting and announced at all services on the Sunday prior to the business meeting.
+  - paragraph: D. Special Business Meetings. A specially called business meeting may be held to consider matters of a significant nature. Notice of the subject, date, time, and location must be published in the Church bulletin and on the Church website for the specially called business meeting at least one week before the meeting and announced at all services on the Sunday prior to the special business meeting.
+  - paragraph: E. Quorum. A quorum consists of Church members who attend the business meeting, provided it is a regular meeting or one that has been properly called.
+  - paragraph: /F\. How Meetings Are to be Conducted\. Regular and specially called Business Meetings will be conducted with a sense of decency, civility, and order \(1 Corinthians \d+:\d+\) and with an attitude of love and selflessness \(Philippians 2:2-5; Colossians 3:\d+-\d+\)\. If at any time a regular or special meeting begins to become disorderly, a time of prayer will be called for by the Moderator in the hopes that by doing so, both peace and order will be restored\. At the discretion of the Moderator, Roberts Rules of Order may be utilized as a widely recognized resource to promote orderliness of any regular or special meeting in areas not addressed by this Constitution and these Bylaws\./
+  - paragraph: Article VIII
+  - heading "Ordinances" [level=2]
+  - paragraph: The Church observes two (2) ordinances – Baptism and The Lord's Supper.
+  - paragraph: /A\. Baptism\. Believer's Baptism is a symbolic act of obedience and identifies the believer with the death, burial and resurrection of Jesus\. \(Matt\. \d+:\d+-\d+; Rom\. 6:3-7\) A person who receives Jesus Christ as Savior by personal faith, who professes Him publicly at any worship service, and who indicates a commitment to follow Christ as Lord, may be received for baptism upon consultation with the Senior Pastor or other designated pastoral staff about their conversion experience\. The following provisions shall be followed:/
+  - list:
+    - listitem: Baptism shall be by immersion in water.
+    - listitem: Baptism may be administered by the Senior Pastor or whomever he shall designate.
+    - listitem: Baptism shall be administered as an act of worship during any worship service.
+    - listitem: Baptism shall be scheduled as soon as reasonably possible and convenient for the Church and the candidate for baptism after the candidate's public confession of faith.
+  - paragraph: /B\. The Lord's Supper\. The Lord's Supper is a symbolic act of obedience whereby members of the Church, through partaking of the bread and fruit of the vine, commemorate the death of Jesus Christ and anticipate His Second Coming\. \(1 Cor\. \d+:\d+-\d+, especially vv\. \d+-\d+\) The following provisions shall be followed:/
+  - list:
+    - listitem: The Lord's Supper shall be observed at the discretion of the Senior Pastor, but no less than once per calendar quarter.
+    - listitem: The Senior Pastor, pastoral staff, church staff, and Elders will be primarily responsible for administration of The Lord's Supper.
+  - paragraph: Article IX
+  - heading "Standing Church Resource Teams" [level=2]
+  - heading "A. Finance Team." [level=3]
+  - paragraph: "The purpose of the Finance Team shall be to provide oversight and accountability in the administration and stewardship of church finances. The primary responsibilities of the Finance Team will be to meet on a regular basis and to do the following activities:"
+  - list:
+    - listitem: Assist the Church staff in the development of the Annual Church Budget
+    - listitem: Provide oversight of church finances
+    - listitem: Assist in the development and implementation of sound management procedures and practices related to church finances and resources
+    - listitem: Ensure that appropriate accounting procedures are in place and are followed
+    - listitem: Ensure that an audit of church finances is conducted on an annual basis.
+  - paragraph: The Finance Team shall be appointed by the Board of Elders and comprised of a group of no less than three, but no more than five, Church members in good standing. Members of the Finance Team will serve for a three year term and are subject to reappointment by the Board of Elders. At least one member of the Finance Team shall be an active Church Elder who will serve as Chairman of the Finance Team. At least one lay member of the Board of Trustees shall be a member of the Finance Team. The Senior Pastor and the Executive Pastor shall serve as primary advisors and will be Ex-Officio Members of the Finance Team.
+  - heading "B. Personnel Team." [level=3]
+  - paragraph: "The purpose of the Personnel Team shall be to provide accountability and oversight of church personnel matters. The primary responsibilities of the Personnel Team will be to meet on a regular basis and to:"
+  - list:
+    - listitem: Assist pastoral staff in the development and updating of a Church wide personnel policy
+    - listitem: Provide recommendations to the Board of Elders and the Finance Team regarding salaries and benefits for all church employees and staff
+    - listitem: Assist in the preparation of appropriate job descriptions for all church employees
+    - listitem: When necessary and where appropriate, provide assistance to the Board of Elders in the resolution of Church personnel disputes pursuant to approved Church personnel policies and in accordance with sound biblical principles and teachings.
+  - paragraph: The Personnel Team shall be appointed by the Board of Elders and comprised of a group of no less than three, but no more than five, Church members in good standing. Members of the Personnel Team will serve for a three year term and are subject to reappointment by the Board of Elders. At least one member of the Personnel Team shall be an active Church Elder who shall serve as Chairman of the Personnel Team. The Senior Pastor and the Executive Pastor shall serve as primary advisors and will be Ex-Officio Members of the Personnel Team.
+  - heading "C. Missions Team." [level=3]
+  - paragraph: "The purpose of the Missions Team will be to assist the Board of Elders in the disbursement of funds allocated to the Missions Fund as described in Article B. The Missions Committee shall consist of five (5) members with the following composition: (1) At least one active Church Elder who shall serve as Chairman of the Missions Team; (2) At least two representatives at large from the members of the Church. All members of the Missions Team are appointed by the Board of Elders. The duties of the Missions Committee are the following:"
+  - list:
+    - listitem: Ensure that knowledge about and interest in missions is properly promoted throughout the Church
+    - listitem: Review supported missionaries and ministries at least once every three years
+    - listitem: Recommend to the Board of Elders the adoption of new missionaries and mission ministries, and the amount of their support
+    - listitem: Recommend to the Board of Elders changes in the financial support of missionaries and mission ministries
+    - listitem: Submit a proposed missionary budget for the coming fiscal year in a timely manner
+    - listitem: Perform such other duties and have such other authority as the Board of Elders shall delegate to them.
+  - paragraph: The Senior Pastor, Executive Church Pastor, and any member of the Pastoral Staff assigned with oversight responsibilities for Missions shall be Ex-Officio Members of the Missions Committee.
+  - heading "D. Campus Leadership Teams." [level=3]
+  - paragraph: "In recognition of the fact that Chelsea Community Church functions as one unified church congregation operating in multiple campus locations, the establishment of Campus Leadership Teams is hereby authorized under these Bylaws and can be duly appointed at each campus location at the discretion of the Board of Elders. There is no requirement that every campus have a Campus Leadership Team. The purpose of a Campus Leadership Team shall be to provide the Board of Elders with insight and counsel on the specific and unique needs that may exist at an individual campus location of Chelsea Community Church. The primary responsibilities of a Campus Leadership Team will be to:"
+  - list:
+    - listitem: Meet on a regular basis
+    - listitem: Regularly interact with the members of the local campus congregation
+    - listitem: Identify issues that are unique and specific to their particular campus
+    - listitem: Provide regular updates to the Board of Elders on specific matters involving the campus.
+  - paragraph: Campus Leadership Teams shall be appointed by the Board of Elders upon a recommendation by the Senior Pastor and shall be comprised of not less than three but no more than five church members who regularly attend the campus location to be represented by the Campus Leadership Team. In selecting members for the Campus Leadership Team, the Board of Elders will consult with the Teaching Pastor primarily assigned to the campus to ensure that the composition of the team properly represents a broad cross-section of the congregation regularly meeting at the campus. The appointments shall take into account such factors as spiritual maturity, leadership, campus involvement, and seek for diversity in regards to age, race and gender in a manner representative of the congregation. At least one member of the Campus Leadership Team shall be an active Church Elder, who may or may not be a regular attendee of that particular campus; that Elder shall serve as Chairman of the Campus Leadership Team.
+  - paragraph: Members of the Campus Leadership Team serve three year terms and may be reappointed by the Board of Elders. The Senior Pastor and the Teaching Pastor primarily assigned to the campus represented by the Campus Leadership Team shall serve as Ex-Officio Members of the Campus Leadership Team.
+  - paragraph: Article X
+  - heading "Other Church-Life Teams" [level=2]
+  - paragraph: "Other non-standing teams may be needed from time to time to support the health of the life of the Church in areas that include, but are not limited to: Discipleship, Campus Facilities, Outreach/Missions, and Special Events. To that end and based on the recommendation of the Senior Pastor, the Board of Elders shall examine and discern the need for the creation and dissolution of all such teams. Any teams formed under this Article shall be created and appointed by the Board of Elders. The terms of office for members of such committees shall likewise be established by the Board of Elders at the time of their commissioning. All church members in good standing are eligible to serve on all committees the Board of Elders may establish under this Article."
+  - paragraph: Article XI
+  - heading "The Budget and Funds" [level=2]
+  - heading "A. The Budget." [level=3]
+  - paragraph: 1. Adoption of Annual Budget and Expenditures. Within two months prior to the beginning of the next calendar year, the Church shall adopt an annual budget of expenditures for the next calendar year.
+  - paragraph: /2\. Expenditure Limitations\. The Board of Elders shall have the authority to make expenditures, not previously approved in the annual budget, up to ten \(\d+\) percent of the current Church approved budget provided that funds are readily available and upon a two-thirds \(2\/3\) affirmative vote of the voting members of the Board of Elders\. Unbudgeted expenditures in excess of these amounts shall be referred to the Church for final action\./
+  - heading "B. Funds." [level=3]
+  - paragraph: /1\. Missions Fund\. It is the policy of Chelsea Community Church that ten \(\d+\) percent of the Church budget be designated for missions\. Disbursements made from the Church budget for Missions shall be directly overseen by the Board of Elders with the assistance of the Missions Committee established by the Board of Elders\./
+  - paragraph: 2. Benevolence Fund. The Church shall maintain a Benevolence Fund to be directly overseen by the Board of Elders. The Board of Elders may delegate authority for this fund to the Senior Pastor or his designee.
+  - paragraph: 3. Other Funds. The Board of Elders may create such other funds as are appropriate for the physical care of the Church members and for the mission of the Church.
+  - paragraph: Article XII
+  - heading "Indemnification" [level=2]
+  - paragraph: A. The Board of Elders may, at its discretion, indemnify and advance all or part of the Church-related expenses of an employee, Elder, officer or agent of the Church.
+  - paragraph: "B. Subject to the provisions of this Article, the Board of Elders may indemnify any member who serves or has served as an officer of the Church against claims, liabilities, expenses, and costs necessarily incurred by him or her in connection with the defense, compromise, or settlement of an action, suit, or proceeding, civil or criminal, in which such person is made a party by reason of being or having been an officer, to the extent not otherwise compensated, indemnified or reimbursed by insurance, if: (1) The conduct of the person was in good faith; (2) The person reasonably believed that his or her conduct was in the best interests of the Church, or at least was not opposed to its best interests: and, (3) In the case of any criminal proceeding, the person had no reasonable cause to believe that his or her conduct was unlawful."
+  - paragraph: "C. The Church may not indemnify an officer, former or current, in connection with a proceeding brought against him or her by or in the right of the Church, in which: (1) He or she was adjudged liable to the Church, or (2) Where the officer is charged with receiving an improper personal benefit and he or she is adjudged liable on that basis."
+  - paragraph: Article XIII
+  - heading "Amendments" [level=2]
+  - paragraph: /1\. Adoption\. The Constitution and these Bylaws of Chelsea Community Church, if and when adopted, shall supersede all previous Constitutions and Bylaws of the Church\. The Constitution and these Bylaws may be amended or changed if two-thirds \(2\/3\) of the members present and voting at the Church Conference to which the amendments or changes are proposed for adoption or change shall vote in favor of adoption of the proposal; provided, however, that the proposed amendments or changes shall have been presented in writing at a previous Church Conference at least fourteen \(\d+\) days prior to the Church Conference at which the vote for approval of the proposal is taken\./
+  - paragraph: 2. Amendments and Record Retention. A copy of the Constitution and these Bylaws shall at all times be kept with the records of the Church Clerk and in the Church office, and any amendment to or revisions thereof shall, after passage, be prepared in typewritten form by the church Clerk, showing the date of adoption, and attached to the copies of the Constitution and these Bylaws so kept. This provision is also to apply to any resolution passed for the permanent or temporary government of the Church.
+  - paragraph: 3. Distribution of Copies. Upon request, the members of the Church shall be furnished copies of this Constitution and these Bylaws.
+  - paragraph: 4. History of Changes.
+  - paragraph:
+    - text: Reproduced in full from the Bylaws of Chelsea Community Church, Chelsea, Alabama. The official copy is maintained by the Church Clerk, and — upon request — members are furnished copies of the Constitution and these Bylaws (Article XIII).
+    - link "View the official document ↗":
+      - /url: https://docs.google.com/document/u/0/d/1p3udrhBXFaMOThxqw3sV-UnbVTGa0NkPWo589Z9jeRc/mobilebasic

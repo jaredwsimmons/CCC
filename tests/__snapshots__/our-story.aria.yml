@@ -1,0 +1,24 @@
+- main:
+  - paragraph: About
+  - heading "Our Story" [level=1]
+  - paragraph: Our vision
+  - heading "Pursuing God. Pursuing others." [level=2]
+  - paragraph: "/We believe God has called us to be a church that pursues Him and others, both inside and outside the church: loving God with all our heart, soul, and mind and loving our neighbors as ourselves \\(Matthew \\d+:\\d+-\\d+\\)\\. To do this, we must know our purpose, live intentionally, and live in community\\./"
+  - paragraph: The Scriptures teach us that our purpose is to know God, be transformed, and tell others the good news of Jesus Christ.
+  - paragraph: To live intentionally, we take practical steps to spend time with God through spiritual disciplines, to be connected to the church in dynamic relationships with others, and proclaim the gospel as we tell others about what Christ has done for them.
+  - paragraph: As we understand our purpose and live intentionally, we do so in community. God has given us one another, the church, to encourage and spur one another on to good works — to love one another. At Chelsea Community Church, we seek to love one another in the friendship and fellowship of Christian community and our neighbors as ourselves.
+  - paragraph: How we got here
+  - heading "Planting roots as Chelsea grows" [level=2]
+  - paragraph: /In January of \d+ a church called Double Oak Community Church began meeting in the town of Mt\. Laurel east of Birmingham on Highway \d+\. The heart of that church from its founding was to be an anchor point for ministry as the metro area spread farther out, particular toward the city of Chelsea\. So on August \d+, \d+, they started a second campus that met in Chelsea Park Elementary School\. Land was purchased and a building was built right under the clocktower of the Chelsea Park neighborhood, and a new church began to grow\. After a congregational vote in December \d+, the Chelsea Campus began the process of pursuing independence, officially becoming Chelsea Community Church in \d+\. We are excited to be planting our roots just as Chelsea begins its own expansion\. We are here to proclaim the Gospel of Jesus Christ and the hope of his Kingdom in Chelsea\./
+  - paragraph: Our affiliation
+  - heading "A community church in the Baptist tradition" [level=2]
+  - paragraph:
+    - text: While maintaining our autonomy as a local body of believers, we identify ourselves as a community church in the Baptist tradition.
+    - link "Learn about Double Oak Community Church →":
+      - /url: https://docc.org/
+  - heading "Come and see" [level=2]
+  - paragraph: The best way to know us is a Sunday morning. We'd love to meet you.
+  - link "Plan a Visit":
+    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+  - link "What we believe":
+    - /url: /beliefs

@@ -1,0 +1,144 @@
+- main:
+  - paragraph: Ministries
+  - heading "Missions" [level=1]
+  - paragraph: /"Go therefore and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, teaching them to observe all that I have commanded you\." \(Matthew \d+:\d+–20a\)/
+  - paragraph: Deacon
+  - paragraph: Jared Simmons
+  - paragraph: Serving and praying over this ministry — reach out anytime.
+  - paragraph: Monthly missions highlight
+  - heading "The Big Kaboom" [level=2]
+  - paragraph: /The Big Kaboom is coming up on Saturday, June \d+, and Chelsea Community Church is partnering with other local churches to provide a free Kids Zone for families in our community! The Kids Zone will feature inflatables, face painting, games, and other fun activities for children\. We're looking for volunteers from 7:\d+–7:\d+ PM to assist with activities in the Kids Zone or help at our church booth\. We'd love for you to join us — contact Pastor Brian for more information\./
+  - link "Contact Pastor Brian":
+    - /url: mailto:brian@chelseachurch.com
+  - img /Big Kaboom — Saturday, June \d+, 7:\d+–7:\d+ PM\. We need you! Contact Brian Marbury or scan the QR code to volunteer\./
+  - paragraph: Local mission partners
+  - heading "Serving our neighbors" [level=2]
+  - heading "Blanket Fort Hope" [level=3]
+  - paragraph: Child trafficking survivors
+  - paragraph:
+    - link "Website":
+      - /url: https://blanketforthope.org/
+    - link "Newsletter":
+      - /url: https://blanketforthope.org/around-the-fort-blog/
+  - heading "Alabama Childhood Food Solutions" [level=3]
+  - paragraph: Food insecure families
+  - paragraph:
+    - link "Website":
+      - /url: https://alabamachildhoodfood.com/
+    - link "Newsletter":
+      - /url: https://www.alabamachildhoodfood.com/blog
+  - heading "Songs in the Night" [level=3]
+  - paragraph: Widow care
+  - paragraph:
+    - link "Website":
+      - /url: http://widowsong.org
+    - link "Newsletter":
+      - /url: https://www.widowsong.org/blog
+  - heading "Brother Bryan Mission" [level=3]
+  - paragraph: Men in need
+  - paragraph:
+    - link "Website":
+      - /url: https://bbmission.com/
+    - link "Newsletter":
+      - /url: https://bbmission.com/news-events/
+  - heading "Hearts in Hands" [level=3]
+  - paragraph: Community needs
+  - paragraph:
+    - link "Website":
+      - /url: https://heartsinhands.org/
+  - heading "LoveLife" [level=3]
+  - paragraph: Expecting mothers and orphans
+  - paragraph:
+    - link "Website":
+      - /url: https://lovelife.org/
+    - link "Newsletter":
+      - /url: https://lovelife.org/stories
+  - heading "Children's Village" [level=3]
+  - paragraph: Foster care
+  - paragraph:
+    - link "Website":
+      - /url: https://www.childrensvillagebham.com
+  - heading "God's Outreach" [level=3]
+  - paragraph: Families in need
+  - paragraph
+  - heading "King's Home" [level=3]
+  - paragraph: Hope for the abused
+  - paragraph:
+    - link "Website":
+      - /url: https://www.kingshome.com
+  - paragraph: National & international mission partners
+  - heading "To the ends of the earth" [level=2]
+  - heading "All4Jesus Belize" [level=3]
+  - paragraph: Connecting American and Belizean believers to grow the church
+  - paragraph:
+    - link "Website":
+      - /url: https://all4jesusbelize.org
+  - heading "Regen Foundation" [level=3]
+  - paragraph: Children and families in Romania
+  - paragraph:
+    - link "Website":
+      - /url: https://www.regenfoundation.org/index.php/en/
+    - link "Newsletter":
+      - /url: https://www.regenfoundation.org/index.php/en/newsletters
+  - heading "International Sports Chaplains" [level=3]
+  - paragraph: Evangelism at the Olympics
+  - paragraph:
+    - link "Website":
+      - /url: http://ischaplains.org
+    - link "Newsletter":
+      - /url: https://www.ischaplains.org/items
+  - heading "Simone's Kids" [level=3]
+  - paragraph: Orphan care in Uganda
+  - paragraph:
+    - link "Website":
+      - /url: https://www.simoneskids.org/
+    - link "Newsletter":
+      - /url: https://www.simoneskids.org/news/
+  - heading "Bringing Good News" [level=3]
+  - paragraph: Least, Last, and Lost around the world
+  - paragraph:
+    - link "Website":
+      - /url: https://www.bringinggoodnews.org/
+    - link "Newsletter":
+      - /url: https://www.bringinggoodnews.org/blog/
+  - heading "Two Feathers" [level=3]
+  - paragraph: Choctaw Native Americans
+  - paragraph:
+    - link "Website":
+      - /url: https://www.facebook.com/twofeathersministries/
+  - heading "Overtoun House" [level=3]
+  - paragraph: Centre for Hope and Healing
+  - paragraph:
+    - link "Website":
+      - /url: https://overtounhouse.org
+  - paragraph: Resources for personal growth
+  - heading "Books worth your time" [level=2]
+  - list:
+    - listitem:
+      - 'link "Gospel People: A Call for Evangelical Integrity"':
+        - /url: https://www.amazon.com/dp/1433572931
+      - text: — Michael Reeves
+    - listitem:
+      - 'link "Irresistible Faith: Becoming the Kind of Christian the World Can’t Resist"':
+        - /url: https://www.amazon.com/dp/1400201799
+      - text: — Scott Sauls
+    - listitem:
+      - 'link "The Art of Neighboring: Building Genuine Relationships Right Outside Your Door"':
+        - /url: https://www.amazon.com/dp/080101459X
+      - text: — Jay Pathak & Dave Runyon
+    - listitem:
+      - link "The Gospel and Personal Evangelism":
+        - /url: https://www.amazon.com/dp/143355724X
+      - text: — Mark Dever
+    - listitem:
+      - 'link "Sharing Jesus Without Freaking Out: Evangelism the Way You Were Born to Do It, 2nd ed."':
+        - /url: https://www.amazon.com/dp/1535982187
+      - text: — Scott Hildreth & Steven McKinion
+    - listitem:
+      - 'link "Contagious Faith: Discover Your Natural Style for Sharing Jesus with Others"':
+        - /url: https://www.amazon.com/dp/0310113288
+      - text: — Mark Mittelberg
+  - heading "Ready to get involved?" [level=2]
+  - paragraph: Pray, give, or go — Pastor Brian can help you find your place in the mission.
+  - link "Email Brian for more information!":
+    - /url: mailto:brian@chelseachurch.com

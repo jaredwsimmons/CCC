@@ -1,0 +1,16 @@
+- main:
+  - paragraph: Ministries
+  - heading "Connections" [level=1]
+  - paragraph: Deacons
+  - paragraph: Lee Wood, Susanne Wood
+  - paragraph: Serving and praying over this ministry — reach out anytime.
+  - heading "A purpose and a place for everyone" [level=2]
+  - paragraph: Our connections team is available each Sunday morning to assist every guest and church member. We will help everyone get connected to age specific ministries, community groups and events. We will also be happy to answer any questions that you may have and share information about our church.
+  - paragraph: We believe that everyone has a purpose and a place, and our hope as a connections team is to help everyone find his or her place within our church so that they can minister and be ministered to, living out their purpose. Being a part of a local church is vital to the health, growth and maturity of everyone.
+  - img "A warm handshake of welcome"
+  - heading "Stop by the Connections Desk" [level=2]
+  - paragraph: Just past the Worship Room every Sunday morning — we'll help you find your place.
+  - link "Email Brian for more information!":
+    - /url: mailto:brian@chelseachurch.com
+  - link "Plan your first visit":
+    - /url: /imnew
