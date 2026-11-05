@@ -1,72 +1,17 @@
 ---
-// Community Groups: the header and the sections below the list come from the Groups page
-// in Sanity; the groups are live from Church Center's public groups API (no token),
-// cached at the edge. Full groups hidden, sorted Mon→Sun by meeting day/time.
+// Community Groups: the header and every section come from the Community Groups page in Sanity (Fixed pages).
 import Base from '../layouts/Base.astro';
-import Section from '../components/Section.astro';
 import PageHeader from '../components/PageHeader.astro';
-import GroupCards from '../components/GroupCards.astro';
 import Sections from '../components/sections/Sections.astro';
-import { getGroups, TYPES } from '../lib/groups';
-import { site } from '../data/site';
 import { sanityFetch } from '../lib/sanity';
 import { fixedPageQuery, settingsQuery } from '../lib/queries';
 
-const [page, settings, groups] = await Promise.all([
+const [page, settings] = await Promise.all([
   sanityFetch<any>(fixedPageQuery, { id: 'fixed-groups' }, Astro.cookies),
   sanityFetch<any>(settingsQuery, {}, Astro.cookies),
-  getGroups(),
 ]);
-const allGroupsUrl = `https://${site.churchCenter.subdomain}/groups`;
-const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label: t.replace(' Groups', '') }))];
 ---
 <Base title={page?.title ?? 'Community Groups'} description={page?.seo?.description}>
   <PageHeader header={page?.header} title={page?.title ?? 'Community Groups'} />
-
-  <Section eyebrow="Find your group" title="Groups open to join">
-    <div class="viewtoggle" role="tablist" aria-label="Filter groups" data-reveal>
-      {tabs.map((t, i) => (
-        <button type="button" data-filter={t.key} class={i === 0 ? 'is-active' : ''} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>{t.label}</button>
-      ))}
-    </div>
-
-    {groups.length === 0 && (
-      <p class="note" data-reveal>
-        No open groups to show right now. <a href={allGroupsUrl} target="_blank" rel="noopener noreferrer">Browse all groups on Church Center</a>.
-      </p>
-    )}
-
-    <GroupCards groups={groups} />
-
-    <p class="note" data-reveal>
-      Groups are listed live from <a href={allGroupsUrl} target="_blank" rel="noopener noreferrer">Church Center</a>.
-      Full groups aren't shown{settings?.email ? (
-        <> — if one you love is full, <a href={`mailto:${settings.email}`}>let us know</a> and we'll help you find a fit.</>
-      ) : '.'}
-    </p>
-  </Section>
-
   <Sections list={page?.sections} settings={settings} />
 </Base>
-
-<script is:inline>
-  (function () {
-    var btns = document.querySelectorAll('[data-filter]');
-    var cards = document.querySelectorAll('.gcard');
-    btns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var f = btn.getAttribute('data-filter');
-        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
-        cards.forEach(function (c) { c.style.display = (f === 'all' || c.getAttribute('data-type') === f) ? '' : 'none'; });
-      });
-    });
-  })();
-</script>
-
-<style>
-  .viewtoggle { display: inline-flex; flex-wrap: wrap; background: #fff; border: 1px solid var(--hair); border-radius: 999px; padding: 0.2rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
-  .viewtoggle button { font-family: var(--display); font-weight: 600; font-size: 0.9rem; color: var(--mid); background: none; border: 0; padding: 0.45rem 1.1rem; border-radius: 999px; cursor: pointer; }
-  .viewtoggle button.is-active { background: var(--navy); color: var(--cream); }
-
-  .note { margin-top: 1.75rem; font-size: 0.95rem; color: var(--mid); max-width: 62ch; }
-</style>

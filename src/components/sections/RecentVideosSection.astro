@@ -1,0 +1,51 @@
+---
+// The newest services from the church's YouTube channel, live.
+import Section from '../Section.astro';
+import Buttons from '../Buttons.astro';
+import RichText from '../RichText.astro';
+import { getYouTubeVideos } from '../../lib/feeds';
+import { variantFor } from '../../lib/links';
+const { s } = Astro.props;
+const videos = (await getYouTubeVideos()).slice(0, s.count ?? 6);
+const fmtDate = (d: Date | null) =>
+  d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+---
+{(videos.length > 0 || s.emptyText?.length > 0) && (
+  <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading}>
+    {videos.length > 0 ? (
+      <div class="grid cols-3 vids">
+        {videos.map((v) => (
+          <a class="vid" href={v.url} target="_blank" rel="noopener noreferrer" data-reveal>
+            <div class="vid__thumb">
+              <img src={v.thumbnail} alt={v.title} loading="lazy" />
+              <span class="vid__play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <h3>{v.title}</h3>
+            <p class="vid__date">{fmtDate(v.date)}</p>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div data-reveal><RichText value={s.emptyText} /></div>
+    )}
+    <div class="mt-2" data-reveal><Buttons list={s.buttons} solid={0} /></div>
+  </Section>
+)}
+
+<style>
+  /* watch grid */
+  .vid { text-decoration: none; display: block; }
+  .vid__thumb { position: relative; aspect-ratio: 16/9; border-radius: var(--r); overflow: hidden; border: 1px solid var(--hair); box-shadow: var(--shadow); }
+  .vid__thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .vid:hover .vid__thumb img { transform: scale(1.04); }
+  .vid__play {
+    position: absolute; inset: 0; margin: auto; width: 54px; height: 54px;
+    display: grid; place-items: center; border-radius: 50%;
+    background: rgba(0,82,145,0.9); color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .vid h3 { font-size: 1rem; margin-top: 0.8rem; color: var(--navy); }
+  .vid:hover h3 { color: var(--blue); }
+  .vid__date { font-size: 0.85rem; color: var(--mid); margin-top: 0.2rem; }
+</style>

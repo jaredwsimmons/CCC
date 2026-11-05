@@ -1,0 +1,46 @@
+---
+// Photos of the staff or the elders, from the Leaders list.
+import Section from '../Section.astro';
+import { imagePosition, imageUrl } from '../../lib/image';
+import { variantFor } from '../../lib/links';
+import { sanityFetch } from '../../lib/sanity';
+import { leadersQuery } from '../../lib/queries';
+const { s } = Astro.props;
+const leaders = (await sanityFetch<any[]>(leadersQuery, {}, Astro.cookies)) ?? [];
+// Anyone without a group shows with the staff, so nobody disappears.
+const people = leaders.filter((p) => (s.group === 'elder' ? p.group === 'elder' : p.group !== 'elder'));
+---
+{people.length > 0 && (
+  <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading} center>
+    <div class="people">
+      {people.map((p) => (
+        <div class="person" data-reveal>
+          <div class="person__photo">
+            {p.photo && <img src={imageUrl(p.photo, 600)} alt={p.photo.alt || `${p.name} — ${p.role}`} style={imagePosition(p.photo)} loading="lazy" />}
+          </div>
+          <h3>{p.name}</h3>
+          <p>{p.role}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+)}
+
+<style>
+  /* centered, so a short row of people doesn't sit off to one side */
+  .people { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.75rem 1.25rem; }
+  .person { flex: 0 1 calc((100% - 3.75rem) / 4); min-width: 150px; text-align: center; }
+  .person__photo {
+    aspect-ratio: 3 / 4;
+    border-radius: var(--r);
+    overflow: hidden;
+    border: 1px solid var(--hair);
+    box-shadow: var(--shadow);
+    background: #fff;
+    margin-bottom: 0.8rem;
+  }
+  /* portrait headshots (~0.7 ratio) — anchor to the top so heads aren't cropped */
+  .person__photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .person h3 { font-size: 1.08rem; }
+  .person p { font-size: 0.88rem; color: var(--mid); }
+</style>

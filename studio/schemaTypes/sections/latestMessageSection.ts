@@ -22,6 +22,9 @@ export default defineType({
       initialValue: 'podcast',
       validation: (Rule) => Rule.required(),
     }),
+    defineField({ name: 'watchLabel', title: 'Watch button text', type: 'string', initialValue: 'Watch on YouTube' }),
+    defineField({ name: 'watchUrl', title: 'Watch button link', type: 'url', description: 'Used when the message itself has no video link.' }),
+    defineField({ name: 'listenLabel', title: 'Listen button text', type: 'string', initialValue: 'Listen' }),
   ],
   preview: sectionPreview('Latest message', 'eyebrow'),
 });

@@ -93,7 +93,6 @@ Only a cookie signed by the server unlocks drafts (`src/lib/preview.ts`), and dr
 │  │  ├─ index.astro        # homepage (Home page + Site Settings)
 │  │  ├─ [...slug].astro    # every page staff build in Sanity
 │  │  ├─ calendar, groups, media, give, leaders .astro   # fixed pages: live data + a Sanity header and sections
-│  │  ├─ bylaws.astro       # the bylaws (still in code)
 │  │  ├─ sitemap.xml.ts     # the sitemap, built on request
 │  │  └─ api/esv.ts         # verses for the scripture tooltips
 │  └─ styles/global.css     # brand system (blue #005291 / gold #F0C334, Poppins/Nunito)

@@ -60,7 +60,10 @@ export interface Video {
   url: string;
 }
 
-export async function getYouTubeVideos(limit = 6): Promise<Video[]> {
+/** How many items to keep from each feed, so every section shares one cached download. */
+export const FEED_ITEMS = 13;
+
+export async function getYouTubeVideos(limit = FEED_ITEMS): Promise<Video[]> {
   const videos = await cached(`youtube:${limit}`, 15 * 60, async () => {
     const xml = await fetchText(site.media.youtubeFeed);
     if (!xml) return null;
@@ -110,7 +113,7 @@ function firstItems(xml: string, n: number): string {
   return xml.slice(0, end) + '</channel></rss>';
 }
 
-export async function getPodcastEpisodes(limit = 9): Promise<Episode[]> {
+export async function getPodcastEpisodes(limit = FEED_ITEMS): Promise<Episode[]> {
   const episodes = await cached(`podcast:${limit}`, 15 * 60, async () => {
     const xml = await fetchText(site.media.podcastFeed);
     if (!xml) return null;

@@ -1,9 +1,10 @@
 ---
-import { site, withBase } from '../data/site';
+import { withBase } from '../data/site';
+import { buttonLink, type Button } from '../lib/links';
 type NavItem = { label: string; href: string; children?: { label: string; href: string }[] };
-interface Props { menu: NavItem[]; } // from Site Settings (Base.astro)
-const nav = Astro.props.menu;
-const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
+interface Props { menu: NavItem[]; give?: Button | null; churchName?: string; } // from Site Settings (Base.astro)
+const { menu: nav, give, churchName } = Astro.props;
+const giveLink = buttonLink(give);
 // Strip any deploy base (e.g. "/CCC") so comparisons work against the raw nav hrefs.
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 let path = Astro.url.pathname;
@@ -15,7 +16,7 @@ const isActive = (href: string) =>
 <header class="site-header">
   <div class="wrap bar">
     <a class="brand" href={withBase('/')}>
-      <img src={withBase('/images/logo-full-blue.png')} alt={`${site.name} — home`} width="232" height="72" />
+      <img src={withBase('/images/logo-full-blue.png')} alt={`${churchName} — home`} width="232" height="72" />
     </a>
 
     <button
@@ -54,7 +55,7 @@ const isActive = (href: string) =>
             </li>
           )
         )}
-        <li class="nav-give"><a class="btn btn--gold" href={give}>Give</a></li>
+        {giveLink && give?.label && <li class="nav-give"><a class="btn btn--gold" href={giveLink.href} target={giveLink.newTab ? '_blank' : undefined}>{give.label}</a></li>}
       </ul>
     </nav>
   </div>

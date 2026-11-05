@@ -3,7 +3,6 @@
 // with an audio player, or a YouTube video.
 import Section from './Section.astro';
 import Scripturize from './Scripturize.astro';
-import { site } from '../data/site';
 import { fmtDuration } from '../lib/feeds';
 
 export type Message = {
@@ -16,8 +15,9 @@ export type Message = {
   link?: string;
   videoUrl?: string;
 };
-interface Props { message: Message; eyebrow?: string; fallbackImage?: string | null; }
-const { message: m, eyebrow = 'Latest message', fallbackImage } = Astro.props;
+interface Props { message: Message; eyebrow?: string; watchLabel?: string; watchUrl?: string; listenLabel?: string; fallbackImage?: string | null; }
+const { message: m, eyebrow, watchLabel, watchUrl, listenLabel, fallbackImage } = Astro.props;
+const watch = m.videoUrl ?? watchUrl;
 const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
 const art = m.image || fallbackImage;
 ---
@@ -29,14 +29,14 @@ const art = m.image || fallbackImage;
       </div>
     )}
     <div class="latest__body">
-      <p class="eyebrow on-dark">{eyebrow}</p>
+      {eyebrow && <p class="eyebrow on-dark">{eyebrow}</p>}
       <h2>{m.title}</h2>
       {m.subtitle && <p class="latest__sub"><Scripturize text={m.subtitle} /></p>}
       <p class="latest__meta">{fmtDate(m.date)}{m.duration && ` · ${fmtDuration(m.duration)}`}</p>
       {m.audioUrl && <audio class="latest__audio" controls preload="none" src={m.audioUrl}></audio>}
       <div class="latest__cta">
-        <a class="btn btn--gold" href={m.videoUrl ?? site.social.youtube} target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
-        {m.link && <a class="btn btn--outline-light" href={m.link} target="_blank" rel="noopener noreferrer">Listen</a>}
+        {watch && watchLabel && <a class="btn btn--gold" href={watch} target="_blank" rel="noopener noreferrer">{watchLabel}</a>}
+        {m.link && listenLabel && <a class="btn btn--outline-light" href={m.link} target="_blank" rel="noopener noreferrer">{listenLabel}</a>}
       </div>
     </div>
   </div>

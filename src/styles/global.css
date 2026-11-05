@@ -124,6 +124,7 @@ p + p { margin-top: 0.9em; }
 .prose h2, .prose h3, .prose h4 { margin-top: 1.4em; }
 .prose > :first-child { margin-top: 0; }
 .prose ul, .prose ol { padding-left: 1.3rem; display: grid; gap: 0.4rem; }
+.prose ol[type='a'] { list-style-type: lower-alpha; }
 .prose li::marker { color: var(--gold-deep); }
 .prose blockquote { border-left: 3px solid var(--gold); padding-left: 1rem; font-style: italic; }
 .prose img { border-radius: var(--r); }

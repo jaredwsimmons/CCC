@@ -7,12 +7,10 @@
 //   2. Until a Sanity project is configured, the site renders from these documents
 //      directly (src/lib/sanity.ts), so pages and tests already use the migrated content.
 // Once the import is done and staff edit in Sanity, this file and content.ts can go.
-//
-// Bylaws stays a coded page (src/pages/bylaws.astro) for now: its lettered sub-lists
-// and cross-references ("Section A.1).b.") need a careful conversion of their own.
 
 import { site, nav } from './site';
 import * as c from './content';
+import { bylaws } from './bylaws';
 import { rhythm } from '../lib/calendar';
 
 export type SanityDoc = { _id: string; _type: string; [field: string]: unknown };
@@ -42,6 +40,18 @@ function linkBlock(before: string, text: string, href: string, after = '', listI
     markDefs: [{ _type: 'link', _key: mark, href }],
     children: [...(before ? [span(before)] : []), span(text, [mark]), ...(after ? [span(after)] : [])],
   };
+}
+
+/** A paragraph mixing plain text and links: strings stay plain, [text, href] pairs link. */
+function richBlock(...parts: (string | [string, string])[]) {
+  const markDefs: { _type: string; _key: string; href: string }[] = [];
+  const children = parts.map((p) => {
+    if (typeof p === 'string') return span(p);
+    const mark = key();
+    markDefs.push({ _type: 'link', _key: mark, href: p[1] });
+    return span(p[0], [mark]);
+  });
+  return { _type: 'block', _key: key(), style: 'normal', markDefs, children };
 }
 
 // Buttons (studio/schemaTypes/objects/button.ts). `one()` drops the list key for single fields.
@@ -107,10 +117,31 @@ function leaders(): SanityDoc[] {
   }));
 }
 
+function weeklyRhythm(): SanityDoc {
+  return {
+    _id: 'weeklyRhythm',
+    _type: 'weeklyRhythm',
+    tiles: rhythm.map((t) => ({
+      _type: 'rhythmTile',
+      _key: key(),
+      category: t.category,
+      title: t.title,
+      time: t.time,
+      location: t.location,
+      description: t.description,
+      ...(t.link ? { button: one(btn.page(t.link.label, 'fixed-groups')) } : {}),
+    })),
+  };
+}
+
 function siteSettings(): SanityDoc {
   return {
     _id: 'siteSettings',
     _type: 'siteSettings',
+    churchName: site.name,
+    tagline: site.tagline,
+    description: site.description,
+    giveButton: one(btn.cc('Give', cc.giving)),
     menu: nav.map((item) => ({
       _type: 'menuItem',
       _key: key(),
@@ -124,20 +155,36 @@ function siteSettings(): SanityDoc {
     address: { line1: site.address.line1, city: site.address.city, state: site.address.state, zip: site.address.zip, mapsUrl: site.address.maps },
     phone: site.phone,
     email: site.email,
-    social: { ...site.social, textSignup: site.textSignup },
+    footerTouchHeading: 'Get in Touch',
+    footerEmailText: "Get in touch with us, we're here to listen!",
     footerPrayer: one(btn.cc('Let us know how we can pray for you.', cc.forms.prayer)),
-    footerMedia: one(btn.page('Media', 'fixed-media')),
-    footerApp: one(btn.url('Church Center app', cc.appSetup)),
-    weeklyRhythm: rhythm.map((t) => ({
-      _type: 'rhythmTile',
-      _key: key(),
-      category: t.category,
-      title: t.title,
-      time: t.time,
-      location: t.location,
-      description: t.description,
-      ...(t.link ? { button: one(btn.page(t.link.label, 'fixed-groups')) } : {}),
-    })),
+    footerConnectHeading: 'Connect',
+    footerConnect: [
+      btn.url('Facebook', site.social.facebook),
+      btn.url('Instagram', site.social.instagram),
+      btn.url('YouTube', site.social.youtube),
+      btn.page('Media', 'fixed-media'),
+      btn.url('Text updates', site.textSignup),
+      btn.url('Church Center app', cc.appSetup),
+    ],
+    footerExploreHeading: 'Explore',
+    footerExplore: [
+      btn.page("I'm New", 'page-imnew'),
+      btn.page('About', 'page-about'),
+      btn.page('Leaders', 'fixed-leaders'),
+      btn.page('Calendar', 'fixed-calendar'),
+      btn.page('Community Groups', 'fixed-groups'),
+      btn.page('Ministries', 'page-serve'),
+      btn.page('Media', 'fixed-media'),
+      btn.page('Bylaws', 'page-bylaws'),
+      btn.cc('Give', cc.giving),
+    ],
+    deaconCardText: 'Serving and praying over this ministry — reach out anytime.',
+    notFound: {
+      heading: "We couldn't find that page",
+      text: "The link may be old or mistyped — but you're still welcome here. Let's get you back on track.",
+      buttons: [btn.page('Back home', 'home'), btn.page('Plan a visit', 'page-imnew')],
+    },
   };
 }
 
@@ -151,16 +198,39 @@ function home(): SanityDoc {
       title: 'Pursuing God.\nPursuing others.',
       subline: h.hero.sub,
       image: img(h.hero.image, h.hero.imageAlt),
+      buttons: [btn.cc('Plan a Visit', planVisit), btn.page("I'm New", 'page-imnew')],
     },
-    welcome: { eyebrow: h.welcome.eyebrow, heading: h.welcome.title, text: h.welcome.body },
+    band: { sundayLabel: 'This Sunday', directionsLabel: 'Get directions' },
+    welcome: {
+      eyebrow: h.welcome.eyebrow,
+      heading: h.welcome.title,
+      text: h.welcome.body,
+      buttons: [btn.page("I'm New", 'page-imnew'), btn.page('Learn More', 'page-about')],
+    },
     currentSeries: {
+      eyebrow: 'Current sermon series',
       title: h.series.title,
       description: h.series.body,
       image: img(h.series.art, h.series.artAlt),
-      watchUrl: site.media.seriesPlaylist,
-      listenUrl: site.social.spotify,
+      buttons: [btn.url('Watch Service', site.media.seriesPlaylist), btn.url('Listen on Spotify', site.social.spotify)],
     },
-    app: { eyebrow: h.app.eyebrow, heading: h.app.title, text: h.app.body, image: img(h.app.image, h.app.imageAlt) },
+    app: {
+      eyebrow: h.app.eyebrow,
+      heading: h.app.title,
+      text: h.app.body,
+      image: img(h.app.image, h.app.imageAlt),
+      buttons: [btn.url('App Store', site.app.ios), btn.url('Google Play', site.app.android), btn.url('Set up Church Center', cc.appSetup)],
+    },
+    contact: {
+      eyebrow: 'Get in touch',
+      heading: "We're here to listen",
+      cards: [
+        { _type: 'contactCard', _key: key(), link: one(btn.email('Email Us', 'church-office')), text: "Get in touch with us, we're here to listen!" },
+        { _type: 'contactCard', _key: key(), link: one(btn.cc('Prayer', cc.forms.prayer)), text: 'Let us know how we can pray for you.' },
+        { _type: 'contactCard', _key: key(), link: one(btn.url('Facebook', site.social.facebook)), text: 'Connect with us and stay up-to-date!' },
+        { _type: 'contactCard', _key: key(), link: one(btn.url('Instagram', site.social.instagram)), text: 'Connect with us and stay up-to-date!' },
+      ],
+    },
   };
 }
 
@@ -176,6 +246,14 @@ function fixedPages(): SanityDoc[] {
         intro: "The rhythms of our week and what's coming up. See something you'd like to be part of? You're always welcome.",
       }),
       sections: [
+        section('weeklyRhythmSection', { eyebrow: 'Every week', heading: 'The rhythm of our week' }),
+        section('calendarEventsSection', {
+          eyebrow: 'Upcoming',
+          heading: 'On the calendar',
+          emptyText: [richBlock('No upcoming events to show right now. See the ', ['Church Center calendar', cc.calendarPage], ' for the latest.')],
+          note: [richBlock('Events are pulled live from our ', ['Church Center calendar', cc.calendarPage], '.')],
+          background: 'tinted',
+        }),
         section('ctaBandSection', {
           heading: 'Plan your visit',
           text: "New here? Let us know you're coming and we'll have a gift waiting.",
@@ -195,6 +273,21 @@ function fixedPages(): SanityDoc[] {
         ministry: ref('ministry-adult-discipleship'),
       }),
       sections: [
+        section('groupsSection', {
+          eyebrow: 'Find your group',
+          heading: 'Groups open to join',
+          filters: true,
+          emptyText: [richBlock('No open groups to show right now. ', ['Browse all groups on Church Center', `https://${cc.subdomain}/groups`], '.')],
+          note: [
+            richBlock(
+              'Groups are listed live from ',
+              ['Church Center', `https://${cc.subdomain}/groups`],
+              ". Full groups aren't shown — if one you love is full, ",
+              ['let us know', `mailto:${site.email}`],
+              " and we'll help you find a fit.",
+            ),
+          ],
+        }),
         section('ctaBandSection', {
           heading: 'Not sure which group fits?',
           text: "Tell us a little about yourself and we'll help you find a group that feels like home.",
@@ -208,7 +301,31 @@ function fixedPages(): SanityDoc[] {
       _type: 'fixedPage',
       title: 'Media',
       header: header({ eyebrow: 'Media', title: 'Watch & Listen', intro: c.media.intro[0] }),
-      sections: [],
+      sections: [
+        section('latestMessageSection', {
+          eyebrow: 'Latest message',
+          source: 'podcast',
+          watchLabel: 'Watch on YouTube',
+          watchUrl: site.social.youtube,
+          listenLabel: 'Listen',
+        }),
+        section('recentVideosSection', {
+          eyebrow: 'Watch',
+          heading: 'Recent services',
+          count: 6,
+          emptyText: paras('Our worship services are streamed live on YouTube each Sunday morning, then uploaded to our channel.'),
+          buttons: [btn.url('See all on YouTube', site.social.youtube)],
+        }),
+        section('podcastSection', {
+          eyebrow: 'Listen',
+          heading: 'Sermon podcast',
+          count: 6,
+          skipNewest: true,
+          emptyText: paras('You can also find our sermons in podcast form on all major streaming platforms!'),
+          buttons: [btn.url('Spotify', site.social.spotify), btn.url('Apple Podcasts', site.social.applePodcasts), btn.url('Amazon Music', site.social.amazonMusic)],
+          background: 'tinted',
+        }),
+      ],
       seo: seo('Watch Chelsea Community Church worship services and listen to the sermon podcast — recent messages, updated automatically.'),
     },
     {
@@ -245,7 +362,16 @@ function fixedPages(): SanityDoc[] {
       _type: 'fixedPage',
       title: 'Leaders',
       header: header({ eyebrow: 'About', title: 'Leaders' }),
-      sections: [],
+      sections: [
+        section('leadersSection', { eyebrow: 'Staff', heading: 'Our staff', group: 'staff', background: 'plain' }),
+        section('leadersSection', { eyebrow: 'Elders', heading: 'Our elders', group: 'elder', background: 'tinted' }),
+        section('deaconsSection', {
+          eyebrow: 'Deacons',
+          heading: 'Serving the Body',
+          note: [richBlock('Questions about our leadership? ', ['Email the church office', `mailto:${site.email}`], '.')],
+          background: 'plain',
+        }),
+      ],
       seo: seo('The staff, elders, and deacons of Chelsea Community Church.'),
     },
   ];
@@ -345,6 +471,12 @@ function pages(): SanityDoc[] {
         cta('Come and see', "The best way to get to know us is a Sunday morning. We'd love to meet you.", btn.cc('Plan a Visit', planVisit), btn.page('What to expect', 'page-imnew')),
       ],
       seo: seo('The vision, founding, and statement of faith of Chelsea Community Church — the story of God pursuing us, and of our church in Chelsea, Alabama.'),
+    }),
+
+    page('/bylaws', 'Church Bylaws', {
+      header: header({ eyebrow: 'About', title: 'Church Bylaws', intro: bylaws.hero.lead }),
+      sections: [section('longTextSection', { body: bylaws.blocks })],
+      seo: seo(bylaws.hero.description),
     }),
 
     page('/serve', 'Serve', {
@@ -585,5 +717,5 @@ function pages(): SanityDoc[] {
 /** Every document the migration creates, in import order. */
 export function buildDocuments(): SanityDoc[] {
   n = 0;
-  return [siteSettings(), home(), ...fixedPages(), ...pages(), ...leaders(), ...ministries()];
+  return [siteSettings(), weeklyRhythm(), home(), ...fixedPages(), ...pages(), ...leaders(), ...ministries()];
 }

@@ -58,10 +58,25 @@ test('the current series and announcement belong to the Home page', () => {
 });
 
 test('the footer links are set in Site Settings', () => {
-  const settings = docs.find((d) => d._id === 'siteSettings') as unknown as Record<string, { label?: string; kind?: string }>;
-  expect(settings.footerPrayer).toMatchObject({ label: 'Let us know how we can pray for you.', kind: 'churchCenter' });
-  expect(settings.footerMedia).toMatchObject({ label: 'Media', kind: 'page' });
-  expect(settings.footerApp).toMatchObject({ label: 'Church Center app', kind: 'url' });
+  const settings = docs.find((d) => d._id === 'siteSettings') as unknown as Record<string, { label?: string }[] & { label?: string; kind?: string }>;
+  expect(settings.footerPrayer).toMatchObject({ kind: 'churchCenter' });
+  expect(settings.footerConnect.map((l) => l.label)).toContain('Text updates');
+  expect(settings.footerExplore.map((l) => l.label)).toContain('Bylaws');
+});
+
+test('the Bylaws keep every article and their lettered lists', () => {
+  const page = docs.find((d) => d._id === 'page-bylaws') as unknown as { sections: { body: { style?: string; listItem?: string }[] }[] };
+  const body = page.sections[0].body;
+  expect(body.filter((b) => b.style === 'h2')).toHaveLength(13);
+  expect(body.filter((b) => b.listItem === 'letter').length).toBeGreaterThan(0);
+});
+
+test('the fixed pages are built from sections staff can edit', () => {
+  const types = (id: string) => ((docs.find((d) => d._id === id)?.sections as { _type: string }[]) ?? []).map((s) => s._type);
+  expect(types('fixed-calendar')).toContain('calendarEventsSection');
+  expect(types('fixed-groups')).toContain('groupsSection');
+  expect(types('fixed-media')).toEqual(['latestMessageSection', 'recentVideosSection', 'podcastSection']);
+  expect(types('fixed-leaders')).toEqual(['leadersSection', 'leadersSection', 'deaconsSection']);
 });
 
 test('people who have left the church are not mentioned', () => {
@@ -88,7 +103,7 @@ test('list items have keys that are unique within their list', () => {
 });
 
 test('page addresses are unique and not taken by the site', () => {
-  const reserved = ['calendar', 'groups', 'media', 'give', 'leaders', 'api', 'home', 'history', 'bylaws'];
+  const reserved = ['calendar', 'groups', 'media', 'give', 'leaders', 'api', 'home', 'history', 'our-story', 'beliefs'];
   const slugs = docs.filter((d) => d._type === 'page').map((d) => (d.slug as { current: string }).current);
   expect(new Set(slugs).size).toBe(slugs.length);
   expect(slugs.filter((s) => reserved.includes(s))).toEqual([]);

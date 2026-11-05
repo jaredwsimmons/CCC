@@ -38,6 +38,9 @@ for (const b of blocks) {
   .toc-list a:hover { background: var(--paper); color: var(--blue); border-left-color: var(--gold); }
   .longtext__body { min-width: 0; max-width: 72ch; }
   .article { scroll-margin-top: calc(var(--hdr-h) + 1rem); }
+  .article :global(h2) { font-size: clamp(1.4rem, 2.6vw, 1.95rem); }
+  .article :global(h3) { margin-top: 1.7rem; color: var(--navy); }
+  .article :global(h4) { margin-top: 1.2rem; color: var(--blue-deep); font-size: 1.02rem; letter-spacing: 0; }
   .article + .article { border-top: 1px solid var(--hair); margin-top: 2.5rem; padding-top: 2.5rem; }
   @media (max-width: 900px) {
     .longtext { grid-template-columns: 1fr; gap: 1.5rem; }

@@ -10,7 +10,7 @@ const projectId = process.env.SANITY_STUDIO_PROJECT_ID || '';
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production';
 
 // One document each, reached from the menu below; staff can't create, duplicate or delete them.
-const SINGLETON_TYPES = new Set(['siteSettings', 'home', 'fixedPage']);
+const SINGLETON_TYPES = new Set(['siteSettings', 'home', 'fixedPage', 'weeklyRhythm']);
 const SINGLETON_ACTIONS = new Set(['publish', 'discardChanges', 'restore']);
 
 // The website the Live Preview shows. Set SANITY_STUDIO_PREVIEW_URL to the real address
@@ -68,6 +68,12 @@ export default defineConfig({
           }),
           leader: defineLocations({ locations: [{ title: 'Leaders', href: '/leaders' }] }),
           ministry: defineLocations({ locations: [{ title: 'Leaders', href: '/leaders' }] }),
+          weeklyRhythm: defineLocations({
+            locations: [
+              { title: "I'm New", href: '/imnew' },
+              { title: 'Calendar', href: '/calendar' },
+            ],
+          }),
         },
       },
     }),
@@ -98,6 +104,10 @@ export default defineConfig({
             S.divider(),
             S.documentTypeListItem('leader').title('Leaders'),
             S.documentTypeListItem('ministry').title('Ministries & Deacons'),
+            S.listItem()
+              .title('Weekly rhythm cards')
+              .id('weeklyRhythm')
+              .child(S.document().schemaType('weeklyRhythm').documentId('weeklyRhythm')),
           ]),
     }),
     // The GROQ query playground is for developers; staff don't see it in the deployed Studio.

@@ -4,7 +4,7 @@ import { pageSlugsQuery } from '../lib/queries';
 
 // The sitemap, built on request so a page staff publish in Sanity is listed right away.
 // The coded routes are listed here; every other page comes from Sanity.
-const CODED = ['/', '/calendar', '/groups', '/media', '/give', '/leaders', '/bylaws'];
+const CODED = ['/', '/calendar', '/groups', '/media', '/give', '/leaders'];
 
 export const GET: APIRoute = async ({ site }) => {
   const slugs = (await sanityFetch<string[] | null>(pageSlugsQuery)) ?? [];

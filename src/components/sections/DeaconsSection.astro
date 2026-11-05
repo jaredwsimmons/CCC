@@ -1,0 +1,48 @@
+---
+// Every ministry's deacons, from the Ministries & Deacons list.
+import Section from '../Section.astro';
+import RichText from '../RichText.astro';
+import { variantFor } from '../../lib/links';
+import { sanityFetch } from '../../lib/sanity';
+import { deaconsQuery } from '../../lib/queries';
+const { s } = Astro.props;
+const deacons = (await sanityFetch<{ name: string; deacons: string[] }[]>(deaconsQuery, {}, Astro.cookies)) ?? [];
+---
+{deacons.length > 0 && (
+  <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading} center>
+    <div class="deacons" data-reveal>
+      {deacons.map((d) => (
+        <div class="deacon">
+          <span class="area">{d.name}</span>
+          <span class="names">{d.deacons.join(', ')}</span>
+        </div>
+      ))}
+    </div>
+    {s.note?.length > 0 && <div class="note" data-reveal><RichText value={s.note} /></div>}
+  </Section>
+)}
+
+<style>
+  .deacons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0.6rem 1.25rem;
+    text-align: left;
+    background: #fff;
+    border: 1px solid var(--hair);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+  .deacon { display: flex; flex-direction: column; padding-block: 0.35rem; }
+  .area {
+    font-family: var(--display);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .names { font-size: 0.95rem; }
+  .note { margin-top: 1.5rem; color: var(--mid); font-size: 0.95rem; }
+</style>

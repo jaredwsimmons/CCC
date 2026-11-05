@@ -17,6 +17,11 @@ import OpenRegistrationsSection from './OpenRegistrationsSection.astro';
 import GroupsSection from './GroupsSection.astro';
 import FeaturedEventsSection from './FeaturedEventsSection.astro';
 import LatestMessageSection from './LatestMessageSection.astro';
+import CalendarEventsSection from './CalendarEventsSection.astro';
+import RecentVideosSection from './RecentVideosSection.astro';
+import PodcastSection from './PodcastSection.astro';
+import LeadersSection from './LeadersSection.astro';
+import DeaconsSection from './DeaconsSection.astro';
 
 const COMPONENTS: Record<string, any> = {
   textSection: TextSection,
@@ -34,6 +39,11 @@ const COMPONENTS: Record<string, any> = {
   groupsSection: GroupsSection,
   featuredEventsSection: FeaturedEventsSection,
   latestMessageSection: LatestMessageSection,
+  calendarEventsSection: CalendarEventsSection,
+  recentVideosSection: RecentVideosSection,
+  podcastSection: PodcastSection,
+  leadersSection: LeadersSection,
+  deaconsSection: DeaconsSection,
 };
 
 interface Props { list?: { _type: string; _key: string }[] | null; settings?: unknown; }

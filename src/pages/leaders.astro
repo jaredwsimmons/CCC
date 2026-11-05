@@ -1,106 +1,17 @@
 ---
-// Leaders: the header and any sections come from the Leaders page in Sanity, the staff and
-// elders from the Leader documents, and the deacons from the Ministry documents.
+// Leaders: the header and every section come from the Leaders page in Sanity (Fixed pages).
 import Base from '../layouts/Base.astro';
-import Section from '../components/Section.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Sections from '../components/sections/Sections.astro';
 import { sanityFetch } from '../lib/sanity';
-import { deaconsQuery, fixedPageQuery, leadersQuery, settingsQuery } from '../lib/queries';
-import { imagePosition, imageUrl } from '../lib/image';
+import { fixedPageQuery, settingsQuery } from '../lib/queries';
 
-const [page, settings, leaders, deacons] = await Promise.all([
+const [page, settings] = await Promise.all([
   sanityFetch<any>(fixedPageQuery, { id: 'fixed-leaders' }, Astro.cookies),
   sanityFetch<any>(settingsQuery, {}, Astro.cookies),
-  sanityFetch<any[]>(leadersQuery, {}, Astro.cookies),
-  sanityFetch<{ name: string; deacons: string[] }[]>(deaconsQuery, {}, Astro.cookies),
 ]);
-const elders = (leaders ?? []).filter((p) => p.group === 'elder');
-const staff = (leaders ?? []).filter((p) => p.group !== 'elder'); // nobody disappears if unset
 ---
 <Base title={page?.title ?? 'Leaders'} description={page?.seo?.description}>
   <PageHeader header={page?.header} title={page?.title ?? 'Leaders'} />
-
-  {[
-    { eyebrow: 'Staff', title: 'Our staff', people: staff, variant: 'default' },
-    { eyebrow: 'Elders', title: 'Our elders', people: elders, variant: 'alt' },
-  ].filter((g) => g.people.length > 0).map((g) => (
-    <Section variant={g.variant as 'default' | 'alt'} eyebrow={g.eyebrow} title={g.title} center>
-      <div class="people">
-        {g.people.map((p) => (
-          <div class="person" data-reveal>
-            <div class="person__photo">
-              {p.photo && <img src={imageUrl(p.photo, 600)} alt={p.photo.alt || `${p.name} — ${p.role}`} style={imagePosition(p.photo)} loading="lazy" />}
-            </div>
-            <h3>{p.name}</h3>
-            <p>{p.role}</p>
-          </div>
-        ))}
-      </div>
-    </Section>
-  ))}
-
-  {(deacons?.length || settings?.email) && (
-    <Section eyebrow="Deacons" title="Serving the Body" center>
-      {deacons?.length > 0 && (
-        <div class="deacons" data-reveal>
-          {deacons.map((d) => (
-            <div class="deacon">
-              <span class="area">{d.name}</span>
-              <span class="names">{d.deacons.join(', ')}</span>
-            </div>
-          ))}
-        </div>
-      )}
-      {settings?.email && (
-        <p class="note" data-reveal>
-          Questions about our leadership? <a href={`mailto:${settings.email}`}>Email the church office</a>.
-        </p>
-      )}
-    </Section>
-  )}
-
   <Sections list={page?.sections} settings={settings} />
 </Base>
-
-<style>
-  /* centered, so a short row of people doesn't sit off to one side */
-  .people { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.75rem 1.25rem; }
-  .person { flex: 0 1 calc((100% - 3.75rem) / 4); min-width: 150px; text-align: center; }
-  .person__photo {
-    aspect-ratio: 3 / 4;
-    border-radius: var(--r);
-    overflow: hidden;
-    border: 1px solid var(--hair);
-    box-shadow: var(--shadow);
-    background: #fff;
-    margin-bottom: 0.8rem;
-  }
-  /* portrait headshots (~0.7 ratio) — anchor to the top so heads aren't cropped */
-  .person__photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-  .person h3 { font-size: 1.08rem; }
-  .person p { font-size: 0.88rem; color: var(--mid); }
-
-  .deacons {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 0.6rem 1.25rem;
-    text-align: left;
-    background: #fff;
-    border: 1px solid var(--hair);
-    border-radius: var(--r);
-    box-shadow: var(--shadow);
-    padding: clamp(1.25rem, 3vw, 2rem);
-  }
-  .deacon { display: flex; flex-direction: column; padding-block: 0.35rem; }
-  .area {
-    font-family: var(--display);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--blue);
-  }
-  .names { font-size: 0.95rem; }
-  .note { margin-top: 1.5rem; color: var(--mid); font-size: 0.95rem; }
-</style>

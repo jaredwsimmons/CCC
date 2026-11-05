@@ -1,0 +1,67 @@
+---
+// Recent sermon podcast episodes, live.
+import Section from '../Section.astro';
+import Buttons from '../Buttons.astro';
+import RichText from '../RichText.astro';
+import Scripturize from '../Scripturize.astro';
+import { getPodcastEpisodes, fmtDuration } from '../../lib/feeds';
+import { imageUrl } from '../../lib/image';
+import { variantFor } from '../../lib/links';
+import { sanityFetch } from '../../lib/sanity';
+import { seriesArtQuery } from '../../lib/queries';
+const { s } = Astro.props;
+const skip = s.skipNewest ? 1 : 0;
+const [episodes, artwork] = await Promise.all([getPodcastEpisodes(), sanityFetch<any>(seriesArtQuery, {}, Astro.cookies)]);
+const rest = episodes.slice(skip, skip + (s.count ?? 6));
+// Episodes without their own art show the current series art.
+const seriesArt = imageUrl(artwork, 800);
+const fmtDate = (d: Date | null) =>
+  d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+---
+{(rest.length > 0 || s.emptyText?.length > 0) && (
+  <Section variant={variantFor(s.background ?? 'tinted')} eyebrow={s.eyebrow} title={s.heading}>
+    {rest.length > 0 ? (
+      <div class="eps">
+        {rest.map((e) => (
+          <div class="ep" data-reveal>
+            {(e.image || seriesArt) && <img class="ep__art" src={e.image || seriesArt} alt="" loading="lazy" />}
+            <div class="ep__body">
+              <h3><a class="ep__link" href={e.link} target="_blank" rel="noopener noreferrer">{e.title}</a></h3>
+              {e.subtitle && <p class="ep__sub"><Scripturize text={e.subtitle} /></p>}
+              <p class="ep__meta">{fmtDate(e.date)}{e.duration && ` · ${fmtDuration(e.duration)}`}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div data-reveal><RichText value={s.emptyText} /></div>
+    )}
+    <div class="pods mt-2" data-reveal><Buttons list={s.buttons} solid={0} bare /></div>
+  </Section>
+)}
+
+<style>
+  /* listen list */
+  .eps { display: grid; gap: 0.9rem; }
+  .ep {
+    position: relative;
+    display: grid; grid-template-columns: 84px 1fr; gap: 1.1rem; align-items: center;
+    background: #fff; border: 1px solid var(--hair); border-radius: var(--r);
+    padding: 0.9rem 1.1rem; text-decoration: none; box-shadow: var(--shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .ep:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(25,55,79,0.06), 0 14px 30px -12px rgba(25,55,79,0.18); }
+  /* keeps an open scripture tooltip above the next card */
+  .ep:hover, .ep:focus-within { z-index: 1; }
+  /* the title's link covers the whole card; the scripture reference sits above it */
+  .ep__link { color: inherit; text-decoration: none; }
+  .ep__link::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); }
+  .ep__sub :global(.sref) { z-index: 1; }
+  .ep__art { width: 84px; height: 84px; border-radius: 10px; object-fit: cover; }
+  .ep__body h3 { font-size: 1.05rem; color: var(--navy); }
+  .ep:hover .ep__body h3 { color: var(--blue); }
+  .ep__sub { font-size: 0.92rem; color: var(--mid); margin-top: 0.15rem; }
+  .ep__meta { font-size: 0.82rem; color: var(--mid); margin-top: 0.3rem; }
+  .pods { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  @media (max-width: 480px) { .ep { grid-template-columns: 60px 1fr; gap: 0.85rem; } .ep__art { width: 60px; height: 60px; } }
+</style>

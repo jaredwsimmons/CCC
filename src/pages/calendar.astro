@@ -1,134 +1,17 @@
 ---
-// Calendar: the header and the sections below the events come from the Calendar page in
-// Sanity, the weekly tiles from Site Settings, and the events live from Church Center.
+// Calendar: the header and every section come from the Calendar page in Sanity (Fixed pages).
 import Base from '../layouts/Base.astro';
-import Section from '../components/Section.astro';
 import PageHeader from '../components/PageHeader.astro';
-import RhythmTiles from '../components/RhythmTiles.astro';
-import EventList from '../components/EventList.astro';
 import Sections from '../components/sections/Sections.astro';
-import { site } from '../data/site';
 import { sanityFetch } from '../lib/sanity';
 import { fixedPageQuery, settingsQuery } from '../lib/queries';
-import { inModal } from '../lib/links';
-import { getUpcomingEvents, buildMonthGrids, onePerSeries } from '../lib/calendar';
 
-const [page, settings, events] = await Promise.all([
+const [page, settings] = await Promise.all([
   sanityFetch<any>(fixedPageQuery, { id: 'fixed-calendar' }, Astro.cookies),
   sanityFetch<any>(settingsQuery, {}, Astro.cookies),
-  getUpcomingEvents(),
 ]);
-const monthGrids = buildMonthGrids(events);
-const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 ---
 <Base title={page?.title ?? 'Calendar'} description={page?.seo?.description}>
   <PageHeader header={page?.header} title={page?.title ?? 'Calendar'} />
-
-  <!-- Rhythm of our week -->
-  <Section eyebrow="Every week" title="The rhythm of our week">
-    <RhythmTiles tiles={settings?.weeklyRhythm} />
-  </Section>
-
-  <!-- Upcoming events — List / Month toggle -->
-  <Section variant="alt">
-    <div class="ev-head" data-reveal>
-      <div>
-        <p class="eyebrow">Upcoming</p>
-        <h2>On the calendar</h2>
-      </div>
-      <div class="viewtoggle" role="tablist" aria-label="Calendar view">
-        <button type="button" data-view-btn="list" class="is-active" role="tab" aria-selected="true">List</button>
-        <button type="button" data-view-btn="month" role="tab" aria-selected="false">Month</button>
-      </div>
-    </div>
-
-    {events.length === 0 && (
-      <p class="note" data-reveal>
-        No upcoming events to show right now. See the <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Church Center calendar</a> for the latest.
-      </p>
-    )}
-
-    <!-- LIST view -->
-    <div data-view="list">
-      <EventList events={onePerSeries(events)} />
-    </div>
-
-    <!-- MONTH view -->
-    <div data-view="month" hidden>
-      {monthGrids.map((mg) => (
-        <div class="month" data-reveal>
-          <h3 class="month__label">{mg.label}</h3>
-          <div class="cal-scroll">
-            <div class="cal-grid">
-              {DOW.map((d) => <div class="cal-dow">{d}</div>)}
-              {mg.weeks.flat().map((cell) => cell ? (
-                <div class={`cal-cell${cell.events.length ? ' has-ev' : ''}`}>
-                  <span class="cal-day">{cell.day}</span>
-                  {cell.events.slice(0, 3).map((e) => {
-                    const href = e.register ? inModal(e.register) : e.publicUrl;
-                    return href
-                      ? <a class="cal-ev" href={href} target={e.register ? undefined : '_blank'} rel="noopener noreferrer" title={e.title}>{e.title}</a>
-                      : <span class="cal-ev" title={e.title}>{e.title}</span>;
-                  })}
-                  {cell.events.length > 3 && <span class="cal-more">+{cell.events.length - 3} more</span>}
-                </div>
-              ) : <div class="cal-cell cal-cell--empty"></div>)}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <p class="note" data-reveal>
-      Events are pulled live from our <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Church Center calendar</a>.
-    </p>
-  </Section>
-
   <Sections list={page?.sections} settings={settings} />
 </Base>
-
-<script is:inline>
-  (function () {
-    var btns = document.querySelectorAll('[data-view-btn]');
-    var views = document.querySelectorAll('[data-view]');
-    btns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var v = btn.getAttribute('data-view-btn');
-        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
-        views.forEach(function (x) { x.hidden = x.getAttribute('data-view') !== v; });
-      });
-    });
-  })();
-</script>
-
-<style>
-  /* view toggle */
-  .ev-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
-  .viewtoggle { display: inline-flex; background: #fff; border: 1px solid var(--hair); border-radius: 999px; padding: 0.2rem; box-shadow: var(--shadow); }
-  .viewtoggle button {
-    font-family: var(--display); font-weight: 600; font-size: 0.9rem; color: var(--mid);
-    background: none; border: 0; padding: 0.45rem 1.1rem; border-radius: 999px; cursor: pointer;
-  }
-  .viewtoggle button.is-active { background: var(--navy); color: var(--cream); }
-
-  .month + .month { margin-top: 2rem; }
-  .month__label { font-size: 1.1rem; color: var(--navy); margin-bottom: 0.9rem; }
-
-  /* month grid view */
-  .cal-scroll { overflow-x: auto; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(96px, 1fr)); gap: 1px; background: var(--hair); border: 1px solid var(--hair); border-radius: var(--r); overflow: hidden; }
-  .cal-dow { background: var(--navy); color: var(--cream); font-family: var(--display); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; padding: 0.5rem 0; }
-  .cal-cell { background: #fff; min-height: 92px; padding: 0.35rem 0.4rem; display: flex; flex-direction: column; gap: 0.2rem; }
-  .cal-cell--empty { background: var(--paper); }
-  .cal-day { font-family: var(--display); font-weight: 600; font-size: 0.8rem; color: var(--mid); }
-  .has-ev .cal-day { color: var(--navy); }
-  .cal-ev {
-    font-size: 0.7rem; line-height: 1.2; color: var(--navy); background: rgba(0,82,145,0.08);
-    border-left: 2px solid var(--blue); padding: 0.12rem 0.3rem; border-radius: 3px;
-    text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  a.cal-ev:hover { background: rgba(0,82,145,0.15); }
-  .cal-more { font-size: 0.66rem; color: var(--mid); font-weight: 600; }
-
-  .note { margin-top: 1.75rem; font-size: 0.95rem; color: var(--mid); }
-</style>

@@ -1,9 +1,9 @@
 import { defineField, defineType } from 'sanity';
 import { sectionMembers } from './sections';
 
-// The pages built around live data (Calendar, Groups, Media, Give, Leaders). There is
-// one document per page, made by the Studio structure (sanity.config.ts); staff edit
-// their words and add sections below the live part, but not the layout.
+// The pages at fixed addresses (Calendar, Groups, Media, Give, Leaders). There is one
+// document per page, made by the Studio structure (sanity.config.ts). They're built from
+// sections like any page; their address and page type just can't be changed or deleted.
 export default defineType({
   name: 'fixedPage',
   title: 'Fixed page',
@@ -13,7 +13,7 @@ export default defineType({
     defineField({ name: 'header', title: 'Page header', type: 'pageHeader' }),
     defineField({
       name: 'sections',
-      title: 'Sections below the live content',
+      title: 'Sections',
       type: 'array',
       of: sectionMembers,
     }),

@@ -1,12 +1,14 @@
 ---
-// The homepage keeps its hand-tuned layout; its words and photos come from the Home page
-// document in Sanity, and the service times and church details from Site Settings.
+// The homepage keeps its hand-tuned layout; its words, buttons and photos come from the
+// Home page document in Sanity, and the service times and address from Site Settings.
 import Base from '../layouts/Base.astro';
 import Section from '../components/Section.astro';
-import { site, withBase } from '../data/site';
+import Buttons from '../components/Buttons.astro';
+import { withBase } from '../data/site';
 import { sanityFetch } from '../lib/sanity';
 import { homeQuery, settingsQuery } from '../lib/queries';
 import { imagePosition, imageUrl } from '../lib/image';
+import { buttonLink } from '../lib/links';
 import { shortTimes, telHref } from '../lib/format';
 
 const [home, settings] = await Promise.all([sanityFetch<any>(homeQuery, {}, Astro.cookies), sanityFetch<any>(settingsQuery, {}, Astro.cookies)]);
@@ -14,7 +16,8 @@ const hero = home?.hero ?? {};
 const welcome = home?.welcome ?? {};
 const app = home?.app ?? {};
 const series = home?.currentSeries;
-const social = settings?.social ?? {};
+const band = home?.band ?? {};
+const contact = home?.contact ?? {};
 const a = settings?.address;
 const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
 const times: string[] = settings?.serviceTimes ?? [];
@@ -24,8 +27,6 @@ const seriesImage = imageUrl(series?.image, 1200);
 const appImage = imageUrl(app.image, 1200);
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 
-const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-modal=true`;
-const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
 ---
 <Base description={home?.seo?.description}>
   {home?.announcement && (
@@ -51,10 +52,7 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
       {(hero.subline || times.length > 0) && (
         <p class="sub">{hero.subline}{hero.subline && times.length > 0 && ' · '}{times.length > 0 && <b>{times.join(' & ')}</b>}</p>
       )}
-      <div class="actions">
-        <a class="btn btn--gold btn--lg" href={planVisit}>Plan a Visit</a>
-        <a class="btn btn--outline-light btn--lg" href={withBase('/imnew')}>I'm New</a>
-      </div>
+      <div class="actions"><Buttons list={hero.buttons} large bare dark /></div>
     </div>
   </section>
 
@@ -63,9 +61,9 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
     <div class="band">
       <div class="wrap">
         <span class="dot" aria-hidden="true"></span>
-        {times.length > 0 && <span>This Sunday · {shortTimes(times)}</span>}
+        {times.length > 0 && <span>{band.sundayLabel && `${band.sundayLabel} · `}{shortTimes(times)}</span>}
         {address && <span class="band-addr">{address}</span>}
-        {a?.mapsUrl && <a href={a.mapsUrl} {...ext}>Get directions</a>}
+        {a?.mapsUrl && band.directionsLabel && <a href={a.mapsUrl} {...ext}>{band.directionsLabel}</a>}
       </div>
     </div>
   )}
@@ -73,10 +71,7 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
   <!-- Welcome -->
   <Section eyebrow={welcome.eyebrow} title={welcome.heading} center>
     {welcome.text && <p class="lead measure" data-reveal>{welcome.text}</p>}
-    <div class="welcome-actions" data-reveal>
-      <a class="btn btn--blue" href={withBase('/imnew')}>I'm New</a>
-      <a class="btn btn--outline" href={withBase('/about')}>Learn More</a>
-    </div>
+    <div class="welcome-actions" data-reveal><Buttons list={welcome.buttons} primary="blue" bare /></div>
   </Section>
 
   <!-- Current series; hidden when no series is set -->
@@ -89,19 +84,10 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
           </div>
         )}
         <div data-reveal>
-          <p class="eyebrow on-dark">Current sermon series</p>
+          {series.eyebrow && <p class="eyebrow on-dark">{series.eyebrow}</p>}
           <h2>{series.title}</h2>
           {series.description && <p style="margin-top:0.9rem">{series.description}</p>}
-          {(series.watchUrl || series.listenUrl) && (
-            <div class="series-actions">
-              {series.watchUrl && <a class="btn btn--gold" href={series.watchUrl} {...ext}>Watch Service</a>}
-              {series.listenUrl && (
-                <a class="btn btn--outline-light" href={series.listenUrl} {...ext}>
-                  {series.listenUrl.includes('spotify.com') ? 'Listen on Spotify' : 'Listen'}
-                </a>
-              )}
-            </div>
-          )}
+          <div class="series-actions"><Buttons list={series.buttons} dark bare /></div>
         </div>
       </div>
     </Section>
@@ -112,11 +98,7 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
     <div class="split">
       <div data-reveal>
         {app.text && <p class="measure">{app.text}</p>}
-        <div class="app-actions">
-          <a class="btn btn--blue" href={site.app.ios} {...ext}>App Store</a>
-          <a class="btn btn--blue" href={site.app.android} {...ext}>Google Play</a>
-          <a class="btn btn--outline" href={site.churchCenter.appSetup} {...ext}>Set up Church Center</a>
-        </div>
+        <div class="app-actions"><Buttons list={app.buttons} primary="blue" solid={2} bare /></div>
       </div>
       {appImage && (
         <div class="photo photo--plain" data-reveal>
@@ -127,30 +109,17 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
   </Section>
 
   <!-- Get in touch — the current site's footer tiles, as cards -->
-  <Section eyebrow="Get in touch" title="We're here to listen" center>
+  <Section eyebrow={contact.eyebrow} title={contact.heading} center>
     <div class="grid cols-4">
-      {settings?.email && (
-        <a class="card touch" href={`mailto:${settings.email}`} data-reveal>
-          <h3>Email Us</h3>
-          <p>Get in touch with us, we're here to listen!</p>
-        </a>
-      )}
-      <a class="card touch" href={prayerForm} data-reveal>
-        <h3>Prayer</h3>
-        <p>Let us know how we can pray for you.</p>
-      </a>
-      {social.facebook && (
-        <a class="card touch" href={social.facebook} {...ext} data-reveal>
-          <h3>Facebook</h3>
-          <p>Connect with us and stay up-to-date!</p>
-        </a>
-      )}
-      {social.instagram && (
-        <a class="card touch" href={social.instagram} {...ext} data-reveal>
-          <h3>Instagram</h3>
-          <p>Connect with us and stay up-to-date!</p>
-        </a>
-      )}
+      {(contact.cards ?? []).map((c: any) => {
+        const link = buttonLink(c.link);
+        return link && (
+          <a class="card touch" href={link.href} {...(link.newTab ? ext : {})} data-reveal>
+            <h3>{c.link.label}</h3>
+            {c.text && <p>{c.text}</p>}
+          </a>
+        );
+      })}
     </div>
     {(address || settings?.phone) && (
       <p class="visit-line" data-reveal>

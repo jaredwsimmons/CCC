@@ -101,9 +101,6 @@ export const site = {
       'https://youtube.com/playlist?list=PLcnuF3joGnBHLhefAXRk4zswRf2Ti73Hx&si=bEs8rxO9QK1nLbbv',
   },
 
-  // Church bylaws (public Google Doc linked from the beliefs page)
-  bylaws:
-    'https://docs.google.com/document/u/0/d/1p3udrhBXFaMOThxqw3sV-UnbVTGa0NkPWo589Z9jeRc/mobilebasic',
 } as const;
 
 // Primary navigation — mirrors the current site's structure:

@@ -13,7 +13,7 @@ const { deacons, blurb } = Astro.props;
     <div>
       <p class="deacon__label">{deacons.length > 1 ? 'Deacons' : 'Deacon'}</p>
       <p class="deacon__names">{deacons.join(', ')}</p>
-      <p class="deacon__blurb">{blurb ?? 'Serving and praying over this ministry — reach out anytime.'}</p>
+      {blurb && <p class="deacon__blurb">{blurb}</p>}
     </div>
   </div>
 )}

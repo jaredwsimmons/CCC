@@ -14,6 +14,11 @@ import openRegistrationsSection from './openRegistrationsSection';
 import groupsSection from './groupsSection';
 import featuredEventsSection from './featuredEventsSection';
 import latestMessageSection from './latestMessageSection';
+import calendarEventsSection from './calendarEventsSection';
+import recentVideosSection from './recentVideosSection';
+import podcastSection from './podcastSection';
+import leadersSection from './leadersSection';
+import deaconsSection from './deaconsSection';
 
 // The approved section list: 10 content sections, then the live ones. The order here
 // is the order of the "Add section" menu.
@@ -33,6 +38,11 @@ export const sectionTypes = [
   groupsSection,
   featuredEventsSection,
   latestMessageSection,
+  calendarEventsSection,
+  recentVideosSection,
+  podcastSection,
+  leadersSection,
+  deaconsSection,
 ];
 
 /** The members of a `sections` array field. */

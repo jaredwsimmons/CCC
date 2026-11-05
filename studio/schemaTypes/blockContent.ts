@@ -13,11 +13,13 @@ export default defineType({
         { title: 'Normal', value: 'normal' },
         { title: 'Heading', value: 'h2' },
         { title: 'Subheading', value: 'h3' },
+        { title: 'Small heading', value: 'h4' },
         { title: 'Quote', value: 'blockquote' },
       ],
       lists: [
         { title: 'Bullet', value: 'bullet' },
         { title: 'Numbered', value: 'number' },
+        { title: 'Lettered', value: 'letter' },
       ],
       marks: {
         decorators: [

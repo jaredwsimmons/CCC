@@ -5,7 +5,7 @@ const LINK = `{ _type, _id, "slug": slug.current }`;
 export const BUTTON = `{ ..., page->${LINK}, ministry->{ name, email } }`;
 const BUTTONS = `"buttons": buttons[]${BUTTON}`;
 
-const HEADER = `header{ ..., ${BUTTONS}, ministry->{ name, deacons } }`;
+const HEADER = `header{ ..., ${BUTTONS}, ministry->{ name, deacons }, "deaconText": *[_id == "siteSettings"][0].deaconCardText }`;
 const SECTIONS = `sections[]{
   ...,
   ${BUTTONS},
@@ -17,14 +17,25 @@ export const settingsQuery = /* groq */ `
   *[_id == "siteSettings"][0]{
     ...,
     menu[]{ label, page->${LINK}, children[]{ label, page->${LINK} } },
-    weeklyRhythm[]{ ..., "button": button${BUTTON} },
+    "weeklyRhythm": *[_id == "weeklyRhythm"][0].tiles[]{ ..., "button": button${BUTTON} },
+    "giveButton": giveButton${BUTTON},
     "footerPrayer": footerPrayer${BUTTON},
-    "footerMedia": footerMedia${BUTTON},
-    "footerApp": footerApp${BUTTON}
+    "footerConnect": footerConnect[]${BUTTON},
+    "footerExplore": footerExplore[]${BUTTON},
+    notFound{ ..., ${BUTTONS} }
   }
 `;
 
-export const homeQuery = /* groq */ `*[_id == "home"][0]`;
+export const homeQuery = /* groq */ `
+  *[_id == "home"][0]{
+    ...,
+    hero{ ..., ${BUTTONS} },
+    welcome{ ..., ${BUTTONS} },
+    currentSeries{ ..., ${BUTTONS} },
+    app{ ..., ${BUTTONS} },
+    contact{ ..., cards[]{ ..., "link": link${BUTTON} } }
+  }
+`;
 
 export const seriesArtQuery = /* groq */ `*[_id == "home"][0].currentSeries.image`;
 

@@ -1,18 +1,22 @@
 ---
+// The words and buttons come from Site Settings → Other wording.
 import Base from '../layouts/Base.astro';
+import Buttons from '../components/Buttons.astro';
 import { withBase } from '../data/site';
+import { sanityFetch } from '../lib/sanity';
+import { settingsQuery } from '../lib/queries';
+
+const settings = await sanityFetch<any>(settingsQuery, {}, Astro.cookies);
+const notFound = settings?.notFound;
 ---
-<Base title="Page not found" description="We couldn't find that page.">
+<Base title={notFound?.heading} description={notFound?.text}>
   <section class="nf">
     <div class="wrap inner">
       <img src={withBase('/images/icon-gold.png')} alt="" width="72" height="72" />
       <p class="eyebrow on-dark">404</p>
-      <h1>We couldn't find that page</h1>
-      <p class="lead">The link may be old or mistyped — but you're still welcome here. Let's get you back on track.</p>
-      <div class="actions">
-        <a class="btn btn--gold btn--lg" href={withBase('/')}>Back home</a>
-        <a class="btn btn--outline-light btn--lg" href={withBase('/imnew')}>Plan a visit</a>
-      </div>
+      {notFound?.heading && <h1>{notFound.heading}</h1>}
+      {notFound?.text && <p class="lead">{notFound.text}</p>}
+      <div class="actions"><Buttons list={notFound?.buttons} large bare dark /></div>
     </div>
   </section>
 </Base>

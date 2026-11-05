@@ -3,13 +3,16 @@
 import LatestMessage, { type Message } from '../LatestMessage.astro';
 import { getPodcastEpisodes, getYouTubeVideos } from '../../lib/feeds';
 import { imageUrl } from '../../lib/image';
-const { s, settings } = Astro.props;
+import { sanityFetch } from '../../lib/sanity';
+import { seriesArtQuery } from '../../lib/queries';
+const { s } = Astro.props;
+const artwork = await sanityFetch<any>(seriesArtQuery, {}, Astro.cookies);
 let message: Message | undefined;
 if (s.source === 'video') {
-  const v = (await getYouTubeVideos(1))[0];
+  const v = (await getYouTubeVideos())[0];
   if (v) message = { title: v.title, date: v.date, image: v.thumbnail, videoUrl: v.url };
 } else {
-  message = (await getPodcastEpisodes(1))[0];
+  message = (await getPodcastEpisodes())[0];
 }
 ---
-{message && <LatestMessage message={message} eyebrow={s.eyebrow || 'Latest message'} fallbackImage={imageUrl(settings?.currentSeries?.image, 900)} />}
+{message && <LatestMessage message={message} eyebrow={s.eyebrow} watchLabel={s.watchLabel} watchUrl={s.watchUrl} listenLabel={s.listenLabel} fallbackImage={imageUrl(artwork, 900)} />}

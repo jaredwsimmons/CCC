@@ -1,40 +1,44 @@
 ---
 // Church details come from Site Settings in Sanity (passed in by Base.astro); an item
 // whose field is empty is left out rather than linking nowhere.
-import { site, withBase } from '../data/site';
+import { withBase } from '../data/site';
 import { hasEsvKey } from '../lib/esv';
 import { shortTimes, telHref } from '../lib/format';
 import { buttonLink, type Button } from '../lib/links';
 interface Props { settings: any; } // Site Settings, from Base.astro
 const { settings } = Astro.props;
 const year = new Date().getFullYear();
-const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
 const a = settings?.address;
 const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
-const social = settings?.social ?? {};
 const times = shortTimes(settings?.serviceTimes);
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
-// The prayer, media and app links are buttons in Site Settings, so they follow the same
-// link rules as every other button; an unfinished one is left out.
+// Every footer link is a button in Site Settings, so it follows the same link rules as
+// every other button; an unfinished one is left out. TxtSignal opens in a small window.
 const footerLink = (b?: Button | null) => {
   const link = buttonLink(b);
-  return link && b?.label ? { label: b.label, attrs: { href: link.href, ...(link.newTab ? ext : {}) } } : null;
+  if (!link || !b?.label) return null;
+  const small = /txtsignal/.test(link.href) ? { 'data-small-window': true } : {};
+  return { label: b.label, attrs: { href: link.href, ...(link.newTab ? ext : {}), ...small } };
 };
+const links = (list?: Button[] | null) => (list ?? []).map(footerLink).filter((l) => l !== null);
 const prayer = footerLink(settings?.footerPrayer);
-const media = footerLink(settings?.footerMedia);
-const app = footerLink(settings?.footerApp);
+const connect = links(settings?.footerConnect);
+const explore = links(settings?.footerExplore);
+// The tagline's last sentence is highlighted.
+const tagline = (settings?.tagline ?? '').split(/(?<=\.)\s+/);
+const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
 ---
 <footer class="site-footer">
   <div class="wrap top">
     <div class="id">
       <img src={withBase('/images/icon-white.png')} alt="" width="64" height="64" loading="lazy" />
-      <p class="name">Chelsea Community<br />Church</p>
-      <p class="tagline">Pursuing God. <b>Pursuing others.</b></p>
+      <p class="name">{settings?.churchName}</p>
+      <p class="tagline">{tagline.join(' ')} {taglineEnd && <b>{taglineEnd}</b>}</p>
       {times && <p class="times">Sundays · {times}</p>}
     </div>
 
     <div class="col" aria-labelledby="ftr-touch">
-      <h2 id="ftr-touch">Get in Touch</h2>
+      <h2 id="ftr-touch">{settings?.footerTouchHeading}</h2>
       <ul>
         {address && (
           <li>
@@ -51,7 +55,7 @@ const app = footerLink(settings?.footerApp);
         {settings?.email && (
           <li>
             <span class="label">Email us</span>
-            <a href={`mailto:${settings.email}`}>Get in touch with us, we're here to listen!</a>
+            <a href={`mailto:${settings.email}`}>{settings?.footerEmailText}</a>
           </li>
         )}
         {prayer && (
@@ -64,35 +68,22 @@ const app = footerLink(settings?.footerApp);
     </div>
 
     <div class="col" aria-labelledby="ftr-connect">
-      <h2 id="ftr-connect">Connect</h2>
+      <h2 id="ftr-connect">{settings?.footerConnectHeading}</h2>
       <ul>
-        {social.facebook && <li><a href={social.facebook} {...ext}>Facebook</a></li>}
-        {social.instagram && <li><a href={social.instagram} {...ext}>Instagram</a></li>}
-        {social.youtube && <li><a href={social.youtube} {...ext}>YouTube</a></li>}
-        {media && <li><a {...media.attrs}>{media.label}</a></li>}
-        {social.textSignup && <li><a href={social.textSignup} {...ext} data-small-window>Text updates</a></li>}
-        {app && <li><a {...app.attrs}>{app.label}</a></li>}
+        {connect.map((l) => <li><a {...l.attrs}>{l.label}</a></li>)}
       </ul>
     </div>
 
     <div class="col" aria-labelledby="ftr-explore">
-      <h2 id="ftr-explore">Explore</h2>
+      <h2 id="ftr-explore">{settings?.footerExploreHeading}</h2>
       <ul class="two-col">
-        <li><a href={withBase('/imnew')}>I'm New</a></li>
-        <li><a href={withBase('/about')}>About</a></li>
-        <li><a href={withBase('/leaders')}>Leaders</a></li>
-        <li><a href={withBase('/calendar')}>Calendar</a></li>
-        <li><a href={withBase('/groups')}>Community Groups</a></li>
-        <li><a href={withBase('/serve')}>Ministries</a></li>
-        <li><a href={withBase('/media')}>Media</a></li>
-        <li><a href={withBase('/bylaws')}>Bylaws</a></li>
-        <li><a href={give}>Give</a></li>
+        {explore.map((l) => <li><a {...l.attrs}>{l.label}</a></li>)}
       </ul>
     </div>
   </div>
 
   <div class="wrap bottom">
-    <p>Copyright © {year}. All rights reserved. Chelsea Community Church</p>
+    <p>Copyright © {year}. All rights reserved. {settings?.churchName}</p>
     {hasEsvKey() && (
       <p class="esv">Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.</p>
     )}

@@ -31,8 +31,9 @@ export async function verifyPreview(value: string, secret: string, now = Date.no
 // code that compares or parses that text. So only these display-only fields are marked:
 // never choices (background, kind, photoSide), web addresses, emails or phone numbers.
 const CLICK_TO_EDIT = new Set([
-  'announcement', 'bio', 'cardTitle', 'closing', 'description', 'eyebrow', 'heading', 'intro', 'label',
-  'location', 'name', 'place', 'reference', 'role', 'subline', 'text', 'time', 'title', 'what',
+  'announcement', 'bio', 'cardTitle', 'category', 'closing', 'deaconCardText', 'description', 'directionsLabel', 'eyebrow',
+  'footerConnectHeading', 'footerEmailText', 'footerExploreHeading', 'footerTouchHeading', 'heading', 'intro', 'label', 'listenLabel',
+  'location', 'name', 'place', 'reference', 'role', 'subline', 'sundayLabel', 'text', 'time', 'title', 'watchLabel', 'what',
 ]);
 
 export const clickToEdit = ({ sourcePath }: { sourcePath: readonly unknown[] }): boolean =>

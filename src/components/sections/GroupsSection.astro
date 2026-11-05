@@ -2,12 +2,46 @@
 // Church Center groups open to join, optionally of one type, live.
 import Section from '../Section.astro';
 import GroupCards from '../GroupCards.astro';
-import { getGroups } from '../../lib/groups';
+import RichText from '../RichText.astro';
+import { getGroups, TYPES } from '../../lib/groups';
+import { variantFor } from '../../lib/links';
 const { s } = Astro.props;
 const groups = (await getGroups()).filter((g) => !s.groupType || g.type === s.groupType);
+const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label: t.replace(' Groups', '') }))];
 ---
-{groups.length > 0 && (
-  <Section eyebrow={s.eyebrow} title={s.heading}>
+{(groups.length > 0 || s.emptyText?.length > 0) && (
+  <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading}>
+    {s.filters && (
+      <div class="viewtoggle" role="tablist" aria-label="Filter groups" data-reveal>
+        {tabs.map((t, i) => (
+          <button type="button" data-filter={t.key} class={i === 0 ? 'is-active' : ''} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>{t.label}</button>
+        ))}
+      </div>
+    )}
+    {groups.length === 0 && <div class="note" data-reveal><RichText value={s.emptyText} /></div>}
     <GroupCards groups={groups} />
+    {s.note?.length > 0 && <div class="note" data-reveal><RichText value={s.note} /></div>}
   </Section>
 )}
+
+<script is:inline>
+  (function () {
+    var btns = document.querySelectorAll('[data-filter]');
+    var cards = document.querySelectorAll('.gcard');
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var f = btn.getAttribute('data-filter');
+        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
+        cards.forEach(function (c) { c.style.display = (f === 'all' || c.getAttribute('data-type') === f) ? '' : 'none'; });
+      });
+    });
+  })();
+</script>
+
+<style>
+  .viewtoggle { display: inline-flex; flex-wrap: wrap; background: #fff; border: 1px solid var(--hair); border-radius: 999px; padding: 0.2rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
+  .viewtoggle button { font-family: var(--display); font-weight: 600; font-size: 0.9rem; color: var(--mid); background: none; border: 0; padding: 0.45rem 1.1rem; border-radius: 999px; cursor: pointer; }
+  .viewtoggle button.is-active { background: var(--navy); color: var(--cream); }
+
+  .note { margin-top: 1.75rem; font-size: 0.95rem; color: var(--mid); max-width: 62ch; }
+</style>

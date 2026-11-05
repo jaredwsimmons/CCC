@@ -1,0 +1,18 @@
+import { defineField, defineType } from 'sanity';
+import { background, buttons, eyebrow, heading, sectionPreview } from '../fields';
+
+// The newest services from the church's YouTube channel, live.
+export default defineType({
+  name: 'recentVideosSection',
+  title: 'Recent videos',
+  type: 'object',
+  fields: [
+    eyebrow,
+    heading,
+    defineField({ name: 'count', title: 'How many videos', type: 'number', initialValue: 6, validation: (Rule) => Rule.min(1).max(12).integer() }),
+    defineField({ name: 'emptyText', title: 'If YouTube can’t be reached', type: 'blockContent', description: 'Shown instead of the videos.' }),
+    buttons(2),
+    background,
+  ],
+  preview: sectionPreview('Recent videos'),
+});

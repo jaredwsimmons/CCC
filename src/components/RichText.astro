@@ -13,6 +13,9 @@ interface Props {
 const { value, class: cls = '' } = Astro.props;
 
 const components = {
+  // Lettered lists, which documents like the Bylaws refer to by letter.
+  list: { letter: ({ children }: { children?: string }) => `<ol type="a">${children}</ol>` },
+  listItem: { letter: ({ children }: { children?: string }) => `<li>${children}</li>` },
   types: {
     image: ({ value }: { value: SanityImage }) => {
       const url = imageUrl(value, 1200);
