@@ -11,6 +11,7 @@
 // on-page (see the Beliefs page). Server-only — do not import into client code.
 import { ESV_API_KEY } from 'astro:env/server';
 import { cached } from './cache';
+import { passageText } from './format';
 
 /** Whether scripture references should be interactive (an ESV key is configured). */
 export const hasEsvKey = (): boolean => Boolean(ESV_API_KEY);
@@ -30,21 +31,21 @@ const PARAMS = new URLSearchParams({
 
 async function fetchESV(ref: string): Promise<string | null> {
   if (!ESV_API_KEY) return null;
+  // The timeout covers reading the reply too, so a stalled response can't hang the request.
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 8000);
   try {
     const url = `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(ref.replace(/[–—]/g, '-'))}&${PARAMS.toString()}`;
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 8000);
     const res = await fetch(url, {
       signal: ctrl.signal,
       headers: { Authorization: `Token ${ESV_API_KEY}` },
     });
-    clearTimeout(t);
     if (!res.ok) return null;
-    const data = (await res.json()) as { passages?: string[] };
-    const text = (data?.passages?.[0] ?? '').replace(/\s+/g, ' ').trim();
-    return text || null;
+    return passageText(await res.json()) || null;
   } catch {
     return null;
+  } finally {
+    clearTimeout(t);
   }
 }
 

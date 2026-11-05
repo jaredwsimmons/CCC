@@ -3,6 +3,17 @@
 // references inside rich text). Included once by the layout when an ESV key is set.
 ---
 <script>
+  // Slide an open tooltip left if it would run past the right edge of the screen.
+  function fit(el: HTMLElement) {
+    const pop = el.querySelector<HTMLElement>('.sref-pop');
+    if (!pop) return;
+    pop.style.left = '';
+    const box = pop.getBoundingClientRect();
+    const margin = 8;
+    const over = box.right - (document.documentElement.clientWidth - margin);
+    if (box.width && over > 0) pop.style.left = `${-Math.min(over, box.left - margin)}px`;
+  }
+
   // Load each reference's verse once, on its first hover, focus or tap.
   async function load(el: HTMLElement) {
     if (el.dataset.loaded) return;
@@ -16,13 +27,17 @@
     } catch {
       if (out) out.textContent = 'The verse text could not be loaded.';
     }
+    fit(el); // the verse is wider than "Loading…"
   }
   for (const type of ['pointerenter', 'focusin']) {
     document.addEventListener(
       type,
       (e) => {
         const el = (e.target as Element | null)?.closest?.('.sref[data-ref]');
-        if (el instanceof HTMLElement) load(el);
+        if (el instanceof HTMLElement) {
+          fit(el);
+          load(el);
+        }
       },
       true,
     );
@@ -41,6 +56,10 @@
   .sref:hover .sref-label,
   .sref:focus-visible .sref-label {
     color: var(--blue-deep);
+  }
+  .on-dark .sref:hover .sref-label,
+  .on-dark .sref:focus-visible .sref-label {
+    color: inherit;
   }
 
   .sref-pop {
@@ -71,6 +90,23 @@
   .sref:focus .sref-pop,
   .sref:focus-within .sref-pop {
     display: block;
+  }
+
+  /* a chained reference is several labeled passages, split by line breaks; long ones scroll */
+  .sref-text {
+    display: block;
+    white-space: pre-line;
+    max-height: min(22rem, 60vh);
+    overflow-y: auto;
+  }
+  /* bridges the gap under the reference so the pointer can reach a scrolling verse */
+  .sref-pop::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 8px;
   }
 
   .sref-cite {
