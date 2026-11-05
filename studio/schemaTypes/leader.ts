@@ -1,7 +1,7 @@
 import { defineField, defineType } from 'sanity';
 import { imageWithAlt } from './fields';
 
-// Elders, pastors and staff on the Leaders page.
+// The staff and elders on the Leaders page.
 export default defineType({
   name: 'leader',
   title: 'Leader',
@@ -9,6 +9,14 @@ export default defineType({
   fields: [
     defineField({ name: 'name', title: 'Name', type: 'string', validation: (Rule) => Rule.required() }),
     defineField({ name: 'role', title: 'Role', type: 'string', description: 'e.g. “Pastor of Students & Worship”' }),
+    defineField({
+      name: 'group',
+      title: 'Section on the Leaders page',
+      type: 'string',
+      options: { list: [{ title: 'Staff', value: 'staff' }, { title: 'Elders', value: 'elder' }], layout: 'radio' },
+      initialValue: 'staff',
+      validation: (Rule) => Rule.required(),
+    }),
     imageWithAlt('photo', 'Photo'),
     defineField({ name: 'bio', title: 'Bio', type: 'text', rows: 4 }),
     defineField({ name: 'email', title: 'Email', type: 'string', validation: (Rule) => Rule.email() }),

@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
 const visualPages = [
   { name: 'home', path: '/' },
   { name: 'imnew', path: '/imnew' },
-  { name: 'beliefs', path: '/beliefs' },
+  { name: 'about', path: '/about' },
   { name: 'men', path: '/men' },
   { name: 'preschool', path: '/preschool' },
   { name: 'prayer', path: '/prayer' },
@@ -16,6 +16,7 @@ const visualPages = [
 for (const p of visualPages) {
   test(`${p.name} looks the same`, async ({ page }) => {
     await page.goto(p.path);
+    await page.evaluate(() => document.querySelectorAll('.live-data').forEach((e) => e.remove()));
     // Lazy images below the fold change the layout when they load; load them all first.
     await page.evaluate(async () => {
       const imgs = [...document.images];

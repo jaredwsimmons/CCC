@@ -2,6 +2,8 @@ import type { Template } from 'sanity';
 
 // Starter pages: a template only sets a new page's first sections; staff can add,
 // remove or reorder any of them. (Each array item needs its own _key.)
+// Every ministry page follows the Ministry page order: what it's about, when it meets,
+// anything specific to that ministry, upcoming events, then who to contact.
 export const pageTemplates: Template[] = [
   {
     id: 'page-ministry',
@@ -12,7 +14,7 @@ export const pageTemplates: Template[] = [
       sections: [
         { _type: 'textPhotoSection', _key: 'intro', photoSide: 'right', background: 'plain' },
         { _type: 'scheduleSection', _key: 'schedule', heading: 'When we meet' },
-        { _type: 'openRegistrationsSection', _key: 'events', heading: 'Coming up' },
+        { _type: 'openRegistrationsSection', _key: 'events', eyebrow: 'Upcoming events', heading: 'Join us' },
         { _type: 'ctaBandSection', _key: 'cta' },
       ],
     },

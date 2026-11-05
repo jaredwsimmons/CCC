@@ -137,14 +137,11 @@ export const beliefs = {
 
 export const leaders = {
   staff: [
-    { name: 'Alan Allgood', role: 'Lay Elder', image: withBase('/images/leader-alan-allgood.webp') },
-    { name: 'Mark Clayton', role: 'Lay Elder', image: withBase('/images/leader-mark-clayton.webp') },
-    { name: 'Wes Haisten', role: 'Lay Elder', image: withBase('/images/leader-wes-haisten.webp') },
-    { name: 'Drew Blake', role: 'Pastor of Students & Worship', image: withBase('/images/leader-drew-blake.webp') },
-    { name: 'John Herring', role: 'Executive Pastor', image: withBase('/images/leader-john-herring.webp') },
-    { name: 'Kathryn Kipley', role: 'Family Ministry Associate', image: withBase('/images/leader-kathryn-kipley.webp') },
-    { name: 'Brian Marbury', role: 'Pastor of Missions & Service', image: withBase('/images/leader-brian-marbury.webp') },
-    { name: 'Ben Stephenson', role: 'Family Pastor', image: withBase('/images/leader-ben-stephenson.webp') },
+    { name: 'Alan Allgood', role: 'Lay Elder', group: 'elder', image: withBase('/images/leader-alan-allgood.webp') },
+    { name: 'Mark Clayton', role: 'Lay Elder', group: 'elder', image: withBase('/images/leader-mark-clayton.webp') },
+    { name: 'Wes Haisten', role: 'Lay Elder', group: 'elder', image: withBase('/images/leader-wes-haisten.webp') },
+    { name: 'Drew Blake', role: 'Pastor of Students & Worship', group: 'staff', image: withBase('/images/leader-drew-blake.webp') },
+    { name: 'Ben Stephenson', role: 'Family Pastor', group: 'staff', image: withBase('/images/leader-ben-stephenson.webp') },
   ],
   deacons: [
     { area: 'Adult Discipleship', names: 'Ryan Akers, Casey Ballenger' },
@@ -189,10 +186,6 @@ export const worship = {
     'Behind the scenes our tech team makes sure sound, lights, and video run smoothly. This ensures a worship environment free of distraction.',
   ],
   serveCta: { label: 'Click to serve with music or tech!', email: site.contacts.tech },
-  images: [
-    { src: withBase('/images/worship-singer.webp'), alt: 'A vocalist leading sung worship' },
-    { src: withBase('/images/worship-tech.webp'), alt: 'The production team’s audio console during a service' },
-  ],
 };
 
 export const preschool = {
@@ -359,9 +352,7 @@ export const missions = {
   },
   highlight: {
     title: 'Monthly Missions Highlight',
-    body: "The Big Kaboom is coming up on Saturday, June 27, and Chelsea Community Church is partnering with other local churches to provide a free Kids Zone for families in our community! The Kids Zone will feature inflatables, face painting, games, and other fun activities for children. We're looking for volunteers from 7:00–7:45 PM to assist with activities in the Kids Zone or help at our church booth. We'd love for you to join us — contact Pastor Brian for more information.",
-    image: withBase('/images/missions-big-kaboom.webp'),
-    imageAlt: 'Big Kaboom — Saturday, June 27, 7:00–7:45 PM. We need you! Contact Brian Marbury or scan the QR code to volunteer.',
+    body: "The Big Kaboom is coming up on Saturday, June 27, and Chelsea Community Church is partnering with other local churches to provide a free Kids Zone for families in our community! The Kids Zone will feature inflatables, face painting, games, and other fun activities for children. We're looking for volunteers from 7:00–7:45 PM to assist with activities in the Kids Zone or help at our church booth. We'd love for you to join us — contact Pastor Ben for more information.",
   },
   local: [
     { name: 'Blanket Fort Hope', focus: 'Child trafficking survivors', url: 'https://blanketforthope.org/', newsletter: 'https://blanketforthope.org/around-the-fort-blog/' },
@@ -383,14 +374,6 @@ export const missions = {
     { name: 'Two Feathers', focus: 'Choctaw Native Americans', url: 'https://www.facebook.com/twofeathersministries/' },
     { name: 'Overtoun House', focus: 'Centre for Hope and Healing', url: 'https://overtounhouse.org' },
   ],
-  resources: [
-    { title: 'Gospel People: A Call for Evangelical Integrity', author: 'Michael Reeves', url: 'https://www.amazon.com/dp/1433572931' },
-    { title: 'Irresistible Faith: Becoming the Kind of Christian the World Can’t Resist', author: 'Scott Sauls', url: 'https://www.amazon.com/dp/1400201799' },
-    { title: 'The Art of Neighboring: Building Genuine Relationships Right Outside Your Door', author: 'Jay Pathak & Dave Runyon', url: 'https://www.amazon.com/dp/080101459X' },
-    { title: 'The Gospel and Personal Evangelism', author: 'Mark Dever', url: 'https://www.amazon.com/dp/143355724X' },
-    { title: 'Sharing Jesus Without Freaking Out: Evangelism the Way You Were Born to Do It, 2nd ed.', author: 'Scott Hildreth & Steven McKinion', url: 'https://www.amazon.com/dp/1535982187' },
-    { title: 'Contagious Faith: Discover Your Natural Style for Sharing Jesus with Others', author: 'Mark Mittelberg', url: 'https://www.amazon.com/dp/0310113288' },
-  ],
   contact: site.contacts.missions,
 };
 
@@ -402,7 +385,7 @@ export const serve = {
   },
   intro: [
     'We invite you to join us on this journey of pursuit by checking out our Teams Mobilizer tool. This resource assists us in finding our place, knowing our purpose and being a people of pursuit.',
-    "It's not a spiritual gifts inventory, and it doesn't sign you up to serve on a team. You'll get an email with your results, and you'll be contacted by Brian Marbury to talk more about where God might be calling you to serve.",
+    "It's not a spiritual gifts inventory, and it doesn't sign you up to serve on a team. You'll get an email with your results, and you'll be contacted by Ben Stephenson to talk more about where God might be calling you to serve.",
   ],
   survey: 'https://volunteeraccelerator.ministryarchitects.com/DOCC/survey.php',
   image: { src: withBase('/images/teams-mobilizer.webp'), alt: 'Teams Mobilizer — find your place, know your purpose, be people of pursuit' },
@@ -440,7 +423,6 @@ export const connections = {
     'Our connections team is available each Sunday morning to assist every guest and church member. We will help everyone get connected to age specific ministries, community groups and events. We will also be happy to answer any questions that you may have and share information about our church.',
     'We believe that everyone has a purpose and a place, and our hope as a connections team is to help everyone find his or her place within our church so that they can minister and be ministered to, living out their purpose. Being a part of a local church is vital to the health, growth and maturity of everyone.',
   ],
-  image: { src: withBase('/images/connections-welcome.webp'), alt: 'A warm handshake of welcome' },
   contact: site.contacts.missions,
 };
 

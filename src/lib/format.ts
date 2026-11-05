@@ -6,6 +6,17 @@ export function shortTimes(times?: string[] | null): string {
   return list.join(' & ');
 }
 
+/**
+ * Whether a name contains any of the comma-separated words in `match`, at the start of a
+ * word, so "Men's" doesn't find "Women's". An empty `match` allows everything.
+ */
+export function nameMatches(name: string, match?: string): boolean {
+  const norm = (s: string) => s.toLowerCase().replace(/[’‘]/g, "'");
+  const words = norm(match ?? '').split(',').map((w) => w.trim()).filter(Boolean);
+  const text = norm(name);
+  return !words.length || words.some((w) => new RegExp(`(^|\\W)${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`).test(text));
+}
+
 /** An ESV API reply as tooltip text. "John 1:12, 3:16" comes back as one passage each, so those are labeled. */
 export function passageText(data: { passages?: string[]; passage_meta?: { canonical?: string }[] }): string {
   const passages = data?.passages ?? [];

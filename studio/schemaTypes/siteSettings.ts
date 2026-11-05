@@ -1,5 +1,4 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
-import { imageWithAlt } from './fields';
 
 const pageRef = defineField({
   name: 'page',
@@ -16,32 +15,11 @@ export default defineType({
   title: 'Site Settings',
   type: 'document',
   groups: [
-    { name: 'news', title: 'Announcement & series', default: true },
-    { name: 'menu', title: 'Menu' },
+    { name: 'menu', title: 'Menu', default: true },
     { name: 'church', title: 'Church info' },
     { name: 'rhythm', title: 'Weekly rhythm' },
   ],
   fields: [
-    defineField({
-      name: 'announcement',
-      title: 'Announcement bar',
-      type: 'string',
-      group: 'news',
-      description: 'Short text shown at the top of the homepage, e.g. a weather closure. Leave blank to hide it.',
-    }),
-    defineField({
-      name: 'currentSeries',
-      title: 'Current sermon series',
-      type: 'object',
-      group: 'news',
-      fields: [
-        defineField({ name: 'title', title: 'Series title', type: 'string' }),
-        defineField({ name: 'description', title: 'Description', type: 'text', rows: 3 }),
-        imageWithAlt('image', 'Series art'),
-        defineField({ name: 'watchUrl', title: 'Watch link', type: 'url' }),
-        defineField({ name: 'listenUrl', title: 'Listen link', type: 'url' }),
-      ],
-    }),
     defineField({
       name: 'menu',
       title: 'Menu',
@@ -118,6 +96,27 @@ export default defineType({
           }[name],
         }),
       ),
+    }),
+    defineField({
+      name: 'footerPrayer',
+      title: 'Footer: prayer link',
+      type: 'button',
+      group: 'church',
+      description: 'Shown under “Prayer” in the footer. Leave it empty to hide the link.',
+    }),
+    defineField({
+      name: 'footerMedia',
+      title: 'Footer: media link',
+      type: 'button',
+      group: 'church',
+      description: 'Shown under “Connect” in the footer. Leave it empty to hide the link.',
+    }),
+    defineField({
+      name: 'footerApp',
+      title: 'Footer: app link',
+      type: 'button',
+      group: 'church',
+      description: 'Shown under “Connect” in the footer. Leave it empty to hide the link.',
     }),
     defineField({
       name: 'weeklyRhythm',

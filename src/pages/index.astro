@@ -1,6 +1,6 @@
 ---
 // The homepage keeps its hand-tuned layout; its words and photos come from the Home page
-// document in Sanity, and the series, service times and church details from Site Settings.
+// document in Sanity, and the service times and church details from Site Settings.
 import Base from '../layouts/Base.astro';
 import Section from '../components/Section.astro';
 import { site, withBase } from '../data/site';
@@ -13,7 +13,7 @@ const [home, settings] = await Promise.all([sanityFetch<any>(homeQuery, {}, Astr
 const hero = home?.hero ?? {};
 const welcome = home?.welcome ?? {};
 const app = home?.app ?? {};
-const series = settings?.currentSeries;
+const series = home?.currentSeries;
 const social = settings?.social ?? {};
 const a = settings?.address;
 const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
@@ -28,9 +28,9 @@ const planVisit = `${site.churchCenter.forms.planVisit}?open-in-church-center-mo
 const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
 ---
 <Base description={home?.seo?.description}>
-  {settings?.announcement && (
+  {home?.announcement && (
     <div class="announcement" role="status">
-      <div class="wrap">{settings.announcement}</div>
+      <div class="wrap">{home.announcement}</div>
     </div>
   )}
 
@@ -75,11 +75,11 @@ const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-moda
     {welcome.text && <p class="lead measure" data-reveal>{welcome.text}</p>}
     <div class="welcome-actions" data-reveal>
       <a class="btn btn--blue" href={withBase('/imnew')}>I'm New</a>
-      <a class="btn btn--outline" href={withBase('/beliefs')}>Learn More</a>
+      <a class="btn btn--outline" href={withBase('/about')}>Learn More</a>
     </div>
   </Section>
 
-  <!-- Current series (Site Settings); hidden when no series is set -->
+  <!-- Current series; hidden when no series is set -->
   {series?.title && (
     <Section variant="navy">
       <div class="split">

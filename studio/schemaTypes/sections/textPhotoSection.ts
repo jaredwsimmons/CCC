@@ -14,8 +14,8 @@ export default defineType({
       title: 'Photos',
       type: 'array',
       of: [imageMember],
-      description: '1 to 3 photos. Several are stacked beside the text.',
-      validation: (Rule) => Rule.required().min(1).max(3),
+      description: 'Optional: up to 3 photos. Several are stacked beside the text.',
+      validation: (Rule) => Rule.max(3),
     }),
     defineField({
       name: 'photoSide',

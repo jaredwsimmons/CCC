@@ -35,7 +35,7 @@ export const site = {
   // Ministry contacts (from the live site's per-page "Email …" buttons)
   contacts: {
     office: 'rebecca@chelseachurch.com',
-    missions: 'brian@chelseachurch.com', // Brian Marbury — Pastor of Missions & Service
+    missions: 'ben@chelseachurch.com', // Ben Stephenson
     family: 'ben@chelseachurch.com', // Ben Stephenson — Family Pastor (Kids/Preschool)
     students: 'drew@chelseachurch.com', // Drew Blake — Pastor of Students & Worship
     women: 'allgoodtchr@gmail.com', // Tammy Allgood
@@ -113,25 +113,22 @@ export const nav: Array<{
   href: string;
   children?: Array<{ label: string; href: string }>;
 }> = [
+  { label: "I'm New", href: '/imnew' },
   {
     label: 'About',
-    href: '/imnew',
+    href: '/about',
     children: [
-      { label: "I'm New", href: '/imnew' },
-      { label: 'Our Story', href: '/our-story' },
-      { label: 'What We Believe', href: '/beliefs' },
+      { label: 'Our Story & Beliefs', href: '/about' },
       { label: 'Leaders', href: '/leaders' },
     ],
   },
-  { label: 'Calendar', href: '/calendar' },
-  { label: 'Community Groups', href: '/groups' },
-  { label: 'Media', href: '/media' },
   {
     label: 'Ministries',
     href: '/serve',
     // "Ministries" itself links to Serve; the dropdown lists the ministries
     // (Serve removed from the list). alphabetical; Prayer lives in here.
     children: [
+      { label: 'Community Groups', href: '/groups' },
       { label: 'Connections', href: '/connections' },
       { label: 'Kids', href: '/kids' },
       { label: 'Men', href: '/men' },
@@ -143,4 +140,6 @@ export const nav: Array<{
       { label: 'Worship', href: '/worship' },
     ],
   },
+  { label: 'Calendar', href: '/calendar' },
+  { label: 'Media', href: '/media' },
 ];

@@ -4,16 +4,25 @@
 import { site, withBase } from '../data/site';
 import { hasEsvKey } from '../lib/esv';
 import { shortTimes, telHref } from '../lib/format';
+import { buttonLink, type Button } from '../lib/links';
 interface Props { settings: any; } // Site Settings, from Base.astro
 const { settings } = Astro.props;
 const year = new Date().getFullYear();
 const give = `${site.churchCenter.giving}?open-in-church-center-modal=true`;
-const prayerForm = `${site.churchCenter.forms.prayer}?open-in-church-center-modal=true`;
 const a = settings?.address;
 const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
 const social = settings?.social ?? {};
 const times = shortTimes(settings?.serviceTimes);
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
+// The prayer, media and app links are buttons in Site Settings, so they follow the same
+// link rules as every other button; an unfinished one is left out.
+const footerLink = (b?: Button | null) => {
+  const link = buttonLink(b);
+  return link && b?.label ? { label: b.label, attrs: { href: link.href, ...(link.newTab ? ext : {}) } } : null;
+};
+const prayer = footerLink(settings?.footerPrayer);
+const media = footerLink(settings?.footerMedia);
+const app = footerLink(settings?.footerApp);
 ---
 <footer class="site-footer">
   <div class="wrap top">
@@ -45,10 +54,12 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
             <a href={`mailto:${settings.email}`}>Get in touch with us, we're here to listen!</a>
           </li>
         )}
-        <li>
-          <span class="label">Prayer</span>
-          <a href={prayerForm}>Let us know how we can pray for you.</a>
-        </li>
+        {prayer && (
+          <li>
+            <span class="label">Prayer</span>
+            <a {...prayer.attrs}>{prayer.label}</a>
+          </li>
+        )}
       </ul>
     </div>
 
@@ -58,9 +69,9 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
         {social.facebook && <li><a href={social.facebook} {...ext}>Facebook</a></li>}
         {social.instagram && <li><a href={social.instagram} {...ext}>Instagram</a></li>}
         {social.youtube && <li><a href={social.youtube} {...ext}>YouTube</a></li>}
-        <li><a href={withBase('/media')}>Media</a></li>
-        {social.textSignup && <li><a href={social.textSignup} {...ext}>Text updates</a></li>}
-        <li><a href={site.churchCenter.appSetup} {...ext}>Church Center app</a></li>
+        {media && <li><a {...media.attrs}>{media.label}</a></li>}
+        {social.textSignup && <li><a href={social.textSignup} {...ext} data-small-window>Text updates</a></li>}
+        {app && <li><a {...app.attrs}>{app.label}</a></li>}
       </ul>
     </div>
 
@@ -68,8 +79,7 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
       <h2 id="ftr-explore">Explore</h2>
       <ul class="two-col">
         <li><a href={withBase('/imnew')}>I'm New</a></li>
-        <li><a href={withBase('/our-story')}>Our Story</a></li>
-        <li><a href={withBase('/beliefs')}>What We Believe</a></li>
+        <li><a href={withBase('/about')}>About</a></li>
         <li><a href={withBase('/leaders')}>Leaders</a></li>
         <li><a href={withBase('/calendar')}>Calendar</a></li>
         <li><a href={withBase('/groups')}>Community Groups</a></li>
@@ -88,6 +98,22 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
     )}
   </div>
 </footer>
+
+<!-- TxtSignal refuses to load inside another site, so it can't use a pop-up like Church
+     Center's. A small window of its own is the closest; phones keep the new tab. -->
+<script is:inline>
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest && e.target.closest('a[data-small-window]');
+    if (!link || e.ctrlKey || e.metaKey || e.shiftKey || window.matchMedia('(max-width: 700px)').matches) return;
+    var left = Math.round(window.screenX + (window.outerWidth - 480) / 2);
+    var top = Math.round(window.screenY + 60);
+    var win = window.open(link.href, 'text-signup', 'popup,width=480,height=720,left=' + left + ',top=' + top);
+    if (win) {
+      win.opener = null;
+      e.preventDefault();
+    }
+  });
+</script>
 
 <style>
   .top {

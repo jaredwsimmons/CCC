@@ -36,11 +36,29 @@ test('the sitemap lists every page', async ({ request }) => {
 });
 
 test('old URLs redirect permanently', async ({ request }) => {
-  for (const [from, to] of [['/history', '/our-story'], ['/home', '/']]) {
+  for (const [from, to] of [['/history', '/about'], ['/our-story', '/about'], ['/beliefs', '/about'], ['/home', '/']]) {
     const res = await request.get(from, { maxRedirects: 0 });
     expect(res.status(), from).toBe(301);
     expect(new URL(res.headers()['location'], 'http://x').pathname, from).toBe(to);
   }
+});
+
+// Church Center's pop-up covers the window and scrolls by itself, so the page behind must not
+// show a second scrollbar. Its script shows and hides this iframe by setting display.
+test('the page behind a Church Center pop-up does not scroll', async ({ page }) => {
+  await page.goto('/');
+  const overflow = () => page.evaluate(() => getComputedStyle(document.documentElement).overflowY);
+  await page.evaluate(() => {
+    const frame = document.createElement('iframe');
+    frame.id = 'ChurchCenterModalIframeExistsInDOM';
+    frame.style.display = 'none';
+    document.body.append(frame);
+  });
+  expect(await overflow()).toBe('visible');
+  await page.evaluate(() => { document.getElementById('ChurchCenterModalIframeExistsInDOM')!.style.display = 'block'; });
+  expect(await overflow()).toBe('hidden');
+  await page.evaluate(() => { document.getElementById('ChurchCenterModalIframeExistsInDOM')!.style.display = 'none'; });
+  expect(await overflow()).toBe('visible');
 });
 
 test('the scripture endpoint only looks up scripture references', async ({ request }) => {

@@ -5,6 +5,7 @@
 
 import { cached } from './cache';
 import { ccGet, localDate, localTime, stripHtml } from './churchcenter';
+import { nameMatches } from './format';
 
 export interface Registration {
   id: string;
@@ -52,11 +53,9 @@ export async function getRegistrations(): Promise<Registration[]> {
   return (await cached('registrations', 15 * 60, fetchLive)) ?? [];
 }
 
-/** Open registrations, optionally only those whose name contains `match` (any apostrophe style). */
+/** Open registrations, optionally only those whose name matches (see nameMatches). */
 export async function getOpenRegistrations(match?: string): Promise<Registration[]> {
-  const norm = (s: string) => s.toLowerCase().replace(/[’‘]/g, "'");
-  const want = match ? norm(match.trim()) : '';
-  return (await getRegistrations()).filter((r) => r.open && (!want || norm(r.name).includes(want)));
+  return (await getRegistrations()).filter((r) => r.open && nameMatches(r.name, match));
 }
 
 /** The registration a Church Center link points to, if it's still open. */

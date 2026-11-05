@@ -2,9 +2,9 @@
 // Upcoming events marked "featured" in Planning Center Calendar, live.
 import Section from '../Section.astro';
 import EventList from '../EventList.astro';
-import { getUpcomingEvents } from '../../lib/calendar';
+import { getUpcomingEvents, onePerSeries } from '../../lib/calendar';
 const { s } = Astro.props;
-const events = (await getUpcomingEvents()).filter((e) => e.featured);
+const events = onePerSeries(await getUpcomingEvents()).filter((e) => e.featured);
 ---
 {events.length > 0 && (
   <Section variant="alt" eyebrow={s.eyebrow} title={s.heading}>

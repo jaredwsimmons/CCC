@@ -3,7 +3,8 @@ import { pages } from './pages';
 
 // The words, headings, links, buttons and image alt text of each page, as the
 // accessibility tree sees them. This is what the CMS migration must preserve.
-// Content is the same on every viewport, so it's checked once, on desktop.
+// Content is the same on every viewport, so it's checked once, on desktop. A page's
+// Upcoming events change from day to day, so they're set aside (see the section's class).
 test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'content is the same on every viewport');
 });
@@ -11,6 +12,7 @@ test.beforeEach(({}, testInfo) => {
 for (const p of pages.filter((p) => !p.live)) {
   test(`${p.name} content matches the baseline`, async ({ page }) => {
     await page.goto(p.path);
+    await page.evaluate(() => document.querySelectorAll('.live-data').forEach((e) => e.remove()));
     await expect(page.locator('main')).toMatchAriaSnapshot({ name: `${p.name}.aria.yml` });
   });
 }
@@ -32,8 +34,46 @@ test('media shows its page header', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Watch & Listen' })).toBeVisible();
 });
 
-test("women shows its open registrations around the page's fixed content", async ({ page }) => {
-  await page.goto('/women');
-  await expect(page.getByRole('heading', { level: 1, name: 'Women' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: "Questions about Women's Ministry?" })).toBeVisible();
+test('leaders are split into staff, elders and deacons', async ({ page }) => {
+  await page.goto('/leaders');
+  for (const heading of ['Our staff', 'Our elders', 'Serving the Body']) {
+    await expect(page.getByRole('heading', { level: 2, name: heading })).toBeVisible();
+  }
+});
+
+test('the media page still gets the series art for episodes without their own', async ({ page }) => {
+  await page.goto('/media');
+  const art = page.locator('.latest__art img, .ep__art');
+  if ((await art.count()) === 0) test.skip(true, 'the podcast feed is unavailable right now');
+  await expect(art.first()).toHaveAttribute('src', /.+/);
+});
+
+test('the text sign-up opens in a small window, since it refuses to load inside a pop-up', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(() => {
+    window.open = ((...args: string[]) => {
+      (window as unknown as { opened: string[] }).opened = args;
+      return {} as Window;
+    }) as typeof window.open;
+  });
+  await page.locator('footer').getByRole('link', { name: 'Text updates' }).click();
+  const opened = await page.evaluate(() => (window as unknown as { opened?: string[] }).opened);
+  expect(opened?.[0]).toContain('txtsignal');
+  expect(opened?.[2]).toContain('width=480');
+});
+
+test('the footer links from Site Settings open the right places', async ({ page }) => {
+  await page.goto('/');
+  const footer = page.locator('footer');
+  await expect(footer.locator('li', { hasText: 'Prayer' }).getByRole('link')).toHaveAttribute('href', /churchcenter\.com.*open-in-church-center-modal=true/);
+  await expect(footer.getByRole('link', { name: 'Media' }).first()).toHaveAttribute('href', '/media');
+  const app = footer.getByRole('link', { name: 'Church Center app' });
+  await expect(app).toHaveAttribute('href', /churchcenter\.com\/setup/);
+  await expect(app).toHaveAttribute('target', '_blank');
+});
+
+test('the menu runs in the order the church asked for', async ({ page }) => {
+  await page.goto('/');
+  const labels = await page.locator('header nav > ul > li > a:not(.btn)').allTextContents();
+  expect(labels.map((l) => l.trim())).toEqual(["I'm New", 'About', 'Ministries', 'Calendar', 'Media']);
 });

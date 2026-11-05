@@ -292,6 +292,10 @@ hr.rule { border: 0; height: 1px; background: var(--hair); margin: 2rem 0; }
 /* lock page scroll while the mobile nav drawer is open */
 html.nav-open body { overflow: hidden; }
 
+/* Church Center's pop-up covers the window and scrolls by itself; without this the page
+   behind keeps a second scrollbar. (Its script shows the iframe by setting display.) */
+html:has(#ChurchCenterModalIframeExistsInDOM[style*='display: block']) { overflow: hidden; }
+
 /* visually hidden (for a11y labels) */
 .sr-only {
   position: absolute;

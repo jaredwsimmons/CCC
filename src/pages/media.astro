@@ -8,13 +8,14 @@ import LatestMessage from '../components/LatestMessage.astro';
 import Scripturize from '../components/Scripturize.astro';
 import Sections from '../components/sections/Sections.astro';
 import { sanityFetch } from '../lib/sanity';
-import { fixedPageQuery, settingsQuery } from '../lib/queries';
+import { fixedPageQuery, seriesArtQuery, settingsQuery } from '../lib/queries';
 import { imageUrl } from '../lib/image';
 import { getYouTubeVideos, getPodcastEpisodes, fmtDuration } from '../lib/feeds';
 
-const [page, settings, videos, episodes] = await Promise.all([
+const [page, settings, seriesImage, videos, episodes] = await Promise.all([
   sanityFetch<any>(fixedPageQuery, { id: 'fixed-media' }, Astro.cookies),
   sanityFetch<any>(settingsQuery, {}, Astro.cookies),
+  sanityFetch<any>(seriesArtQuery, {}, Astro.cookies),
   getYouTubeVideos(6),
   getPodcastEpisodes(7),
 ]);
@@ -22,7 +23,7 @@ const latest = episodes[0];
 const rest = episodes.slice(1);
 const social = settings?.social ?? {};
 // Episodes without their own art show the current series art.
-const seriesArt = imageUrl(settings?.currentSeries?.image, 800);
+const seriesArt = imageUrl(seriesImage, 800);
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const fmtDate = (d: Date | null) =>
   d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';

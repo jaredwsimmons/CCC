@@ -76,11 +76,11 @@ const CONTACTS: Record<string, { email: string; contactName?: string }> = {
   Kids: { email: site.contacts.family, contactName: 'Ben' },
   Preschool: { email: site.contacts.family, contactName: 'Ben' },
   Students: { email: site.contacts.students, contactName: 'Drew' },
-  Men: { email: site.contacts.missions, contactName: 'Brian' },
+  Men: { email: site.contacts.missions, contactName: 'Ben' },
   Women: { email: site.contacts.women, contactName: 'Tammy' },
   Worship: { email: site.contacts.tech },
-  Missions: { email: site.contacts.missions, contactName: 'Brian' },
-  Connections: { email: site.contacts.missions, contactName: 'Brian' },
+  Missions: { email: site.contacts.missions, contactName: 'Ben' },
+  Connections: { email: site.contacts.missions, contactName: 'Ben' },
 };
 
 function ministries(): SanityDoc[] {
@@ -101,23 +101,16 @@ function leaders(): SanityDoc[] {
     _type: 'leader',
     name: p.name,
     role: p.role,
+    group: p.group,
     photo: img(p.image, `${p.name} — ${p.role}`),
     order: (i + 1) * 10,
   }));
 }
 
 function siteSettings(): SanityDoc {
-  const s = c.home.series;
   return {
     _id: 'siteSettings',
     _type: 'siteSettings',
-    currentSeries: {
-      title: s.title,
-      description: s.body,
-      image: img(s.art, s.artAlt),
-      watchUrl: site.media.seriesPlaylist,
-      listenUrl: site.social.spotify,
-    },
     menu: nav.map((item) => ({
       _type: 'menuItem',
       _key: key(),
@@ -132,6 +125,9 @@ function siteSettings(): SanityDoc {
     phone: site.phone,
     email: site.email,
     social: { ...site.social, textSignup: site.textSignup },
+    footerPrayer: one(btn.cc('Let us know how we can pray for you.', cc.forms.prayer)),
+    footerMedia: one(btn.page('Media', 'fixed-media')),
+    footerApp: one(btn.url('Church Center app', cc.appSetup)),
     weeklyRhythm: rhythm.map((t) => ({
       _type: 'rhythmTile',
       _key: key(),
@@ -157,6 +153,13 @@ function home(): SanityDoc {
       image: img(h.hero.image, h.hero.imageAlt),
     },
     welcome: { eyebrow: h.welcome.eyebrow, heading: h.welcome.title, text: h.welcome.body },
+    currentSeries: {
+      title: h.series.title,
+      description: h.series.body,
+      image: img(h.series.art, h.series.artAlt),
+      watchUrl: site.media.seriesPlaylist,
+      listenUrl: site.social.spotify,
+    },
     app: { eyebrow: h.app.eyebrow, heading: h.app.title, text: h.app.body, image: img(h.app.image, h.app.imageAlt) },
   };
 }
@@ -243,7 +246,7 @@ function fixedPages(): SanityDoc[] {
       title: 'Leaders',
       header: header({ eyebrow: 'About', title: 'Leaders' }),
       sections: [],
-      seo: seo('The elders, pastors, staff, and deacons of Chelsea Community Church.'),
+      seo: seo('The staff, elders, and deacons of Chelsea Community Church.'),
     },
   ];
 }
@@ -257,6 +260,8 @@ const page = (path: string, title: string, fields: Record<string, unknown>): San
 });
 
 const cta = (heading: string, text: string, ...buttons: unknown[]) => section('ctaBandSection', { heading, text, buttons });
+// Every ministry page ends with its upcoming events, then who to contact.
+const upcoming = (match: string) => section('openRegistrationsSection', { eyebrow: 'Upcoming events', heading: 'Join us', match });
 
 function pages(): SanityDoc[] {
   const { imnew, beliefs, history, worship, preschool, kids, students, men, women, missions, serve, connections, prayer } = c;
@@ -293,8 +298,8 @@ function pages(): SanityDoc[] {
       seo: seo("What to expect on a Sunday at Chelsea Community Church — services at 9:00 & 10:30 AM, the rhythm of our week, what to wear, where to go first, and how to let us know you're coming."),
     }),
 
-    page('/our-story', 'Our Story', {
-      header: header({ eyebrow: 'About', title: 'Our Story' }),
+    page('/about', 'About', {
+      header: header({ eyebrow: 'About', title: 'Our Story & What We Believe' }),
       sections: [
         section('textSection', { eyebrow: 'Our vision', heading: 'Pursuing God. Pursuing others.', body: paras(...beliefs.vision.body), background: 'plain' }),
         section('textSection', { eyebrow: 'How we got here', heading: 'Planting roots as Chelsea grows', body: paras(history.body), background: 'tinted' }),
@@ -310,14 +315,6 @@ function pages(): SanityDoc[] {
           ],
           background: 'plain',
         }),
-        cta('Come and see', "The best way to know us is a Sunday morning. We'd love to meet you.", btn.cc('Plan a Visit', planVisit), btn.page('What we believe', 'page-beliefs')),
-      ],
-      seo: seo("Our vision, our founding, and our affiliation — the story of Chelsea Community Church, from Double Oak's Chelsea campus to an independent church under the Chelsea Park clocktower."),
-    }),
-
-    page('/beliefs', 'What We Believe', {
-      header: header({ eyebrow: 'About', title: 'What We Believe', buttons: [btn.page('Our story →', 'page-our-story')] }),
-      sections: [
         section('textPhotoSection', {
           heading: beliefs.pursuit.title,
           body: paras(...beliefs.pursuit.body),
@@ -327,13 +324,13 @@ function pages(): SanityDoc[] {
             photo('/images/creation-adam.webp', "Detail of Adam from Michelangelo's Creation of Adam, reaching out"),
           ],
           photoSide: 'right',
-          background: 'plain',
+          background: 'tinted',
         }),
         section('cardsSection', {
           eyebrow: 'Our Beliefs',
           heading: 'What we hold to',
           columns: 2,
-          background: 'tinted',
+          background: 'plain',
           cards: [
             ...beliefs.statements.map((b) => ({ _type: 'card', _key: key(), label: b.refs, title: b.title, text: b.text })),
             {
@@ -347,7 +344,7 @@ function pages(): SanityDoc[] {
         }),
         cta('Come and see', "The best way to get to know us is a Sunday morning. We'd love to meet you.", btn.cc('Plan a Visit', planVisit), btn.page('What to expect', 'page-imnew')),
       ],
-      seo: seo('The Bible tells the story of God pursuing us — the beliefs and statement of faith of Chelsea Community Church.'),
+      seo: seo('The vision, founding, and statement of faith of Chelsea Community Church — the story of God pursuing us, and of our church in Chelsea, Alabama.'),
     }),
 
     page('/serve', 'Serve', {
@@ -376,7 +373,7 @@ function pages(): SanityDoc[] {
           steps: serve.instructions.map((s) => ({ _type: 'step', _key: key(), title: s.title, text: s.body })),
           closing: serve.closing,
         }),
-        cta('Questions about serving?', 'Brian Marbury, our Pastor of Missions & Service, is the one to ask.', btn.email('Email Brian for more information!', 'missions')),
+        cta('Questions about serving?', 'Ben Stephenson, our Family Pastor, is the one to ask.', btn.email('Email Ben for more information!', 'missions')),
       ],
       seo: seo('Find your place, know your purpose, be people of pursuit — the Teams Mobilizer tool at Chelsea Community Church.'),
     }),
@@ -387,14 +384,14 @@ function pages(): SanityDoc[] {
         section('textPhotoSection', {
           heading: 'A purpose and a place for everyone',
           body: paras(...connections.body),
-          photos: [photo(connections.image.src, connections.image.alt)],
           photoSide: 'right',
           background: 'plain',
         }),
+        upcoming('Connections'),
         cta(
           'Stop by the Connections Desk',
           "Just past the Worship Room every Sunday morning — we'll help you find your place.",
-          btn.email('Email Brian for more information!', 'connections'),
+          btn.email('Email Ben for more information!', 'connections'),
           btn.page('Plan your first visit', 'page-imnew'),
         ),
       ],
@@ -404,6 +401,15 @@ function pages(): SanityDoc[] {
     page('/kids', 'Kids', {
       header: header({ eyebrow: 'Ministries', title: 'Kids', intro: kids.mission, ministry: ref('ministry-kids') }),
       sections: [
+        section('textPhotoSection', {
+          eyebrow: 'What shapes Kids Ministry',
+          heading: 'Gospel · Scripture · Family · Community · Mission',
+          body: paras(kids.mission),
+          photos: [photo(kids.values.image, kids.values.imageAlt)],
+          photoSide: 'right',
+          buttons: [btn.cc('Find out about serving in the Kids Ministry', cc.registrations.kidsServe)],
+          background: 'plain',
+        }),
         section('scheduleSection', {
           eyebrow: 'First time?',
           heading: kids.getReady.title,
@@ -419,17 +425,9 @@ function pages(): SanityDoc[] {
           body: paras(kids.worshipTogether.body),
           photos: [photo(kids.summer.image, kids.summer.imageAlt)],
           photoSide: 'left',
-          background: 'plain',
-        }),
-        section('textPhotoSection', {
-          eyebrow: 'What shapes Kids Ministry',
-          heading: 'Gospel · Scripture · Family · Community · Mission',
-          body: paras(kids.mission),
-          photos: [photo(kids.values.image, kids.values.imageAlt)],
-          photoSide: 'left',
-          buttons: [btn.cc('Find out about serving in the Kids Ministry', cc.registrations.kidsServe)],
           background: 'tinted',
         }),
+        upcoming('Kids, K-5'),
         cta('Questions about Kids Ministry?', 'Ben Stephenson, our Family Pastor, would love to talk.', btn.email('Email Ben for more information', 'kids')),
       ],
       seo: seo('Kids Ministry at Chelsea Community Church — training up children to pursue God and pursue others, with programming at both Sunday services.'),
@@ -444,7 +442,7 @@ function pages(): SanityDoc[] {
           body: bullets(men.discipleship.items),
           photos: [photo(men.discipleship.image, men.discipleship.imageAlt)],
           photoSide: 'right',
-          background: 'tinted',
+          background: 'plain',
         }),
         section('textPhotoSection', {
           eyebrow: 'First Sunday · 6 PM',
@@ -459,7 +457,8 @@ function pages(): SanityDoc[] {
           background: 'plain',
           cards: [men.relationships, men.service].map((x) => ({ _type: 'card', _key: key(), title: x.title, text: x.body })),
         }),
-        cta('Join the brotherhood', "Studies, the fire pit, serving shoulder-to-shoulder — there's a seat for you.", btn.email('Email Brian for more information!', 'men')),
+        upcoming("Men's"),
+        cta('Join the brotherhood', "Studies, the fire pit, serving shoulder-to-shoulder — there's a seat for you.", btn.email('Email Ben for more information!', 'men')),
       ],
       seo: seo("Men's ministry at Chelsea Community Church — discipleship, Men On Fire around the fire pit, relationships, and service alongside our mission partners."),
     }),
@@ -471,9 +470,8 @@ function pages(): SanityDoc[] {
           eyebrow: 'Monthly missions highlight',
           heading: 'The Big Kaboom',
           body: paras(missions.highlight.body),
-          photos: [photo(missions.highlight.image, missions.highlight.imageAlt)],
           photoSide: 'right',
-          buttons: [btn.email('Contact Pastor Brian', 'missions')],
+          buttons: [btn.email('Contact Pastor Ben', 'missions')],
           background: 'plain',
         }),
         section('cardsSection', { eyebrow: 'Local mission partners', heading: 'Serving our neighbors', columns: 3, background: 'tinted', cards: partnerCards(missions.local) }),
@@ -484,34 +482,24 @@ function pages(): SanityDoc[] {
           background: 'plain',
           cards: partnerCards(missions.global),
         }),
-        section('textSection', {
-          eyebrow: 'Resources for personal growth',
-          heading: 'Books worth your time',
-          body: missions.resources.map((b) => linkBlock('', b.title, b.url, ` — ${b.author}`, 'bullet')),
-          background: 'plain',
-        }),
-        cta('Ready to get involved?', 'Pray, give, or go — Pastor Brian can help you find your place in the mission.', btn.email('Email Brian for more information!', 'missions')),
+        upcoming('Mission'),
+        cta('Ready to get involved?', 'Pray, give, or go — Pastor Ben can help you find your place in the mission.', btn.email('Email Ben for more information!', 'missions')),
       ],
-      seo: seo('Missions at Chelsea Community Church — local, national, and international partners, monthly highlights, and resources for personal growth.'),
+      seo: seo('Missions at Chelsea Community Church — local, national, and international partners and monthly highlights.'),
     }),
 
     page('/prayer', 'Prayer', {
-      header: header({ eyebrow: 'Prayer', title: 'We want to pray for you', intro: prayer.cta, buttons: [btn.cc('Share a prayer request', cc.forms.prayer)], ministry: ref('ministry-prayer') }),
+      header: header({ eyebrow: 'Ministries', title: 'We want to pray for you', intro: prayer.cta, buttons: [btn.cc('Share a prayer request', cc.forms.prayer)], ministry: ref('ministry-prayer') }),
       sections: [
-        section('textSection', {
-          eyebrow: 'Share a request',
-          heading: 'How can we pray with you?',
-          body: paras("Whatever you're carrying — a burden or a blessing — we'd be honored to pray with you. Share as much or as little as you'd like."),
-          buttons: [btn.cc('Share a prayer request', cc.forms.prayer)],
-          background: 'plain',
-        }),
-        section('textSection', { eyebrow: 'Our prayer ministry', heading: 'A church where prayer is central', body: paras(prayer.ministry), background: 'tinted' }),
+        section('textPhotoSection', { eyebrow: 'Our prayer ministry', heading: 'A church where prayer is central', body: paras(prayer.ministry), photoSide: 'right', background: 'plain' }),
         section('stepsSection', {
           eyebrow: 'Join the prayer team',
           heading: 'How to get involved',
           steps: prayer.joinSteps.map((s) => ({ _type: 'step', _key: key(), text: s })),
         }),
         section('cardsSection', { columns: 2, background: 'plain', cards: [{ _type: 'card', _key: key(), title: 'A note on privacy', text: prayer.note }] }),
+        upcoming('Prayer'),
+        cta('How can we pray with you?', "Whatever you're carrying — a burden or a blessing — we'd be honored to pray with you. Share as much or as little as you'd like.", btn.cc('Share a prayer request', cc.forms.prayer)),
       ],
       seo: seo('We want to pray for you — share your prayer concerns with Chelsea Community Church, or join the Prayer Team.'),
     }),
@@ -538,13 +526,14 @@ function pages(): SanityDoc[] {
         section('gallerySection', {
           photos: preschool.gallery.map((src, i) => photo(src, `Preschool ministry at Chelsea Community Church — photo ${i + 1}`)),
         }),
+        upcoming('Preschool'),
         cta('Questions about Preschool?', "We'd love to help your family feel at home.", btn.email('Email us for more information!', 'preschool')),
       ],
       seo: seo('Preschool ministry at Chelsea Community Church — worship and community groups for little ones every Sunday, with easy pre-registration for first-time families.'),
     }),
 
     page('/students', 'Students', {
-      header: header({ eyebrow: 'Ministries · Students', title: students.title, intro: students.intro, ministry: ref('ministry-students') }),
+      header: header({ eyebrow: 'Ministries', title: students.title, intro: students.intro, ministry: ref('ministry-students') }),
       sections: [
         section('textPhotoSection', {
           body: students.schedule.flatMap((s) => [block(s.when, 'h3'), block(s.what)]),
@@ -553,6 +542,7 @@ function pages(): SanityDoc[] {
           buttons: [btn.cc('Let us know your family is coming!', planVisit), btn.page('Summer events calendar', 'fixed-calendar')],
           background: 'plain',
         }),
+        upcoming('C3SM'),
         cta('Questions about C3SM?', 'Drew Blake, our Pastor of Students & Worship, would love to connect.', btn.email('Get in touch with Pastor Drew!', 'students')),
       ],
       seo: seo('C3SM — Chelsea Community Church Student Ministry for middle and high schoolers. Sunday community groups at 9 AM and Wednesday nights at 6 PM.'),
@@ -569,7 +559,7 @@ function pages(): SanityDoc[] {
           photoSide: 'right',
           background: 'plain',
         }),
-        section('openRegistrationsSection', { eyebrow: 'Upcoming events', heading: 'Join us', match: "Women's" }),
+        upcoming("Women's"),
         cta("Questions about Women's Ministry?", `${women.contactName} would love to hear from you.`, btn.email(`Email ${women.contactName} for more information!`, 'women')),
       ],
       seo: seo("Women's Ministry at Chelsea Community Church — growing in Christ, building authentic friendships, and living out faith with confidence and purpose."),
@@ -581,10 +571,10 @@ function pages(): SanityDoc[] {
         section('textPhotoSection', {
           heading: 'A blend of all generations',
           body: paras(...worship.body),
-          photos: worship.images.map((i) => photo(i.src, i.alt)),
           photoSide: 'right',
           background: 'plain',
         }),
+        upcoming('Worship'),
         cta('Serve with music or tech', 'Musicians, vocalists, and behind-the-scenes hands all help make Sunday distraction-free.', btn.email(worship.serveCta.label, 'worship')),
       ],
       seo: seo('Blended worship — traditional and contemporary — reflecting a congregation of all generations at Chelsea Community Church.'),

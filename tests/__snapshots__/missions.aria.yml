@@ -7,10 +7,9 @@
   - paragraph: Serving and praying over this ministry — reach out anytime.
   - paragraph: Monthly missions highlight
   - heading "The Big Kaboom" [level=2]
-  - paragraph: /The Big Kaboom is coming up on Saturday, June \d+, and Chelsea Community Church is partnering with other local churches to provide a free Kids Zone for families in our community! The Kids Zone will feature inflatables, face painting, games, and other fun activities for children\. We're looking for volunteers from 7:\d+–7:\d+ PM to assist with activities in the Kids Zone or help at our church booth\. We'd love for you to join us — contact Pastor Brian for more information\./
-  - link "Contact Pastor Brian":
-    - /url: mailto:brian@chelseachurch.com
-  - img /Big Kaboom — Saturday, June \d+, 7:\d+–7:\d+ PM\. We need you! Contact Brian Marbury or scan the QR code to volunteer\./
+  - paragraph: /The Big Kaboom is coming up on Saturday, June \d+, and Chelsea Community Church is partnering with other local churches to provide a free Kids Zone for families in our community! The Kids Zone will feature inflatables, face painting, games, and other fun activities for children\. We're looking for volunteers from 7:\d+–7:\d+ PM to assist with activities in the Kids Zone or help at our church booth\. We'd love for you to join us — contact Pastor Ben for more information\./
+  - link "Contact Pastor Ben":
+    - /url: mailto:ben@chelseachurch.com
   - paragraph: Local mission partners
   - heading "Serving our neighbors" [level=2]
   - heading "Blanket Fort Hope" [level=3]
@@ -110,34 +109,7 @@
   - paragraph:
     - link "Website":
       - /url: https://overtounhouse.org
-  - paragraph: Resources for personal growth
-  - heading "Books worth your time" [level=2]
-  - list:
-    - listitem:
-      - 'link "Gospel People: A Call for Evangelical Integrity"':
-        - /url: https://www.amazon.com/dp/1433572931
-      - text: — Michael Reeves
-    - listitem:
-      - 'link "Irresistible Faith: Becoming the Kind of Christian the World Can’t Resist"':
-        - /url: https://www.amazon.com/dp/1400201799
-      - text: — Scott Sauls
-    - listitem:
-      - 'link "The Art of Neighboring: Building Genuine Relationships Right Outside Your Door"':
-        - /url: https://www.amazon.com/dp/080101459X
-      - text: — Jay Pathak & Dave Runyon
-    - listitem:
-      - link "The Gospel and Personal Evangelism":
-        - /url: https://www.amazon.com/dp/143355724X
-      - text: — Mark Dever
-    - listitem:
-      - 'link "Sharing Jesus Without Freaking Out: Evangelism the Way You Were Born to Do It, 2nd ed."':
-        - /url: https://www.amazon.com/dp/1535982187
-      - text: — Scott Hildreth & Steven McKinion
-    - listitem:
-      - 'link "Contagious Faith: Discover Your Natural Style for Sharing Jesus with Others"':
-        - /url: https://www.amazon.com/dp/0310113288
-      - text: — Mark Mittelberg
   - heading "Ready to get involved?" [level=2]
-  - paragraph: Pray, give, or go — Pastor Brian can help you find your place in the mission.
-  - link "Email Brian for more information!":
-    - /url: mailto:brian@chelseachurch.com
+  - paragraph: Pray, give, or go — Pastor Ben can help you find your place in the mission.
+  - link "Email Ben for more information!":
+    - /url: mailto:ben@chelseachurch.com

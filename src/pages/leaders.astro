@@ -1,6 +1,6 @@
 ---
-// Leaders: the header and any sections come from the Leaders page in Sanity, the people
-// from the Leader documents, and the deacons from the Ministry documents.
+// Leaders: the header and any sections come from the Leaders page in Sanity, the staff and
+// elders from the Leader documents, and the deacons from the Ministry documents.
 import Base from '../layouts/Base.astro';
 import Section from '../components/Section.astro';
 import PageHeader from '../components/PageHeader.astro';
@@ -15,26 +15,33 @@ const [page, settings, leaders, deacons] = await Promise.all([
   sanityFetch<any[]>(leadersQuery, {}, Astro.cookies),
   sanityFetch<{ name: string; deacons: string[] }[]>(deaconsQuery, {}, Astro.cookies),
 ]);
+const elders = (leaders ?? []).filter((p) => p.group === 'elder');
+const staff = (leaders ?? []).filter((p) => p.group !== 'elder'); // nobody disappears if unset
 ---
 <Base title={page?.title ?? 'Leaders'} description={page?.seo?.description}>
   <PageHeader header={page?.header} title={page?.title ?? 'Leaders'} />
 
-  <Section>
-    <div class="grid cols-4 staff">
-      {(leaders ?? []).map((p) => (
-        <div class="person" data-reveal>
-          <div class="person__photo">
-            {p.photo && <img src={imageUrl(p.photo, 600)} alt={p.photo.alt || `${p.name} — ${p.role}`} style={imagePosition(p.photo)} loading="lazy" />}
+  {[
+    { eyebrow: 'Staff', title: 'Our staff', people: staff, variant: 'default' },
+    { eyebrow: 'Elders', title: 'Our elders', people: elders, variant: 'alt' },
+  ].filter((g) => g.people.length > 0).map((g) => (
+    <Section variant={g.variant as 'default' | 'alt'} eyebrow={g.eyebrow} title={g.title} center>
+      <div class="people">
+        {g.people.map((p) => (
+          <div class="person" data-reveal>
+            <div class="person__photo">
+              {p.photo && <img src={imageUrl(p.photo, 600)} alt={p.photo.alt || `${p.name} — ${p.role}`} style={imagePosition(p.photo)} loading="lazy" />}
+            </div>
+            <h3>{p.name}</h3>
+            <p>{p.role}</p>
           </div>
-          <h3>{p.name}</h3>
-          <p>{p.role}</p>
-        </div>
-      ))}
-    </div>
-  </Section>
+        ))}
+      </div>
+    </Section>
+  ))}
 
   {(deacons?.length || settings?.email) && (
-    <Section variant="alt" eyebrow="Deacons" title="Serving the Body" center>
+    <Section eyebrow="Deacons" title="Serving the Body" center>
       {deacons?.length > 0 && (
         <div class="deacons" data-reveal>
           {deacons.map((d) => (
@@ -57,8 +64,9 @@ const [page, settings, leaders, deacons] = await Promise.all([
 </Base>
 
 <style>
-  .staff { gap: 1.75rem 1.25rem; }
-  .person { text-align: center; }
+  /* centered, so a short row of people doesn't sit off to one side */
+  .people { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.75rem 1.25rem; }
+  .person { flex: 0 1 calc((100% - 3.75rem) / 4); min-width: 150px; text-align: center; }
   .person__photo {
     aspect-ratio: 3 / 4;
     border-radius: var(--r);

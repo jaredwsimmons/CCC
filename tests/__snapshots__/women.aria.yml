@@ -1,0 +1,13 @@
+- main:
+  - paragraph: Ministries
+  - heading "Women" [level=1]
+  - paragraph: At Chelsea Community Church, our Women’s Ministry exists to help women pursue God and pursue others by growing in their relationship with Christ, building authentic friendships, and living out their faith with confidence and purpose.
+  - paragraph: Deacon
+  - paragraph: Alana Cool
+  - paragraph: Serving and praying over this ministry — reach out anytime.
+  - paragraph: We believe every woman — at every stage of life — has been uniquely created by God and called to make an impact in her home, church, workplace, and community. Whether you are new to faith, have walked with Christ for years, or are simply looking for connection, you are welcome here. Please join us at one of our upcoming events!
+  - img "Women of Chelsea Community Church at a ministry event"
+  - heading "Questions about Women's Ministry?" [level=2]
+  - paragraph: Tammy would love to hear from you.
+  - link "Email Tammy for more information!":
+    - /url: mailto:allgoodtchr@gmail.com

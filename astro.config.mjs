@@ -22,7 +22,9 @@ export default defineConfig({
   // Old URLs whose path changed. Most GoHighLevel slugs are preserved 1:1, so only these.
   redirects: {
     '/home': '/',
-    '/history': '/our-story',
+    '/history': '/about',
+    '/our-story': '/about',
+    '/beliefs': '/about',
   },
   // Runtime secret for the ESV scripture tooltips (/api/esv). Optional: without it,
   // references render as plain text. Local: .dev.vars. Production: `wrangler secret put`.

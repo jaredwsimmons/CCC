@@ -35,6 +35,39 @@ test('every section is a type the Studio defines', () => {
   expect(used.filter((t) => !defined.includes(t))).toEqual([]);
 });
 
+test('every ministry page follows the template', () => {
+  const ministries = ['connections', 'kids', 'men', 'missions', 'prayer', 'preschool', 'students', 'women', 'worship'];
+  for (const slug of ministries) {
+    const page = docs.find((d) => d._id === `page-${slug}`) as unknown as { header: { eyebrow: string }; sections: { _type: string; match?: string }[] };
+    expect(page.header.eyebrow, slug).toBe('Ministries');
+    const types = page.sections.map((s) => s._type);
+    expect(types.slice(-2), slug).toEqual(['openRegistrationsSection', 'ctaBandSection']);
+    expect(page.sections.at(-2)?.match, slug).toBeTruthy();
+    expect(types.indexOf('scheduleSection'), slug).toBeLessThan(2);
+  }
+});
+
+test('the current series and announcement belong to the Home page', () => {
+  const home = docs.find((d) => d._id === 'home') as unknown as { currentSeries?: { title?: string } };
+  expect(home.currentSeries?.title).toBeTruthy();
+  expect(docs.find((d) => d._id === 'siteSettings')).not.toHaveProperty('currentSeries');
+  for (const file of ['siteSettings.ts', 'home.ts']) {
+    const declares = /name: 'announcement'/.test(readFileSync(`studio/schemaTypes/${file}`, 'utf8'));
+    expect(declares, file).toBe(file === 'home.ts');
+  }
+});
+
+test('the footer links are set in Site Settings', () => {
+  const settings = docs.find((d) => d._id === 'siteSettings') as unknown as Record<string, { label?: string; kind?: string }>;
+  expect(settings.footerPrayer).toMatchObject({ label: 'Let us know how we can pray for you.', kind: 'churchCenter' });
+  expect(settings.footerMedia).toMatchObject({ label: 'Media', kind: 'page' });
+  expect(settings.footerApp).toMatchObject({ label: 'Church Center app', kind: 'url' });
+});
+
+test('people who have left the church are not mentioned', () => {
+  expect(JSON.stringify(docs)).not.toMatch(/brian|marbury|herring|kipley/i);
+});
+
 test('every photo has alt text', () => {
   const missing: string[] = [];
   for (const d of docs) walk(d, d._id, (o, p) => { if (o._type === 'image' && !String(o.alt ?? '').trim()) missing.push(p); });

@@ -1,20 +1,20 @@
 import { defineField, defineType } from 'sanity';
 import { eyebrow, heading, sectionPreview } from '../fields';
 
-// Every open Church Center registration, live, optionally narrowed by a word in its name.
+// Upcoming events, live: open Church Center registrations and calendar events whose names match.
 export default defineType({
   name: 'openRegistrationsSection',
-  title: 'Open registrations',
+  title: 'Upcoming events',
   type: 'object',
   fields: [
     eyebrow,
     heading,
     defineField({
       name: 'match',
-      title: 'Only show names containing',
+      title: 'Show events with these words in their name',
       type: 'string',
-      description: 'Optional, e.g. “Women’s” or “C3SM”. Leave blank to show every open registration.',
+      description: 'Words from the event names in Planning Center, separated by commas, e.g. “Men’s” or “Kids, K-5”. The section stays hidden when nothing matches. Leave blank to show every open registration.',
     }),
   ],
-  preview: sectionPreview('Open registrations'),
+  preview: sectionPreview('Upcoming events'),
 });

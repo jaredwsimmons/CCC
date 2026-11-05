@@ -48,7 +48,7 @@ test('a made-up preview cookie shows the public site', async ({ page, context, b
     { name: PREVIEW_COOKIE, value: `${Date.now() + 60_000}.${'a'.repeat(64)}`, url: baseURL! },
     { name: 'sanity-preview-perspective', value: 'drafts', url: baseURL! },
   ]);
-  await page.goto('/beliefs');
+  await page.goto('/about');
   await expect(page.locator('#exit-preview')).toHaveCount(0);
   await page.goto('/this-page-does-not-exist');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -62,7 +62,7 @@ test('public pages never run the preview code', async ({ page }) => {
   page.on('request', (req) => {
     if (req.resourceType() === 'script') scripts.push(req.url());
   });
-  await page.goto('/beliefs');
+  await page.goto('/about');
   await expect(page.locator('main')).toBeVisible();
   expect(scripts.filter((url) => /visualediting/i.test(url))).toEqual([]);
 });

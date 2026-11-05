@@ -11,7 +11,7 @@ import { site } from '../data/site';
 import { sanityFetch } from '../lib/sanity';
 import { fixedPageQuery, settingsQuery } from '../lib/queries';
 import { inModal } from '../lib/links';
-import { getUpcomingEvents, buildMonthGrids } from '../lib/calendar';
+import { getUpcomingEvents, buildMonthGrids, onePerSeries } from '../lib/calendar';
 
 const [page, settings, events] = await Promise.all([
   sanityFetch<any>(fixedPageQuery, { id: 'fixed-calendar' }, Astro.cookies),
@@ -50,7 +50,7 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     <!-- LIST view -->
     <div data-view="list">
-      <EventList events={events} />
+      <EventList events={onePerSeries(events)} />
     </div>
 
     <!-- MONTH view -->

@@ -19,45 +19,62 @@ export interface ChurchEvent {
   register?: string;
   publicUrl?: string;
   featured?: boolean; // marked "featured" in Planning Center Calendar
+  series?: string; // shared by every occurrence of a repeating event
+}
+
+const EVENTS_PATH = '/calendar/v2/events?filter=upcoming&order=visible_starts_at&per_page=100&include=event_registration_url,location';
+const EVENT_PAGES = 2; // Church Center lists each occurrence; 200 reaches about five months
+
+function toEvents(body: any): ChurchEvent[] {
+  const inc: Record<string, any> = {};
+  for (const i of body.included ?? []) inc[`${i.type}:${i.id}`] = i;
+  const rel = (e: any, key: string) => {
+    const d = e.relationships?.[key]?.data;
+    return d ? inc[`${d.type}:${d.id}`] : null;
+  };
+
+  return (body.data ?? []).map((e: any): ChurchEvent => {
+    const a = e.attributes;
+    const reg = rel(e, 'event_registration_url')?.attributes?.url;
+    const loc = rel(e, 'location')?.attributes?.name;
+    let timeLabel = 'All day';
+    if (!a.all_day_event && a.starts_at) {
+      timeLabel = localTime(a.starts_at);
+      if (a.ends_at && localDate(a.ends_at) === localDate(a.starts_at)) timeLabel += ` – ${localTime(a.ends_at)}`;
+    }
+    return {
+      id: String(e.id),
+      title: a.name?.trim() ?? 'Event',
+      date: localDate(a.starts_at),
+      timeLabel,
+      recurrence: a.recurring ? stripHtml(a.recurrence_description || '') || 'Recurring' : undefined,
+      location: loc || undefined,
+      description: stripHtml(a.description || '') || undefined,
+      register: reg || undefined,
+      publicUrl: a.public_url || undefined,
+      featured: Boolean(a.featured),
+      series: a.event_group ? String(a.event_group) : undefined,
+    };
+  });
 }
 
 // null = the fetch failed (as opposed to [] = no upcoming events).
 async function fetchLive(): Promise<ChurchEvent[] | null> {
   try {
-    const body = await ccGet(
-      '/calendar/v2/events?filter=upcoming,first_occurrence&order=visible_starts_at&per_page=100&include=event_registration_url,location',
-    );
-    if (!body) return null;
-
-    const inc: Record<string, any> = {};
-    for (const i of body.included ?? []) inc[`${i.type}:${i.id}`] = i;
-    const rel = (e: any, key: string) => {
-      const d = e.relationships?.[key]?.data;
-      return d ? inc[`${d.type}:${d.id}`] : null;
-    };
-
-    return (body.data ?? []).map((e: any): ChurchEvent => {
-      const a = e.attributes;
-      const reg = rel(e, 'event_registration_url')?.attributes?.url;
-      const loc = rel(e, 'location')?.attributes?.name;
-      let timeLabel = 'All day';
-      if (!a.all_day_event && a.starts_at) {
-        timeLabel = localTime(a.starts_at);
-        if (a.ends_at && localDate(a.ends_at) === localDate(a.starts_at)) timeLabel += ` – ${localTime(a.ends_at)}`;
-      }
-      return {
-        id: String(e.id),
-        title: a.name?.trim() ?? 'Event',
-        date: localDate(a.starts_at),
-        timeLabel,
-        recurrence: a.recurring ? stripHtml(a.recurrence_description || '') || 'Recurring' : undefined,
-        location: loc || undefined,
-        description: stripHtml(a.description || '') || undefined,
-        register: reg || undefined,
-        publicUrl: a.public_url || undefined,
-        featured: Boolean(a.featured),
-      };
-    });
+    const first = await ccGet(EVENTS_PATH);
+    if (!first) return null;
+    const events = toEvents(first);
+    let more = Boolean(first.meta?.next);
+    for (let page = 1; page < EVENT_PAGES && more; page++) {
+      const next = await ccGet(`${EVENTS_PATH}&offset=${page * 100}`);
+      if (!next) break; // what's already here is still right, just shorter
+      events.push(...toEvents(next));
+      more = Boolean(next.meta?.next);
+    }
+    // There's more after this, so the last month is cut short: leave it out rather than
+    // show a month that looks emptier than it is.
+    const lastMonth = events.at(-1)?.date.slice(0, 7);
+    return more && lastMonth ? events.filter((e) => e.date.slice(0, 7) < lastMonth) : events;
   } catch {
     return null;
   }
@@ -72,6 +89,17 @@ export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
   // from a days-old fallback copy; drop those too.
   const events = live.filter((e) => e.date >= today && !/^every sunday$/i.test(e.recurrence || ''));
   return events.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/** A repeating event once, at its next date, for lists. Renamed occurrences stay. */
+export function onePerSeries(events: ChurchEvent[]): ChurchEvent[] {
+  const seen = new Set<string>();
+  return events.filter((e) => {
+    const key = `${e.series ?? e.id}:${e.title}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 // The rhythm of our week — curated tiles above the live event list.

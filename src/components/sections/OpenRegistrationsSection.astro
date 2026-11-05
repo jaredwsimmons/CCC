@@ -1,13 +1,29 @@
 ---
-// Every open Church Center registration (optionally matching a word), live.
+// Upcoming events, live: open Church Center registrations, plus (when `match` is set)
+// calendar events with those words in their names. Hidden when nothing matches.
 import Section from '../Section.astro';
 import RegistrationCard from '../RegistrationCard.astro';
+import EventList from '../EventList.astro';
 import { getOpenRegistrations } from '../../lib/registrations';
+import { getUpcomingEvents, onePerSeries } from '../../lib/calendar';
+import { nameMatches } from '../../lib/format';
 const { s } = Astro.props;
+const MAX_EVENTS = 6;
 const regs = await getOpenRegistrations(s.match);
+const registered = new Set(regs.map((r) => r.name.toLowerCase()));
+const events = s.match
+  ? onePerSeries(await getUpcomingEvents())
+      .filter((e) => nameMatches(e.title, s.match) && !registered.has(e.title.toLowerCase()))
+      .slice(0, MAX_EVENTS)
+  : [];
 ---
-{regs.length > 0 && (
-  <Section variant="alt" eyebrow={s.eyebrow} title={s.heading} center>
-    <div class="grid cols-3">{regs.map((r) => <RegistrationCard reg={r} />)}</div>
+{(regs.length > 0 || events.length > 0) && (
+  <Section variant="alt" eyebrow={s.eyebrow} title={s.heading} center class="live-data">
+    {regs.length > 0 && <div class="grid cols-3">{regs.map((r) => <RegistrationCard reg={r} />)}</div>}
+    {events.length > 0 && <div class:list={['upcoming', { 'mt-2': regs.length > 0 }]}><EventList events={events} /></div>}
   </Section>
 )}
+
+<style>
+  .upcoming { text-align: left; }
+</style>

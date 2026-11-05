@@ -1,17 +1,12 @@
 - main:
-  - paragraph: Prayer
+  - paragraph: Ministries
   - heading "We want to pray for you" [level=1]
   - paragraph: We want to pray for you! Whether you are mourning or celebrating, we are committed to walking alongside you. Click or tap the button to share your prayer concerns with us.
   - link "Share a prayer request":
-    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
+    - /url: https://chelseachurch.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
   - paragraph: Deacon
   - paragraph: Liz Clayton
   - paragraph: Serving and praying over this ministry — reach out anytime.
-  - paragraph: Share a request
-  - heading "How can we pray with you?" [level=2]
-  - paragraph: Whatever you're carrying — a burden or a blessing — we'd be honored to pray with you. Share as much or as little as you'd like.
-  - link "Share a prayer request":
-    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
   - paragraph: Our prayer ministry
   - heading "A church where prayer is central" [level=2]
   - paragraph: /At Chelsea Community Church we desire to be a church where prayer is central\. We believe in the power of prayer because God's Word tells us that the prayer of a righteous person is powerful and effective \(James 5:\d+\)\. We believe that God is with us when we pray, and we believe that prayer has the power to bring peace to anxious hearts, healing to the sick, strength to the weary, and hope to the hopeless\. We invite you to join us as we pray for our church, community, and world\./
@@ -32,3 +27,7 @@
       - paragraph: Tap “request to join.”
   - heading "A note on privacy" [level=3]
   - paragraph: Because many of the needs we share are personal or sensitive, we will verify that you are a member or regular attendee of Chelsea Community Church. This helps keep the Prayer Team a safe and private community where hearts can be honest and burdens shared in love. Once your request to join the group is approved, you’ll receive updates and prayer requests via Church Center app notifications — knowing that what’s shared here remains within our circle of prayer.
+  - heading "How can we pray with you?" [level=2]
+  - paragraph: Whatever you're carrying — a burden or a blessing — we'd be honored to pray with you. Share as much or as little as you'd like.
+  - link "Share a prayer request":
+    - /url: https://chelseachurch.churchcenter.com/people/forms/876492?open-in-church-center-modal=true

@@ -3,8 +3,7 @@
 export const pages: { name: string; path: string; live?: boolean }[] = [
   { name: 'home', path: '/' },
   { name: 'imnew', path: '/imnew' },
-  { name: 'our-story', path: '/our-story' },
-  { name: 'beliefs', path: '/beliefs' },
+  { name: 'about', path: '/about' },
   { name: 'leaders', path: '/leaders' },
   { name: 'bylaws', path: '/bylaws' },
   { name: 'serve', path: '/serve' },
@@ -15,7 +14,7 @@ export const pages: { name: string; path: string; live?: boolean }[] = [
   { name: 'prayer', path: '/prayer' },
   { name: 'preschool', path: '/preschool' },
   { name: 'students', path: '/students' },
-  { name: 'women', path: '/women', live: true },
+  { name: 'women', path: '/women' },
   { name: 'worship', path: '/worship' },
   { name: 'give', path: '/give' },
   { name: 'calendar', path: '/calendar', live: true },

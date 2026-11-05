@@ -1,6 +1,16 @@
 - main:
   - paragraph: About
   - heading "Leaders" [level=1]
+  - paragraph: Staff
+  - heading "Our staff" [level=2]
+  - img "Drew Blake — Pastor of Students & Worship"
+  - heading "Drew Blake" [level=3]
+  - paragraph: Pastor of Students & Worship
+  - img "Ben Stephenson — Family Pastor"
+  - heading "Ben Stephenson" [level=3]
+  - paragraph: Family Pastor
+  - paragraph: Elders
+  - heading "Our elders" [level=2]
   - img "Alan Allgood — Lay Elder"
   - heading "Alan Allgood" [level=3]
   - paragraph: Lay Elder
@@ -10,21 +20,6 @@
   - img "Wes Haisten — Lay Elder"
   - heading "Wes Haisten" [level=3]
   - paragraph: Lay Elder
-  - img "Drew Blake — Pastor of Students & Worship"
-  - heading "Drew Blake" [level=3]
-  - paragraph: Pastor of Students & Worship
-  - img "John Herring — Executive Pastor"
-  - heading "John Herring" [level=3]
-  - paragraph: Executive Pastor
-  - img "Kathryn Kipley — Family Ministry Associate"
-  - heading "Kathryn Kipley" [level=3]
-  - paragraph: Family Ministry Associate
-  - img "Brian Marbury — Pastor of Missions & Service"
-  - heading "Brian Marbury" [level=3]
-  - paragraph: Pastor of Missions & Service
-  - img "Ben Stephenson — Family Pastor"
-  - heading "Ben Stephenson" [level=3]
-  - paragraph: Family Pastor
   - paragraph: Deacons
   - heading "Serving the Body" [level=2]
   - text: Adult Discipleship Ryan Akers, Casey Ballenger Benevolence Brent Cool, Della Pender Building and Grounds Trey Garrett, Daniel Ringpfeil Communion Georgia Gabriel, Mike Gabriel Connections Lee Wood, Susanne Wood Hospitality April Bower, Jordan Hausen Kids Pam Cooley Member Care Stephanie Thomas Men Stephen Thomas Missions Jared Simmons Prayer Liz Clayton Preschool Marianne Dacey, Randi Street Senior Adults Dave Swanson Singles Linda Allison Special Events Tyler Stevens Students Andrew Hill, Courtney Hill Teller Terrell Cooley Women Alana Cool Worship Tanner Cain
