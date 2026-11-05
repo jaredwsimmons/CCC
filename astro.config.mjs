@@ -29,6 +29,9 @@ export default defineConfig({
   env: {
     schema: {
       ESV_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
+      // Read-only Sanity key for the Studio's Live Preview (drafts). Optional: without it,
+      // preview is off and the site is unchanged.
+      SANITY_API_READ_TOKEN: envField.string({ context: 'server', access: 'secret', optional: true }),
     },
   },
 });

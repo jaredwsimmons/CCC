@@ -10,10 +10,10 @@ import { deaconsQuery, fixedPageQuery, leadersQuery, settingsQuery } from '../li
 import { imagePosition, imageUrl } from '../lib/image';
 
 const [page, settings, leaders, deacons] = await Promise.all([
-  sanityFetch<any>(fixedPageQuery, { id: 'fixed-leaders' }),
-  sanityFetch<any>(settingsQuery),
-  sanityFetch<any[]>(leadersQuery),
-  sanityFetch<{ name: string; deacons: string[] }[]>(deaconsQuery),
+  sanityFetch<any>(fixedPageQuery, { id: 'fixed-leaders' }, Astro.cookies),
+  sanityFetch<any>(settingsQuery, {}, Astro.cookies),
+  sanityFetch<any[]>(leadersQuery, {}, Astro.cookies),
+  sanityFetch<{ name: string; deacons: string[] }[]>(deaconsQuery, {}, Astro.cookies),
 ]);
 ---
 <Base title={page?.title ?? 'Leaders'} description={page?.seo?.description}>

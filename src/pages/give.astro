@@ -7,8 +7,8 @@ import { sanityFetch } from '../lib/sanity';
 import { fixedPageQuery, settingsQuery } from '../lib/queries';
 
 const [page, settings] = await Promise.all([
-  sanityFetch<any>(fixedPageQuery, { id: 'fixed-give' }),
-  sanityFetch<any>(settingsQuery),
+  sanityFetch<any>(fixedPageQuery, { id: 'fixed-give' }, Astro.cookies),
+  sanityFetch<any>(settingsQuery, {}, Astro.cookies),
 ]);
 ---
 <Base title={page?.title ?? 'Give'} description={page?.seo?.description}>

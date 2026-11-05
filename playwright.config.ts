@@ -34,10 +34,12 @@ export default defineConfig({
   webServer: {
     // `astro preview` runs the production build in the Workers runtime. --ignore-lock
     // starts our own server even if an earlier preview left its lock file behind.
-    command: `npm run build && npm run preview -- --host 127.0.0.1 --port ${port} --ignore-lock`,
+    // Snapshots assume no ESV key, so scripture references render as plain text. The
+    // build copies .dev.vars next to the server, so that copy is removed before serving.
+    command:
+      `npm run build && node -e "fs.rmSync('dist/server/.dev.vars',{force:true})" && ` +
+      `npm run preview -- --host 127.0.0.1 --port ${port} --ignore-lock`,
     url: `http://127.0.0.1:${port}`,
-    // Snapshots assume no ESV key, so scripture references render as plain text: don't
-    // set ESV_API_KEY in .dev.vars when running the tests.
     env: { ESV_API_KEY: '' },
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

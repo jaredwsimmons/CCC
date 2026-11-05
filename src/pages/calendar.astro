@@ -14,8 +14,8 @@ import { inModal } from '../lib/links';
 import { getUpcomingEvents, buildMonthGrids } from '../lib/calendar';
 
 const [page, settings, events] = await Promise.all([
-  sanityFetch<any>(fixedPageQuery, { id: 'fixed-calendar' }),
-  sanityFetch<any>(settingsQuery),
+  sanityFetch<any>(fixedPageQuery, { id: 'fixed-calendar' }, Astro.cookies),
+  sanityFetch<any>(settingsQuery, {}, Astro.cookies),
   getUpcomingEvents(),
 ]);
 const monthGrids = buildMonthGrids(events);

@@ -55,6 +55,16 @@ npm test         # Playwright tests (builds + previews the site)
    From then on content is edited **in the Studio only**: `src/data/migration.ts` and `src/data/content.ts` are used only while no project ID is set.
 5. Edit in the Studio. The website reads it **when each page is visited**, so a published change is live within seconds — no rebuild.
 
+### Live Preview
+
+The Studio opens on **Live Preview**: the real website beside the form, showing unpublished drafts. Setup:
+
+1. Create a read-only key, in `studio/`: `npx sanity tokens add "Site preview" --role=viewer`. Put it in `.dev.vars` as `SANITY_API_READ_TOKEN` (production: `npx wrangler secret put SANITY_API_READ_TOKEN`).
+2. Allow the site's address, in `studio/`: `npx sanity cors add http://localhost:4321 --credentials`, and the real address once it's live.
+3. Before `npx sanity deploy`, set `SANITY_STUDIO_PREVIEW_URL` in `studio/.env` to the real address, and `PUBLIC_SANITY_STUDIO_URL` to the Studio's address where the site is built.
+
+Only a cookie signed by the server unlocks drafts (`src/lib/preview.ts`), and draft results never go through the cache.
+
 ## How Church Center and the live data work
 
 - The modal runtime loads once in `<head>` (`src/components/ChurchCenterScript.astro`).
@@ -66,7 +76,7 @@ npm test         # Playwright tests (builds + previews the site)
 
 1. Create a free Cloudflare account under the church's shared address.
 2. Either deploy from a machine (`npx wrangler login`, then `npm run build && npx wrangler deploy`), or connect the GitHub repo under **Workers & Pages** (Workers Builds) with build command `npm run build` and deploy command `npx wrangler deploy`.
-3. Set build variables `PUBLIC_SANITY_PROJECT_ID` / `PUBLIC_SANITY_DATASET`, and secrets with `npx wrangler secret put ESV_API_KEY`.
+3. Set build variables `PUBLIC_SANITY_PROJECT_ID` / `PUBLIC_SANITY_DATASET`, and secrets with `npx wrangler secret put ESV_API_KEY` and `npx wrangler secret put SANITY_API_READ_TOKEN`.
 4. Add the custom domain `chelseachurch.com` to the Worker. Cloudflare requires the domain's DNS to be hosted on Cloudflare (registration stays at GoDaddy; only nameservers change). **Recreate the Google Workspace MX, SPF and verification records exactly** during the DNS move or email breaks — see the staff asks doc.
 
 ## Project structure

@@ -9,7 +9,7 @@ import { homeQuery, settingsQuery } from '../lib/queries';
 import { imagePosition, imageUrl } from '../lib/image';
 import { shortTimes, telHref } from '../lib/format';
 
-const [home, settings] = await Promise.all([sanityFetch<any>(homeQuery), sanityFetch<any>(settingsQuery)]);
+const [home, settings] = await Promise.all([sanityFetch<any>(homeQuery, {}, Astro.cookies), sanityFetch<any>(settingsQuery, {}, Astro.cookies)]);
 const hero = home?.hero ?? {};
 const welcome = home?.welcome ?? {};
 const app = home?.app ?? {};

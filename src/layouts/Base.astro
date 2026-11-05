@@ -5,7 +5,9 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ChurchCenterScript from '../components/ChurchCenterScript.astro';
 import ScriptureTooltips from '../components/ScriptureTooltips.astro';
-import { sanityFetch } from '../lib/sanity';
+import VisualEditing from '../components/VisualEditing.astro';
+import { stegaClean } from '@sanity/client/stega';
+import { isPreview, sanityFetch } from '../lib/sanity';
 import { settingsQuery } from '../lib/queries';
 import { pathFor, type LinkTarget } from '../lib/links';
 import { hasEsvKey } from '../lib/esv';
@@ -14,11 +16,13 @@ interface Props {
   title?: string;
   description?: string;
 }
-const { title, description = site.description } = Astro.props;
+// In preview these carry invisible click-to-edit marks, which don't belong in <head>.
+const { title, description = site.description } = stegaClean(Astro.props);
+const preview = await isPreview(Astro.cookies);
 
 // The menu and the footer's church details come from Site Settings in Sanity.
 type MenuEntry = { label: string; page?: LinkTarget; children?: MenuEntry[] | null };
-const settings = await sanityFetch<any>(settingsQuery);
+const settings = await sanityFetch<any>(settingsQuery, {}, Astro.cookies);
 const menu = ((settings?.menu ?? []) as MenuEntry[]).map((m) => ({
   label: m.label,
   href: pathFor(m.page) ?? '/',
@@ -66,6 +70,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     </main>
     <Footer settings={settings} />
     {hasEsvKey() && <ScriptureTooltips />}
+    {preview && <VisualEditing />}
 
     <!-- Scroll-reveal. Progressive: content is fully visible if this never runs. -->
     <script is:inline>

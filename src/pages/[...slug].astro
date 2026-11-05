@@ -9,9 +9,9 @@ import { sanityFetch } from '../lib/sanity';
 import { pageQuery, settingsQuery } from '../lib/queries';
 
 const slug = Astro.params.slug;
-const page = slug ? await sanityFetch<any>(pageQuery, { slug }) : null;
+const page = slug ? await sanityFetch<any>(pageQuery, { slug }, Astro.cookies) : null;
 if (!page) return Astro.rewrite('/404');
-const settings = await sanityFetch<any>(settingsQuery);
+const settings = await sanityFetch<any>(settingsQuery, {}, Astro.cookies);
 ---
 <Base title={page.title} description={page.seo?.description}>
   <PageHeader header={page.header} title={page.title} />

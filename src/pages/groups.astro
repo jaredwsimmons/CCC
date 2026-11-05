@@ -13,8 +13,8 @@ import { sanityFetch } from '../lib/sanity';
 import { fixedPageQuery, settingsQuery } from '../lib/queries';
 
 const [page, settings, groups] = await Promise.all([
-  sanityFetch<any>(fixedPageQuery, { id: 'fixed-groups' }),
-  sanityFetch<any>(settingsQuery),
+  sanityFetch<any>(fixedPageQuery, { id: 'fixed-groups' }, Astro.cookies),
+  sanityFetch<any>(settingsQuery, {}, Astro.cookies),
   getGroups(),
 ]);
 const allGroupsUrl = `https://${site.churchCenter.subdomain}/groups`;

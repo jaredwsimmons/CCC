@@ -1,0 +1,60 @@
+---
+// Only rendered in preview (see Base.astro), so public pages never run this script or
+// download its React code. Connects the page to the Studio's Live Preview: click-to-edit
+// outlines, following the Studio to another page, and reloading after each edit.
+---
+<a id="exit-preview" href="/api/draft-mode/disable" hidden>Showing drafts · Exit preview</a>
+
+<script>
+  import { enableVisualEditing, type HistoryAdapter } from '@sanity/visual-editing';
+  import { perspectiveCookieName } from '@sanity/preview-url-secret/constants';
+
+  const framed = window.self !== window.top;
+  const current = () => `${location.pathname}${location.search}${location.hash}`;
+
+  // Inside the Studio, the Studio shows which view this is; in a normal tab, say so here.
+  if (!framed) document.getElementById('exit-preview')?.removeAttribute('hidden');
+
+  // Pages here are full page loads, so the Studio is told the address once per page.
+  const history: HistoryAdapter = {
+    subscribe(navigate) {
+      navigate({ type: 'push', title: document.title, url: current() });
+      return () => {};
+    },
+    update({ type, url }) {
+      if (type === 'pop') window.history.back();
+      else if (url !== current()) location[type === 'replace' ? 'replace' : 'assign'](url);
+    },
+  };
+
+  enableVisualEditing({
+    history,
+    onPerspectiveChange(perspective) {
+      const next = perspective === 'published' ? 'published' : 'drafts';
+      if (document.cookie.includes(`${perspectiveCookieName}=${next}`)) return;
+      document.cookie = `${perspectiveCookieName}=${next}; path=/; SameSite=None; Secure${framed ? '; Partitioned' : ''}`;
+      location.reload();
+    },
+    // Pages are rendered on the server, so showing an edit means loading the page again.
+    refresh: () => {
+      location.reload();
+      return Promise.resolve();
+    },
+  });
+</script>
+
+<style>
+  #exit-preview {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 60;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.875rem;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+  }
+</style>

@@ -12,3 +12,7 @@ ESV_API_KEY=
 # not in use yet). Get these at: https://api.planningcenteronline.com/personal_access_tokens
 PCO_APP_ID=PCO_APP_ID
 PCO_SECRET=PCO_SECRET
+
+# Read-only Sanity key for the Studio's Live Preview, which shows unpublished drafts. OPTIONAL: without it
+# preview is off. Create it with:  cd studio && npx sanity tokens add "Site preview" --role=viewer
+SANITY_API_READ_TOKEN=
