@@ -32,7 +32,7 @@ export async function verifyPreview(value: string, secret: string, now = Date.no
 // never choices (background, kind, photoSide), web addresses, emails or phone numbers.
 const CLICK_TO_EDIT = new Set([
   'announcement', 'bio', 'cardTitle', 'category', 'closing', 'deaconCardText', 'description', 'directionsLabel', 'eyebrow',
-  'footerConnectHeading', 'footerEmailText', 'footerExploreHeading', 'footerTouchHeading', 'heading', 'intro', 'label', 'listenLabel',
+  'footerConnectHeading', 'footerEmailText', 'footerTouchHeading', 'heading', 'intro', 'label', 'listenLabel',
   'location', 'name', 'place', 'reference', 'role', 'subline', 'sundayLabel', 'text', 'time', 'title', 'watchLabel', 'what',
 ]);
 

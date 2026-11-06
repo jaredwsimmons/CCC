@@ -62,6 +62,31 @@ test('the text sign-up opens in a small window, since it refuses to load inside 
   expect(opened?.[2]).toContain('width=480');
 });
 
+test('group cards are the same height however long their descriptions are', async ({ page }) => {
+  await page.goto('/groups');
+  const cards = page.locator('.gcard');
+  if ((await cards.count()) < 2) test.skip(true, 'Church Center has too few open groups right now');
+  const heights = await cards.evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
+  expect(new Set(heights).size).toBe(1);
+});
+
+test('Request to join shows the group on this site, then goes to Church Center', async ({ page }) => {
+  await page.goto('/groups');
+  const card = page.locator('.gcard').first();
+  if ((await card.count()) === 0) test.skip(true, 'Church Center has no open groups right now');
+  const name = await card.locator('h3').first().textContent();
+  await card.locator('.gcard__join').click();
+  await expect(page).toHaveURL(/\/groups$/);
+  const dialog = page.locator('dialog[open]');
+  await expect(dialog.getByRole('heading', { name: name! })).toBeVisible();
+  const join = dialog.getByRole('link', { name: /request to join/i });
+  await expect(join).toHaveAttribute('href', /churchcenter\.com\/groups\//);
+  await expect(join).toHaveAttribute('data-small-window', /.*/);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflowY)).toBe('hidden');
+  await dialog.getByRole('button', { name: 'Close' }).click();
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
+});
+
 test('the footer links from Site Settings open the right places', async ({ page }) => {
   await page.goto('/');
   const footer = page.locator('footer');

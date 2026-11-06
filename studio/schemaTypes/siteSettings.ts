@@ -92,8 +92,6 @@ export default defineType({
     defineField({ name: 'footerEmailText', title: 'Email link text', type: 'string', group: 'footer' }),
     defineField({ name: 'footerConnectHeading', title: 'Second column heading', type: 'string', group: 'footer' }),
     defineField({ name: 'footerConnect', title: 'Second column links', type: 'array', group: 'footer', of: [defineArrayMember({ type: 'button' })] }),
-    defineField({ name: 'footerExploreHeading', title: 'Third column heading', type: 'string', group: 'footer' }),
-    defineField({ name: 'footerExplore', title: 'Third column links', type: 'array', group: 'footer', of: [defineArrayMember({ type: 'button' })] }),
     defineField({
       name: 'deaconCardText',
       title: 'Deacon card wording',

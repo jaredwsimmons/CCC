@@ -23,7 +23,6 @@ const footerLink = (b?: Button | null) => {
 const links = (list?: Button[] | null) => (list ?? []).map(footerLink).filter((l) => l !== null);
 const prayer = footerLink(settings?.footerPrayer);
 const connect = links(settings?.footerConnect);
-const explore = links(settings?.footerExplore);
 // The tagline's last sentence is highlighted.
 const tagline = (settings?.tagline ?? '').split(/(?<=\.)\s+/);
 const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
@@ -69,15 +68,8 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
 
     <div class="col" aria-labelledby="ftr-connect">
       <h2 id="ftr-connect">{settings?.footerConnectHeading}</h2>
-      <ul>
+      <ul class="phone-two-col">
         {connect.map((l) => <li><a {...l.attrs}>{l.label}</a></li>)}
-      </ul>
-    </div>
-
-    <div class="col" aria-labelledby="ftr-explore">
-      <h2 id="ftr-explore">{settings?.footerExploreHeading}</h2>
-      <ul class="two-col">
-        {explore.map((l) => <li><a {...l.attrs}>{l.label}</a></li>)}
       </ul>
     </div>
   </div>
@@ -90,15 +82,16 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
   </div>
 </footer>
 
-<!-- TxtSignal refuses to load inside another site, so it can't use a pop-up like Church
-     Center's. A small window of its own is the closest; phones keep the new tab. -->
+<!-- Links marked data-small-window, anywhere on the page: TxtSignal and Church Center's group
+     pages refuse to load inside another site, so a small window is the closest thing to a
+     pop-up. Phones keep the new tab. -->
 <script is:inline>
   document.addEventListener('click', function (e) {
     var link = e.target.closest && e.target.closest('a[data-small-window]');
     if (!link || e.ctrlKey || e.metaKey || e.shiftKey || window.matchMedia('(max-width: 700px)').matches) return;
     var left = Math.round(window.screenX + (window.outerWidth - 480) / 2);
     var top = Math.round(window.screenY + 60);
-    var win = window.open(link.href, 'text-signup', 'popup,width=480,height=720,left=' + left + ',top=' + top);
+    var win = window.open(link.href, 'small-window', 'popup,width=480,height=720,left=' + left + ',top=' + top);
     if (win) {
       win.opener = null;
       e.preventDefault();
@@ -109,14 +102,14 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
 <style>
   .top {
     display: grid;
-    grid-template-columns: 1.1fr 1.2fr 0.8fr 1fr;
-    gap: clamp(1.75rem, 4vw, 3rem);
-    padding-block: clamp(2.5rem, 6vw, 3.75rem) 2rem;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    padding-block: clamp(1.75rem, 4vw, 2.5rem) 1.25rem;
   }
-  @media (max-width: 960px) { .top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 760px) { .top { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .top { grid-template-columns: 1fr; } }
 
-  .id img { width: 56px; height: 56px; margin-bottom: 0.9rem; }
+  .id img { width: 44px; height: 44px; margin-bottom: 0.6rem; }
   .name {
     font-family: var(--display);
     font-weight: 600;
@@ -135,9 +128,10 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 0.9rem;
+    margin-bottom: 0.65rem;
   }
-  .col ul { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+  .col ul { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+  .col li { line-height: 1.4; }
   .col a { text-decoration: none; font-size: 0.95rem; }
   .col a:hover { text-decoration: underline; }
   .label {
@@ -149,13 +143,19 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
     text-transform: uppercase;
     color: rgba(251, 249, 244, 0.55);
   }
-  .two-col { display: grid !important; grid-template-columns: 1fr 1fr; gap: 0.45rem 1rem; }
+  /* phones: the logo beside the name, and links in two columns, so it isn't one long list */
+  @media (max-width: 560px) {
+    .id { display: grid; grid-template-columns: auto 1fr; column-gap: 0.85rem; align-items: center; }
+    .id img { grid-row: span 3; margin-bottom: 0; }
+    .id .tagline, .id .times { margin-top: 0.1rem; }
+    .col ul.phone-two-col { display: grid; grid-template-columns: auto auto; justify-content: start; gap: 0.3rem 1.5rem; }
+  }
 
   .bottom {
     border-top: 1px solid rgba(251, 249, 244, 0.15);
-    padding-block: 1.1rem;
+    padding-block: 0.75rem;
     margin-top: auto; /* pin copyright to the bottom edge when the footer stretches */
   }
   .bottom p { font-size: 0.85rem; color: rgba(251, 249, 244, 0.6); }
-  .bottom .esv { margin-top: 0.4rem; font-size: 0.75rem; }
+  .bottom .esv { margin-top: 0.2rem; font-size: 0.75rem; line-height: 1.4; }
 </style>

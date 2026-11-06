@@ -1,5 +1,8 @@
 ---
-// Church Center groups open to join (the Groups page and the Groups section).
+// Church Center groups open to join (the Groups page and the Groups section). Cards show a
+// short preview; "Request to join" opens the whole group in a pop-up here. Church Center's
+// group pages refuse to load inside another site, so its join step opens in a small window.
+// Without JavaScript the card's link simply goes to Church Center.
 import { withBase } from '../data/site';
 import type { Group } from '../lib/groups';
 
@@ -17,22 +20,72 @@ const { groups } = Astro.props;
         <h3>{g.name}</h3>
         {g.schedule && <p class="gcard__sched">{g.schedule}</p>}
         {g.description && <p class="gcard__desc">{g.description}</p>}
-        <a class="gcard__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer">Request to join →</a>
+        <a class="gcard__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer" data-group-popup>Request to join →</a>
       </div>
+      <dialog class="gpop" aria-label={g.name}>
+        <div class="gpop__inner">
+          <button type="button" class="gpop__close" aria-label="Close" data-group-close>×</button>
+          {g.image && <img class="gpop__img" src={g.image} alt="" loading="lazy" />}
+          <div class="gpop__body">
+            <span class="tag-cat">{g.type.replace(' Groups', '')} · Open</span>
+            <h3>{g.name}</h3>
+            {g.schedule && <p class="gcard__sched">{g.schedule}</p>}
+            {g.description && <p class="gpop__desc">{g.description}</p>}
+            <a class="btn btn--blue mt-1" href={g.joinUrl} target="_blank" rel="noopener noreferrer" data-small-window>Request to join →</a>
+          </div>
+        </div>
+      </dialog>
     </article>
   ))}
 </div>
 
+<script>
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const open = target.closest?.('a[data-group-popup]');
+    if (open && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+      const dialog = open.closest('.gcard')?.querySelector('dialog');
+      if (dialog) {
+        e.preventDefault();
+        dialog.showModal();
+      }
+      return;
+    }
+    // The close button, or a click on the dimmed area around the pop-up.
+    if (target.closest?.('[data-group-close]')) target.closest('dialog')?.close();
+    else if (target instanceof HTMLDialogElement && target.matches('.gpop')) target.close();
+  });
+</script>
+
 <style>
-  .gcards { align-items: start; }
+  /* every card the height of the tallest, on screens with a grid of them */
+  @media (min-width: 561px) { .gcards { grid-auto-rows: 1fr; } }
   .gcard { background: #fff; border: 1px solid var(--hair); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
   .gcard__img { aspect-ratio: 16 / 9; background: linear-gradient(135deg, #eef4fa, #fff); overflow: hidden; }
   .gcard__img img { width: 100%; height: 100%; object-fit: cover; }
   .gcard__ph { width: 100%; height: 100%; display: grid; place-items: center; }
-  .gcard__body { padding: 1.1rem 1.25rem 1.3rem; display: flex; flex-direction: column; }
+  .gcard__body { padding: 1.1rem 1.25rem 1.3rem; display: flex; flex-direction: column; flex: 1; }
   .tag-cat { display: inline-block; align-self: flex-start; font-family: var(--display); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-deep); background: rgba(240,195,52,0.16); padding: 0.22rem 0.6rem; border-radius: 999px; margin-bottom: 0.55rem; }
   .gcard h3 { font-size: 1.12rem; }
   .gcard__sched { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.9rem; margin-top: 0.25rem; }
-  .gcard__desc { font-size: 0.94rem; color: var(--mid); margin-top: 0.5rem; }
-  .gcard__join { align-self: flex-start; margin-top: 0.9rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+  .gcard__desc {
+    font-size: 0.94rem; color: var(--mid); margin-top: 0.5rem;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+  }
+  .gcard__join { align-self: flex-start; margin-top: auto; padding-top: 0.9rem; font-family: var(--display); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+
+  .gpop { width: min(560px, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); margin: auto; padding: 0; border: 0; border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+  .gpop::backdrop { background: rgba(0, 0, 0, 0.6); }
+  .gpop[open] { display: block; }
+  .gpop__inner { position: relative; max-height: calc(100dvh - 2rem); overflow-y: auto; }
+  .gpop__img { width: 100%; height: clamp(120px, 24dvh, 200px); object-fit: cover; }
+  .gpop__body { padding: 1.25rem 1.5rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; }
+  .gpop__desc { font-size: 0.98rem; color: var(--mid); margin-top: 0.6rem; }
+  /* stays in view while a long description scrolls */
+  .gpop .btn { position: sticky; bottom: 0.75rem; box-shadow: var(--shadow); }
+  .gpop__close {
+    position: sticky; top: 0.6rem; float: right; margin: 0.6rem 0.6rem -2.8rem 0; z-index: 1;
+    width: 2.2rem; height: 2.2rem; border: 0; border-radius: 50%; cursor: pointer;
+    background: rgba(255, 255, 255, 0.92); color: var(--navy); font-size: 1.4rem; line-height: 1; box-shadow: var(--shadow);
+  }
 </style>

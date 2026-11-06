@@ -297,6 +297,9 @@ html.nav-open body { overflow: hidden; }
    behind keeps a second scrollbar. (Its script shows the iframe by setting display.) */
 html:has(#ChurchCenterModalIframeExistsInDOM[style*='display: block']) { overflow: hidden; }
 
+/* keep the page still behind a pop-up on this site */
+html:has(dialog[open]) { overflow: hidden; }
+
 /* visually hidden (for a11y labels) */
 .sr-only {
   position: absolute;

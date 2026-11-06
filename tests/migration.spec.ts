@@ -61,7 +61,7 @@ test('the footer links are set in Site Settings', () => {
   const settings = docs.find((d) => d._id === 'siteSettings') as unknown as Record<string, { label?: string }[] & { label?: string; kind?: string }>;
   expect(settings.footerPrayer).toMatchObject({ kind: 'churchCenter' });
   expect(settings.footerConnect.map((l) => l.label)).toContain('Text updates');
-  expect(settings.footerExplore.map((l) => l.label)).toContain('Bylaws');
+  expect(settings.footerConnect.map((l) => l.label)).toContain('Media');
 });
 
 test('the Bylaws keep every article and their lettered lists', () => {

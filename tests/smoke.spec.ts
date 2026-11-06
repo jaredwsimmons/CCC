@@ -61,6 +61,13 @@ test('the page behind a Church Center pop-up does not scroll', async ({ page }) 
   expect(await overflow()).toBe('visible');
 });
 
+// The footer shouldn't crowd the page: a size budget, so it can't quietly grow back.
+test('the footer stays compact', async ({ page }, testInfo) => {
+  await page.goto('/');
+  const height = (await page.locator('footer').boundingBox())!.height;
+  expect(height).toBeLessThan(testInfo.project.name === 'mobile' ? 760 : 420);
+});
+
 test('the scripture endpoint only looks up scripture references', async ({ request }) => {
   const notARef = await request.get('/api/esv?ref=' + encodeURIComponent('weather in Chelsea'));
   expect(notARef.status()).toBe(400);

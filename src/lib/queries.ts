@@ -21,7 +21,6 @@ export const settingsQuery = /* groq */ `
     "giveButton": giveButton${BUTTON},
     "footerPrayer": footerPrayer${BUTTON},
     "footerConnect": footerConnect[]${BUTTON},
-    "footerExplore": footerExplore[]${BUTTON},
     notFound{ ..., ${BUTTONS} }
   }
 `;
