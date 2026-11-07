@@ -4,6 +4,7 @@ import textPhotoSection from './textPhotoSection';
 import cardsSection from './cardsSection';
 import scheduleSection from './scheduleSection';
 import stepsSection from './stepsSection';
+import accordionSection from './accordionSection';
 import gallerySection from './gallerySection';
 import scriptureSection from './scriptureSection';
 import ctaBandSection from './ctaBandSection';
@@ -20,7 +21,7 @@ import podcastSection from './podcastSection';
 import leadersSection from './leadersSection';
 import deaconsSection from './deaconsSection';
 
-// The approved section list: 10 content sections, then the live ones. The order here
+// The approved section list: 11 content sections, then the live ones. The order here
 // is the order of the "Add section" menu.
 export const sectionTypes = [
   textSection,
@@ -28,6 +29,7 @@ export const sectionTypes = [
   cardsSection,
   scheduleSection,
   stepsSection,
+  accordionSection,
   gallerySection,
   scriptureSection,
   ctaBandSection,

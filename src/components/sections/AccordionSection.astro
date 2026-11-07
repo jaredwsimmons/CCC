@@ -1,0 +1,73 @@
+---
+// Rows that open when tapped, for long lists like beliefs or FAQs. Built on <details>, so
+// it works without scripts and the closed text is still on the page for search engines.
+// Bible references sit inside the open row, so tapping a verse never closes it.
+import Section from '../Section.astro';
+import RichText from '../RichText.astro';
+import Buttons from '../Buttons.astro';
+import Scripturize from '../Scripturize.astro';
+import { variantFor } from '../../lib/links';
+const { s } = Astro.props;
+type Item = { _key: string; title?: string; label?: string; body?: unknown };
+const items = (s.items ?? []) as Item[];
+const variant = variantFor(s.background);
+const dark = variant === 'navy';
+---
+<Section variant={variant} eyebrow={s.eyebrow} title={s.heading} lead={s.intro} center={Boolean(s.heading)}>
+  <div class="acc" data-reveal>
+    {items.map((i) => (
+      <details class="acc__item">
+        <summary><h3>{i.title}</h3></summary>
+        <div class="acc__body">
+          {i.label && <p class="acc__refs"><Scripturize text={i.label} /></p>}
+          <RichText value={i.body} />
+        </div>
+      </details>
+    ))}
+  </div>
+  {s.closing && <p class="measure acc__closing" data-reveal>{s.closing}</p>}
+  <div class="acc__actions"><Buttons list={s.buttons} dark={dark} solid={0} /></div>
+</Section>
+
+<style>
+  .acc { display: grid; gap: 0.6rem; max-width: 760px; margin-inline: auto; text-align: left; }
+  .acc__item { background: #fff; border: 1px solid var(--hair); border-radius: var(--r-sm); color: var(--ink); }
+  .acc summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.25rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    list-style: none;
+  }
+  .acc summary::-webkit-details-marker { display: none; }
+  .acc summary::after {
+    content: "+";
+    flex: none;
+    font-family: var(--display);
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--blue);
+    transition: transform 0.2s;
+  }
+  .acc__item[open] summary::after { transform: rotate(45deg); }
+  .acc h3 { font-size: 1.05rem; margin: 0; }
+  .acc__body { padding: 0 1.1rem 1.1rem; }
+  .acc__refs {
+    font-family: var(--display);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 0.55rem;
+  }
+  .acc__closing { margin-top: 1.75rem; color: var(--mid); }
+  :global(.center) .acc__actions :global(.btn-row) { justify-content: center; }
+  @media (prefers-reduced-motion: reduce) {
+    .acc summary::after { transition: none; }
+  }
+</style>

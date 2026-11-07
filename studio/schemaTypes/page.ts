@@ -42,6 +42,7 @@ export default defineType({
                 'cardsSection',
                 'scheduleSection',
                 'stepsSection',
+                'accordionSection',
                 'gallerySection',
                 'scriptureSection',
                 'ctaBandSection',

@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
-import { eyebrow, heading, sectionPreview } from '../fields';
+import { background, buttons, eyebrow, heading, sectionPreview } from '../fields';
 
 export default defineType({
   name: 'stepsSection',
@@ -12,7 +12,7 @@ export default defineType({
       name: 'steps',
       title: 'Steps',
       type: 'array',
-      description: 'Numbered automatically, in this order.',
+      description: 'Shown in this order.',
       validation: (Rule) => Rule.required().min(1),
       of: [
         defineArrayMember({
@@ -27,7 +27,16 @@ export default defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'timeline',
+      title: 'Show as a timeline',
+      type: 'boolean',
+      description: 'Swaps the numbers for a line of dots. Good when each title is a date.',
+      initialValue: false,
+    }),
     defineField({ name: 'closing', title: 'Closing note', type: 'text', rows: 2 }),
+    buttons(1),
+    background,
   ],
   preview: sectionPreview('Steps'),
 });

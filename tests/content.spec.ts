@@ -87,6 +87,19 @@ test('Request to join shows the group on this site, then goes to Church Center',
   await expect(page.locator('dialog[open]')).toHaveCount(0);
 });
 
+// Runs once a published page uses this section; About does when its rewrite goes live.
+test('a tap-to-open row opens, and a verse inside it does not close it', async ({ page }) => {
+  await page.goto('/about');
+  const row = page.locator('details.acc__item').first();
+  if ((await row.count()) === 0) test.skip(true, 'no published page uses this section yet');
+  await expect(row).not.toHaveAttribute('open');
+  await row.locator('summary').click();
+  await expect(row).toHaveAttribute('open');
+  await expect(row.locator('.acc__body')).toBeVisible();
+  await row.locator('.sref').first().click();
+  await expect(row).toHaveAttribute('open');
+});
+
 test('the footer links from Site Settings open the right places', async ({ page }) => {
   await page.goto('/');
   const footer = page.locator('footer');

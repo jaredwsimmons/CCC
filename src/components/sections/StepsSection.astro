@@ -1,12 +1,15 @@
 ---
-// A numbered how-to.
+// A numbered how-to, or a dated timeline.
 import Section from '../Section.astro';
+import Buttons from '../Buttons.astro';
+import { variantFor } from '../../lib/links';
 const { s } = Astro.props;
 type Step = { _key: string; title?: string; text?: string };
 const steps = (s.steps ?? []) as Step[];
+const variant = variantFor(s.background);
 ---
-<Section eyebrow={s.eyebrow} title={s.heading}>
-  <ol class="steps" data-reveal>
+<Section variant={variant} eyebrow={s.eyebrow} title={s.heading}>
+  <ol class:list={['steps', s.timeline && 'steps--timeline']} data-reveal>
     {steps.map((st) => (
       <li>
         <div>
@@ -17,6 +20,7 @@ const steps = (s.steps ?? []) as Step[];
     ))}
   </ol>
   {s.closing && <p class="measure closing" data-reveal>{s.closing}</p>}
+  <Buttons list={s.buttons} dark={variant === 'navy'} solid={0} />
 </Section>
 
 <style>
@@ -51,5 +55,18 @@ const steps = (s.steps ?? []) as Step[];
     place-items: center;
   }
   .steps h3 { font-size: 1.05rem; margin-bottom: 0.2rem; }
+  .steps--timeline { gap: 0; }
+  .steps--timeline li { padding: 0 0 1.25rem 2rem; min-height: 0; }
+  .steps--timeline li:last-child { padding-bottom: 0; }
+  .steps--timeline li::before { content: ""; top: 0.3rem; width: 0.8rem; height: 0.8rem; }
+  .steps--timeline li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: calc(0.4rem - 1px);
+    top: 1.1rem;
+    bottom: -0.3rem;
+    width: 2px;
+    background: var(--gold);
+  }
   .closing { margin-top: 2rem; font-style: italic; color: var(--mid); }
 </style>

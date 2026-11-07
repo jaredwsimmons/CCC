@@ -1,4 +1,6 @@
 ---
+import Scripturize from './Scripturize.astro';
+
 interface Props {
   variant?: 'default' | 'alt' | 'white' | 'navy';
   tight?: boolean;
@@ -37,7 +39,7 @@ const hasHead = eyebrow || title || lead;
       <div class="section-head" data-reveal>
         {eyebrow && <p class="eyebrow">{eyebrow}</p>}
         {title && <h2>{title}</h2>}
-        {lead && <p class="lead" style="margin-top:0.7rem">{lead}</p>}
+        {lead && <p class="lead" style="margin-top:0.7rem"><Scripturize text={lead} /></p>}
       </div>
     )}
     <slot />
