@@ -115,3 +115,30 @@ test('the menu runs in the order the church asked for', async ({ page }) => {
   const labels = await page.locator('header nav > ul > li > a:not(.btn)').allTextContents();
   expect(labels.map((l) => l.trim())).toEqual(["I'm New", 'About', 'Ministries', 'Calendar', 'Media']);
 });
+
+test('a menu with a dropdown shows as current on any page in its list', async ({ page }) => {
+  await page.goto('/men');
+  await expect(page.locator('header nav > ul > li > a', { hasText: 'Ministries' })).toHaveAttribute('aria-current', 'page');
+  await expect(page.locator('header nav > ul > li > a', { hasText: 'About' })).not.toHaveAttribute('aria-current', 'page');
+});
+
+test("the This Sunday card on I'm New shows the times and address from Site Settings", async ({ page }) => {
+  await page.goto('/imnew');
+  const card = page.locator('.visit');
+  await expect(card).toContainText('9:00 & 10:30 AM');
+  await expect(card).toContainText('101 Chelsea Park Dr., Chelsea, AL 35043');
+  await expect(card.getByRole('link', { name: 'Get directions' })).toHaveAttribute('href', /maps/);
+});
+
+test('the homepage video can be paused and played again', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const toggle = page.locator('[data-video-toggle]');
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.locator('.hero__video').evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
+  await expect(toggle).toHaveAccessibleName('Play background video');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+});

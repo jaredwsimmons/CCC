@@ -1,0 +1,58 @@
+---
+// The "This Sunday" card: the service times and address from Site Settings, with a button
+// and a directions link. It overlaps the page header above it (.lift).
+import Buttons from '../Buttons.astro';
+import { shortTimes } from '../../lib/format';
+const { s, settings } = Astro.props;
+const a = settings?.address;
+const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
+const times = shortTimes(settings?.serviceTimes);
+const directions = a?.mapsUrl && s.directionsLabel ? a.mapsUrl : null;
+---
+{(times || address) && (
+  <section class="lift visit">
+    <div class="wrap">
+      <div class="panel lift-shadow card-visit">
+        <div class="when">
+          {s.label && <p class="label">{s.label}</p>}
+          {times && <p class="times">{times}</p>}
+          {s.subline && <p class="sub">{s.subline}</p>}
+        </div>
+        <ul class="facts">
+          {address && (
+            <li>
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <span>{address}</span>
+            </li>
+          )}
+          {s.note && (
+            <li>
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9.5" r="2.2"/><path d="M16.5 14.2c2.6.4 4.5 2.6 4.5 5.3"/></svg>
+              <span>{s.note}</span>
+            </li>
+          )}
+        </ul>
+        <div class="actions">
+          <Buttons list={s.buttons} bare />
+          {directions && <a class="btn btn--outline" href={directions} target="_blank" rel="noopener noreferrer">{s.directionsLabel}</a>}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .card-visit { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem 3rem; }
+  .when { flex: 1 1 240px; min-width: 0; }
+  .label {
+    font-family: var(--display); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--blue);
+  }
+  .times { font-family: var(--display); font-weight: 600; font-size: clamp(1.8rem, 3.4vw, 2.4rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--navy); margin-top: 0.15rem; }
+  .sub { color: var(--mid); margin-top: 0.2rem; }
+  .facts { flex: 1 1 280px; min-width: 0; list-style: none; display: grid; gap: 0.7rem; font-size: 1rem; }
+  .facts li { display: flex; gap: 0.75rem; align-items: flex-start; }
+  .facts svg { flex: none; margin-top: 0.2rem; color: var(--blue); }
+  .actions { flex: 0 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+  @media (max-width: 620px) { .actions { flex-basis: 100%; } }
+</style>

@@ -1,8 +1,18 @@
 - main:
   - paragraph: I'm New
   - heading "What to Expect" [level=1]
+  - paragraph: The best way to get to know us is a Sunday morning. We'd love to meet you.
+  - img "Aerial view of the Chelsea Community Church building beside the Chelsea Park clocktower"
+  - paragraph: This Sunday
+  - paragraph: /9:\d+ & \d+:\d+ AM/
+  - paragraph: Worship & Community Groups
+  - list:
+    - listitem: /\d+ Chelsea Park Dr\., Chelsea, AL \d+/
+    - listitem: Programming for kids and students at both hours
   - link "Let Us Know You're Coming!":
-    - /url: https://chelseachurch.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+  - link "Get directions":
+    - /url: https://maps.app.goo.gl/2eQ6opgKF2mtYANx8
   - paragraph: Every week
   - heading "The rhythm of our week" [level=2]
   - text: Worship
@@ -37,7 +47,8 @@
   - heading "Prefer to connect in person?" [level=3]
   - paragraph: If you’re not ready to fill out the form or prefer to connect in person, that’s okay too! Be sure to stop by our Connections Desk — it’s just past the Worship Room. There, you can learn more about who we are, what we’re about, and pick up a special gift we’ve prepared just for you. We’re so glad you’re here!
   - link "Let Us Know You're Coming!":
-    - /url: https://chelseachurch.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+  - img "Guests and members connecting in the church lobby on a Sunday morning"
   - heading "Join us this Sunday" [level=2]
   - paragraph: The best way to get to know us is a Sunday morning. We'd love to meet you.
   - link "Get directions":

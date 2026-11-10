@@ -183,6 +183,39 @@ p + p { margin-top: 0.9em; }
   margin-bottom: 0.55rem;
 }
 
+/* ---- panels: rounded surfaces in place of full-width bands ----
+   White on the paper page; one navy panel per page at most; pale blue for a quiet aside. */
+.panel { background: #fff; border-radius: 24px; padding: clamp(1.5rem, 3vw, 2.25rem); }
+.panel--tint { background: var(--tint); }
+.panel--navy { background: var(--navy); color: var(--cream); }
+.panel--navy h2, .panel--navy h3 { color: #fff; }
+.panel--navy p { color: rgba(251, 249, 244, 0.85); }
+.panel--navy .eyebrow { color: rgba(251, 249, 244, 0.75); }
+
+/* the pill label with a gold dot, used above page titles */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: var(--tint);
+  font-family: var(--display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--navy);
+}
+.chip::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); flex: none; }
+.hero .chip { background: var(--navy-deep); color: #fff; }
+
+/* A block that overlaps the bottom of the hero above it (quick links, the This Sunday card).
+   The hero grows by the same amount so nothing in it is covered. */
+:root { --lift: clamp(3rem, 6vw, 4.5rem); }
+.lift { position: relative; z-index: 2; margin-top: calc(-1 * var(--lift)); }
+:is(.hero, .phero--paper):has(+ .lift) { padding-bottom: var(--lift); }
+.lift-shadow { box-shadow: 0 16px 32px -20px rgba(18, 42, 61, 0.45); }
+
 /* photo card / framed image */
 .photo {
   border-radius: var(--r);

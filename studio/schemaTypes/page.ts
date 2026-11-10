@@ -47,6 +47,7 @@ export default defineType({
                 'scriptureSection',
                 'ctaBandSection',
                 'weeklyRhythmSection',
+                'visitSection',
                 'longTextSection',
               ],
             },

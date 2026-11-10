@@ -29,10 +29,11 @@ export const homeQuery = /* groq */ `
   *[_id == "home"][0]{
     ...,
     hero{ ..., ${BUTTONS} },
-    welcome{ ..., ${BUTTONS} },
+    quickLinks[]{ ..., "link": link${BUTTON} },
+    week{ ..., "calendarLink": calendarLink${BUTTON} },
+    places{ ..., tiles[]{ ..., "link": link${BUTTON} }, "moreLinks": moreLinks[]${BUTTON} },
     currentSeries{ ..., ${BUTTONS} },
-    app{ ..., ${BUTTONS} },
-    contact{ ..., cards[]{ ..., "link": link${BUTTON} } }
+    app{ ..., ${BUTTONS} }
   }
 `;
 
