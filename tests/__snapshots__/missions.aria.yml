@@ -6,10 +6,12 @@
   - paragraph: Jared Simmons
   - paragraph: Serving and praying over this ministry — reach out anytime.
   - paragraph: Monthly missions highlight
-  - heading "The Big Kaboom" [level=2]
-  - paragraph: /The Big Kaboom is coming up on Saturday, June \d+, and Chelsea Community Church is partnering with other local churches to provide a free Kids Zone for families in our community! The Kids Zone will feature inflatables, face painting, games, and other fun activities for children\. We're looking for volunteers from 7:\d+–7:\d+ PM to assist with activities in the Kids Zone or help at our church booth\. We'd love for you to join us — contact Pastor Ben for more information\./
-  - link "Contact Pastor Ben":
-    - /url: mailto:ben@chelseachurch.com
+  - heading "This month's partner" [level=2]
+  - paragraph: Each month, our Men's and Women's ministries sponsor one of our mission partners directly. Visit their pages to see who they're supporting this month and how you can be part of it.
+  - link "Men's Ministry":
+    - /url: /men
+  - link "Women's Ministry":
+    - /url: /women
   - paragraph: Local mission partners
   - heading "Serving our neighbors" [level=2]
   - img "Blanket Fort Hope logo"

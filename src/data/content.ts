@@ -351,8 +351,8 @@ export const missions = {
     ref: 'Matthew 28:19–20a',
   },
   highlight: {
-    title: 'Monthly Missions Highlight',
-    body: "The Big Kaboom is coming up on Saturday, June 27, and Chelsea Community Church is partnering with other local churches to provide a free Kids Zone for families in our community! The Kids Zone will feature inflatables, face painting, games, and other fun activities for children. We're looking for volunteers from 7:00–7:45 PM to assist with activities in the Kids Zone or help at our church booth. We'd love for you to join us — contact Pastor Ben for more information.",
+    title: "This month's partner",
+    body: "Each month, our Men's and Women's ministries sponsor one of our mission partners directly. Visit their pages to see who they're supporting this month and how you can be part of it.",
   },
   local: [
     { name: 'Blanket Fort Hope', focus: 'Child trafficking survivors', url: 'https://blanketforthope.org/', newsletter: 'https://blanketforthope.org/around-the-fort-blog/' },

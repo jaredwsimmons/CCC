@@ -621,10 +621,10 @@ function pages(): SanityDoc[] {
       sections: [
         section('textPhotoSection', {
           eyebrow: 'Monthly missions highlight',
-          heading: 'The Big Kaboom',
+          heading: missions.highlight.title,
           body: paras(missions.highlight.body),
           photoSide: 'right',
-          buttons: [btn.email('Contact Pastor Ben', 'missions')],
+          buttons: [btn.page("Men's Ministry", 'page-men'), btn.page("Women's Ministry", 'page-women')],
           background: 'plain',
         }),
         section('cardsSection', { eyebrow: 'Local mission partners', heading: 'Serving our neighbors', columns: 3, background: 'tinted', cards: partnerCards(missions.local) }),

@@ -65,7 +65,8 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
      card, the words centered below, and the links at the foot so a row lines up. */
   .card--logo { padding: 0; overflow: hidden; text-align: center; }
   .logo { height: 120px; display: flex; align-items: center; justify-content: center; padding: 20px 28px; border-bottom: 1px solid var(--hair); box-sizing: border-box; }
-  .logo img { max-height: 100%; max-width: 100%; object-fit: contain; }
+  /* rounded like the site's photos, so a picture used as a logo isn't a hard-cornered box */
+  .logo img { max-height: 100%; max-width: 100%; object-fit: contain; border-radius: 10px; }
   /* logos saved with a white background (JPGs) blend into the white band instead of showing a box */
   .logo:not(.logo--dark) img { mix-blend-mode: multiply; }
   /* a white logo gets a navy band */
