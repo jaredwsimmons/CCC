@@ -206,7 +206,6 @@ function home(): SanityDoc {
       heading: 'Announcements',
       count: 3,
       link: one(btn.page('See all announcements', 'page-announcements')),
-      videoLink: one(btn.url("Watch this week's announcements", '/announcements#videos')),
     },
     currentSeries: {
       eyebrow: 'Current sermon series',
