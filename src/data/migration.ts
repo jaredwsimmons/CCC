@@ -184,7 +184,6 @@ function home(): SanityDoc {
     _id: 'home',
     _type: 'home',
     hero: {
-      eyebrow: 'A church family in Chelsea, Alabama',
       title: 'Pursuing God.\nPursuing others.',
       text: 'Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.',
       image: img(h.hero.image, h.hero.imageAlt),

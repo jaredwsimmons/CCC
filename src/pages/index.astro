@@ -292,8 +292,8 @@ const ICONS: Record<string, string> = {
   .frame { position: relative; border-radius: var(--r); overflow: hidden; background: var(--navy-deep); }
   .frame img { width: 100%; height: 100%; object-fit: cover; }
   .frame--main { flex: 3 1 0; min-width: 0; height: clamp(280px, 32vw, 420px); }
-  .side { flex: 2 1 0; min-width: 0; display: grid; gap: 1rem; margin-top: 2.25rem; }
-  .side .frame { height: clamp(130px, 15vw, 196px); }
+  /* the two smaller photos split the main photo's height, so their tops and bottoms line up with it */
+  .side { flex: 2 1 0; min-width: 0; display: grid; grid-template-rows: 1fr 1fr; gap: 1rem; height: clamp(280px, 32vw, 420px); }
   @media (max-width: 860px) {
     .side { display: none; }
     .frame--main { height: clamp(210px, 55vw, 360px); }
