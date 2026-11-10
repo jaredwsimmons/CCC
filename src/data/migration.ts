@@ -793,7 +793,7 @@ function pages(): SanityDoc[] {
 
     // Other Ministries: a card for each ministry not in the menu, with its deacons and a link to its page.
     page('/other-ministries', 'Other Ministries', {
-      header: header({ eyebrow: 'Ministries', title: 'Other Ministries' }),
+      header: header({ eyebrow: 'Ministries', title: "But wait, there's more!" }),
       sections: [
         section('cardsSection', {
           columns: 3,
@@ -802,6 +802,10 @@ function pages(): SanityDoc[] {
             { _type: 'card', _key: key(), title: 'Connections', text: connections.body[0], buttons: [btn.page('More about Connections', 'page-connections')], ministry: ref('ministry-connections') },
             { _type: 'card', _key: key(), title: 'Prayer', text: 'At Chelsea Community Church we desire to be a church where prayer is central. We invite you to join us as we pray for our church, community, and world.', buttons: [btn.page('More about Prayer', 'page-prayer')], ministry: ref('ministry-prayer') },
             { _type: 'card', _key: key(), title: 'Worship', text: worship.body[0], buttons: [btn.page('More about Worship', 'page-worship')], ministry: ref('ministry-worship') },
+            // The other ministries with deacons, as stubs until each has its own words.
+            ...c.leaders.deacons
+              .filter((d) => ['Benevolence', 'Building and Grounds', 'Communion', 'Hospitality', 'Member Care', 'Senior Adults', 'Singles', 'Special Events', 'Teller'].includes(d.area))
+              .map((d) => ({ _type: 'card', _key: key(), title: d.area, text: 'More about this ministry is coming soon.', ministry: ref(`ministry-${slug(d.area)}`) })),
           ],
         }),
       ],

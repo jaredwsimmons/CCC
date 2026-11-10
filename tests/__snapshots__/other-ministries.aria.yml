@@ -1,6 +1,6 @@
 - main:
   - paragraph: Ministries
-  - heading "Other Ministries" [level=1]
+  - heading "But wait, there's more!" [level=1]
   - heading "Connections" [level=3]
   - paragraph: Our connections team is available each Sunday morning to assist every guest and church member. We will help everyone get connected to age specific ministries, community groups and events. We will also be happy to answer any questions that you may have and share information about our church.
   - paragraph:
@@ -22,3 +22,39 @@
       - /url: /worship
   - paragraph: Deacon
   - paragraph: Tanner Cain
+  - heading "Benevolence" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacons
+  - paragraph: Brent Cool, Della Pender
+  - heading "Building and Grounds" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacons
+  - paragraph: Trey Garrett, Daniel Ringpfeil
+  - heading "Communion" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacons
+  - paragraph: Mike & Georgia Gabriel
+  - heading "Hospitality" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacons
+  - paragraph: April Bower, Jordan Hausen
+  - heading "Member Care" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacon
+  - paragraph: Stephanie Thomas
+  - heading "Senior Adults" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacon
+  - paragraph: Dave Swanson
+  - heading "Singles" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacon
+  - paragraph: Linda Allison
+  - heading "Special Events" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacon
+  - paragraph: Tyler Stevens
+  - heading "Teller" [level=3]
+  - paragraph: More about this ministry is coming soon.
+  - paragraph: Deacon
+  - paragraph: Terrell Cooley
