@@ -371,7 +371,7 @@ export const missions = {
     { name: 'International Sports Chaplains', focus: 'Evangelism at the Olympics', url: 'http://ischaplains.org', newsletter: 'https://www.ischaplains.org/items' },
     { name: "Simone's Kids", focus: 'Orphan care in Uganda', url: 'https://www.simoneskids.org/', newsletter: 'https://www.simoneskids.org/news/' },
     { name: 'Bringing Good News', focus: 'Least, Last, and Lost around the world', url: 'https://www.bringinggoodnews.org/', newsletter: 'https://www.bringinggoodnews.org/blog/' },
-    { name: 'Two Feathers', focus: 'Choctaw Native Americans', url: 'https://www.facebook.com/twofeathersministries/' },
+    { name: 'Two Feathers', focus: 'Choctaw Native Americans', url: 'https://twofeathersministries.com/' },
     { name: 'Overtoun House', focus: 'Centre for Hope and Healing', url: 'https://overtounhouse.org' },
   ],
   contact: site.contacts.missions,

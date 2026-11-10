@@ -12,6 +12,7 @@
     - /url: mailto:ben@chelseachurch.com
   - paragraph: Local mission partners
   - heading "Serving our neighbors" [level=2]
+  - img "Blanket Fort Hope logo"
   - heading "Blanket Fort Hope" [level=3]
   - paragraph: Child trafficking survivors
   - paragraph:
@@ -19,6 +20,7 @@
       - /url: https://blanketforthope.org/
     - link "Newsletter":
       - /url: https://blanketforthope.org/around-the-fort-blog/
+  - img "Alabama Childhood Food Solutions logo"
   - heading "Alabama Childhood Food Solutions" [level=3]
   - paragraph: Food insecure families
   - paragraph:
@@ -26,6 +28,7 @@
       - /url: https://alabamachildhoodfood.com/
     - link "Newsletter":
       - /url: https://www.alabamachildhoodfood.com/blog
+  - img "Songs in the Night logo"
   - heading "Songs in the Night" [level=3]
   - paragraph: Widow care
   - paragraph:
@@ -33,6 +36,7 @@
       - /url: http://widowsong.org
     - link "Newsletter":
       - /url: https://www.widowsong.org/blog
+  - img "Brother Bryan Mission logo"
   - heading "Brother Bryan Mission" [level=3]
   - paragraph: Men in need
   - paragraph:
@@ -40,11 +44,13 @@
       - /url: https://bbmission.com/
     - link "Newsletter":
       - /url: https://bbmission.com/news-events/
+  - img "Hearts in Hands logo"
   - heading "Hearts in Hands" [level=3]
   - paragraph: Community needs
   - paragraph:
     - link "Website":
       - /url: https://heartsinhands.org/
+  - img "LoveLife logo"
   - heading "LoveLife" [level=3]
   - paragraph: Expecting mothers and orphans
   - paragraph:
@@ -52,6 +58,7 @@
       - /url: https://lovelife.org/
     - link "Newsletter":
       - /url: https://lovelife.org/stories
+  - img "Children's Village logo"
   - heading "Children's Village" [level=3]
   - paragraph: Foster care
   - paragraph:
@@ -59,6 +66,7 @@
       - /url: https://www.childrensvillagebham.com
   - heading "God's Outreach" [level=3]
   - paragraph: Families in need
+  - img "King's Home logo"
   - heading "King's Home" [level=3]
   - paragraph: Hope for the abused
   - paragraph:
@@ -66,11 +74,13 @@
       - /url: https://www.kingshome.com
   - paragraph: National & international mission partners
   - heading "To the ends of the earth" [level=2]
+  - img "All4Jesus Belize logo"
   - heading "All4Jesus Belize" [level=3]
   - paragraph: Connecting American and Belizean believers to grow the church
   - paragraph:
     - link "Website":
       - /url: https://all4jesusbelize.org
+  - img "Regen Foundation logo"
   - heading "Regen Foundation" [level=3]
   - paragraph: Children and families in Romania
   - paragraph:
@@ -78,6 +88,7 @@
       - /url: https://www.regenfoundation.org/index.php/en/
     - link "Newsletter":
       - /url: https://www.regenfoundation.org/index.php/en/newsletters
+  - img "International Sports Chaplains logo"
   - heading "International Sports Chaplains" [level=3]
   - paragraph: Evangelism at the Olympics
   - paragraph:
@@ -85,6 +96,7 @@
       - /url: http://ischaplains.org
     - link "Newsletter":
       - /url: https://www.ischaplains.org/items
+  - img "Simone's Kids logo"
   - heading "Simone's Kids" [level=3]
   - paragraph: Orphan care in Uganda
   - paragraph:
@@ -92,6 +104,7 @@
       - /url: https://www.simoneskids.org/
     - link "Newsletter":
       - /url: https://www.simoneskids.org/news/
+  - img "Bringing Good News logo"
   - heading "Bringing Good News" [level=3]
   - paragraph: Least, Last, and Lost around the world
   - paragraph:
@@ -99,11 +112,13 @@
       - /url: https://www.bringinggoodnews.org/
     - link "Newsletter":
       - /url: https://www.bringinggoodnews.org/blog/
+  - img "Two Feathers Ministries logo"
   - heading "Two Feathers" [level=3]
   - paragraph: Choctaw Native Americans
   - paragraph:
     - link "Website":
-      - /url: https://www.facebook.com/twofeathersministries/
+      - /url: https://twofeathersministries.com/
+  - img "Overtoun House logo"
   - heading "Overtoun House" [level=3]
   - paragraph: Centre for Hope and Healing
   - paragraph:
