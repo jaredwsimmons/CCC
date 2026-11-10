@@ -28,3 +28,20 @@ test.describe('announcement summaries', () => {
     expect(cleanSummary('<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>')).toBe('<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>');
   });
 });
+
+test.describe('YouTube playlist links', () => {
+  test.beforeEach(({}, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'no browser involved; run once');
+  });
+
+  test('give their playlist ID however staff paste them', async () => {
+    const { playlistIdFrom } = await import('../src/lib/feeds');
+    const id = 'PLcnuF3joGnBFOGwWqS3cVxYo2br45RiUC';
+    expect(playlistIdFrom(`https://www.youtube.com/playlist?list=${id}`)).toBe(id);
+    expect(playlistIdFrom(`https://youtube.com/playlist?list=${id}&si=abc123`)).toBe(id);
+    expect(playlistIdFrom(`https://www.youtube.com/watch?v=YoQhEfj8AgE&list=${id}&index=2`)).toBe(id);
+    expect(playlistIdFrom(` ${id} `)).toBe(id);
+    expect(playlistIdFrom('https://www.youtube.com/@chelsea_community_church')).toBeNull();
+    expect(playlistIdFrom('')).toBeNull();
+  });
+});

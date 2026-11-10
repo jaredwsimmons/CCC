@@ -20,6 +20,7 @@ import announcementsSection from './announcementsSection';
 import latestMessageSection from './latestMessageSection';
 import calendarEventsSection from './calendarEventsSection';
 import recentVideosSection from './recentVideosSection';
+import playlistSection from './playlistSection';
 import podcastSection from './podcastSection';
 import leadersSection from './leadersSection';
 import deaconsSection from './deaconsSection';
@@ -48,6 +49,7 @@ export const sectionTypes = [
   latestMessageSection,
   calendarEventsSection,
   recentVideosSection,
+  playlistSection,
   podcastSection,
   leadersSection,
   deaconsSection,

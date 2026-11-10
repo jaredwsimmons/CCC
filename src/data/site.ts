@@ -97,6 +97,8 @@ export const site = {
     youtubeFeed:
       'https://www.youtube.com/feeds/videos.xml?channel_id=UCp-U4UoiyeroDpOyrygy5YA',
     podcastFeed: 'https://anchor.fm/s/10452dab4/podcast/rss',
+    announcementsPlaylist: 'https://www.youtube.com/playlist?list=PLcnuF3joGnBFOGwWqS3cVxYo2br45RiUC',
+    specialEventsPlaylist: 'https://www.youtube.com/playlist?list=PLcnuF3joGnBH59iph7UacFuyrofXRJOUs',
     seriesPlaylist:
       'https://youtube.com/playlist?list=PLcnuF3joGnBHLhefAXRk4zswRf2Ti73Hx&si=bEs8rxO9QK1nLbbv',
   },

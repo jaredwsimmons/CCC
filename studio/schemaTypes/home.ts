@@ -99,6 +99,7 @@ export default defineType({
         defineField({ name: 'heading', title: 'Heading', type: 'string' }),
         defineField({ name: 'count', title: 'How many to show', type: 'number', options: { list: [3, 6] }, initialValue: 3 }),
         defineField({ name: 'link', title: 'Link to all announcements', type: 'button' }),
+        defineField({ name: 'videoLink', title: 'Link to the announcement video', type: 'button', description: 'Optional, e.g. “Watch this week’s announcements” to /announcements#videos.' }),
       ],
     }),
     defineField({

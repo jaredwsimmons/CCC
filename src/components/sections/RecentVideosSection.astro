@@ -1,12 +1,15 @@
 ---
-// The newest services from the church's YouTube channel, live.
+// The newest uploads from the church's YouTube channel, live, minus any video that's in one of the
+// section's "leave out" playlists (Weekly Announcements, Special Events).
 import Section from '../Section.astro';
 import Buttons from '../Buttons.astro';
 import RichText from '../RichText.astro';
-import { getYouTubeVideos } from '../../lib/feeds';
+import { getPlaylistVideos, getYouTubeVideos } from '../../lib/feeds';
 import { variantFor } from '../../lib/links';
 const { s } = Astro.props;
-const videos = (await getYouTubeVideos()).slice(0, s.count ?? 6);
+const [all, ...excluded] = await Promise.all([getYouTubeVideos(), ...((s.excludePlaylists ?? []) as string[]).map((p) => getPlaylistVideos(p))]);
+const skip = new Set(excluded.flat().map((v) => v.id));
+const videos = all.filter((v) => !skip.has(v.id)).slice(0, s.count ?? 6);
 const fmtDate = (d: Date | null) =>
   d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 ---
