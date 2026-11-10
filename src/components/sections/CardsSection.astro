@@ -19,12 +19,13 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
 <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading} lead={s.intro} center={Boolean(s.heading)}>
   <div class={`grid cols-${s.columns ?? 3}`}>
     {cards.map((c) => (
-      <div class="card" style="text-align:left" data-reveal>
+      <div class:list={['card', { 'card--logo': c.logoSrc }]} data-reveal>
         {c.logoSrc && (
           <div class:list={['logo', { 'logo--dark': c.logoOnDark }]}>
             <img src={c.logoSrc} alt={c.logo?.alt ?? ''} loading="lazy" />
           </div>
         )}
+        <div class="card__body">
         {c.label && <span class="scripture"><Scripturize text={c.label} /></span>}
         <h3>{c.title}</h3>
         {c.text && <p>{c.text}</p>}
@@ -37,6 +38,7 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
           </p>
         )}
         {c.ministry?.deacons?.length ? <div class="deacon-slot"><DeaconNote deacons={c.ministry.deacons} /></div> : null}
+        </div>
       </div>
     ))}
   </div>
@@ -55,14 +57,23 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
     border-radius: 50%;
     background: var(--gold);
   }
+  .card { text-align: left; display: flex; flex-direction: column; }
+  .card__body { display: flex; flex-direction: column; flex: 1; }
   .links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.6rem; font-size: 0.92rem; }
-  /* a logo at the top of the card: fixed height so titles line up across a row */
-  .logo { height: 72px; display: flex; align-items: center; margin-bottom: 1rem; }
-  .logo img { max-height: 100%; max-width: min(100%, 220px); object-fit: contain; }
-  /* a white logo sits on navy */
-  .logo--dark { background: var(--navy); border-radius: 12px; padding: 10px 16px; width: fit-content; max-width: 100%; box-sizing: border-box; }
+
+  /* A card with a logo: the logo centered in a full-width band of the same height on every
+     card, the words centered below, and the links at the foot so a row lines up. */
+  .card--logo { padding: 0; overflow: hidden; text-align: center; }
+  .logo { height: 120px; display: flex; align-items: center; justify-content: center; padding: 20px 28px; border-bottom: 1px solid var(--hair); box-sizing: border-box; }
+  .logo img { max-height: 100%; max-width: 100%; object-fit: contain; }
+  /* logos saved with a white background (JPGs) blend into the white band instead of showing a box */
+  .logo:not(.logo--dark) img { mix-blend-mode: multiply; }
+  /* a white logo gets a navy band */
+  .logo--dark { background: var(--navy); border-bottom-color: var(--navy); }
+  .card--logo .card__body { padding: 1.25rem 1.4rem 1.4rem; }
+  .card--logo .links { justify-content: center; margin-top: auto; padding-top: 0.9rem; }
+
   /* a card with a deacon badge keeps the badge at its foot, level across the row */
-  .card:has(.deacon-slot) { display: flex; flex-direction: column; }
   .deacon-slot { margin-top: auto; padding-top: 1.1rem; }
   .deacon-slot :global(.deacon) { width: 100%; }
 </style>
