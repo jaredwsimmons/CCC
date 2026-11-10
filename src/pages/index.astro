@@ -31,7 +31,7 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
 <Base description={home?.seo?.description}>
   {home?.announcement && (
     <div class="announcement" role="status">
-      <div class="wrap">{home.announcement}</div>
+      <div class="wrap"><span class="dot" aria-hidden="true"></span>{home.announcement}</div>
     </div>
   )}
 
@@ -130,8 +130,9 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
 </Base>
 
 <style>
-  .announcement { background: var(--gold); color: var(--navy); font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
-  .announcement .wrap { padding-block: 0.7rem; text-align: center; }
+  .announcement { background: var(--tint); color: var(--navy); font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
+  .announcement .wrap { padding-block: 0.7rem; display: flex; align-items: center; justify-content: center; gap: 0.6rem; text-align: center; }
+  .announcement .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); flex: none; }
 
   .home-hero .inner { padding-block: clamp(4.5rem, 13vw, 8.5rem); }
   .hero__video {

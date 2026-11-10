@@ -21,14 +21,15 @@
   --mid: #5c6b78;
   --hair: #e3dfd5;
   --cream: #fbf9f4;
+  --tint: #e6eef5; /* pale blue: quiet fills (announcement strip, icon wells, date chips) */
 
   /* type */
   --display: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --body: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   /* shape + rhythm */
-  --wrap: 1080px;
-  --r: 14px;
+  --wrap: 1200px;
+  --r: 20px;
   --r-sm: 9px;
   --shadow: 0 1px 2px rgba(25, 55, 79, 0.05), 0 8px 24px -12px rgba(25, 55, 79, 0.12);
   --hdr-h: 64px;
@@ -241,7 +242,7 @@ p + p { margin-top: 0.9em; }
 }
 
 /* ---- footer ---- */
-.site-footer { background: var(--navy); color: var(--cream); }
+.site-footer { background: var(--navy-deep); color: var(--cream); }
 .site-footer a { color: var(--cream); }
 .site-footer a:hover { color: var(--gold); }
 

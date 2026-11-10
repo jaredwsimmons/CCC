@@ -114,7 +114,13 @@ const isActive = (href: string) =>
     border-radius: 8px;
   }
   .nav a:not(.btn):hover { color: var(--blue); background: var(--paper); }
-  .nav a[aria-current='page'] { color: var(--blue); }
+  .nav a[aria-current='page'] {
+    color: var(--navy);
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 8px;
+  }
   .nav-give { margin-left: 0.4rem; }
 
   /* dropdowns */
