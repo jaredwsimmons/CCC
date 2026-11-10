@@ -3770,27 +3770,13 @@ export const bylaws = {
    "_type": "block",
    "_key": "be6",
    "style": "normal",
-   "markDefs": [
-    {
-     "_type": "link",
-     "_key": "be3",
-     "href": "https://docs.google.com/document/u/0/d/1p3udrhBXFaMOThxqw3sV-UnbVTGa0NkPWo589Z9jeRc/mobilebasic"
-    }
-   ],
+   "markDefs": [],
    "children": [
     {
      "_type": "span",
      "_key": "be4",
-     "text": "Reproduced in full from the Bylaws of Chelsea Community Church, Chelsea, Alabama. The official copy is maintained by the Church Clerk, and — upon request — members are furnished copies of the Constitution and these Bylaws (Article XIII). ",
+     "text": "Reproduced in full from the Bylaws of Chelsea Community Church, Chelsea, Alabama. The official copy is maintained by the Church Clerk, and — upon request — members are furnished copies of the Constitution and these Bylaws (Article XIII).",
      "marks": []
-    },
-    {
-     "_type": "span",
-     "_key": "be5",
-     "text": "View the official document ↗",
-     "marks": [
-      "be3"
-     ]
     }
    ]
   }
