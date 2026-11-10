@@ -698,7 +698,7 @@ function pages(): SanityDoc[] {
           body: students.schedule.flatMap((s) => [block(s.when, 'h3'), block(s.what)]),
           photos: [photo(students.photo.src, students.photo.alt)],
           photoSide: 'left',
-          buttons: [btn.cc('Let us know your family is coming!', planVisit), btn.page('Summer events calendar', 'fixed-calendar')],
+          buttons: [btn.cc('Let us know your family is coming!', planVisit)],
           background: 'plain',
         }),
         upcoming('C3SM'),
@@ -745,7 +745,7 @@ function pages(): SanityDoc[] {
       header: header({ eyebrow: 'Ministries', title: 'Kids & Students', intro: "From preschool through high school, there's a place for your kids every Sunday morning." }),
       sections: [
         section('textPhotoSection', {
-          eyebrow: 'Preschool',
+          eyebrow: 'Newborn to Pre-K',
           heading: 'Preschool',
           body: paras('Preschool Worship at 9:00 AM and Preschool Community Groups at 10:30 AM every Sunday. Our Preschool Check-In desk is through the entrance on the right side of the building, past the Worship Room.'),
           photos: [photo(preschool.gallery[3], 'Two preschoolers painting at a table')],
@@ -754,7 +754,7 @@ function pages(): SanityDoc[] {
           background: 'plain',
         }),
         section('textPhotoSection', {
-          eyebrow: 'Kids',
+          eyebrow: 'Kindergarten through 4th grade',
           heading: 'Kids',
           body: paras(kids.mission),
           photos: [photo(preschool.gallery[4], 'Two children talking together at church')],
@@ -763,7 +763,7 @@ function pages(): SanityDoc[] {
           background: 'tinted',
         }),
         section('textPhotoSection', {
-          eyebrow: 'C3SM',
+          eyebrow: '5th through 12th grade',
           heading: 'Students',
           body: paras(students.intro),
           photos: [photo(students.photo.src, students.photo.alt)],

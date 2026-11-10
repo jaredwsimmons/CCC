@@ -2,7 +2,7 @@
   - paragraph: Ministries
   - heading "Kids & Students" [level=1]
   - paragraph: From preschool through high school, there's a place for your kids every Sunday morning.
-  - paragraph: Preschool
+  - paragraph: Newborn to Pre-K
   - heading "Preschool" [level=2]
   - paragraph: /Preschool Worship at 9:\d+ AM and Preschool Community Groups at \d+:\d+ AM every Sunday\. Our Preschool Check-In desk is through the entrance on the right side of the building, past the Worship Room\./
   - link "Pre-Register Your Family":
@@ -11,14 +11,14 @@
     - /url: /preschool
   - img "Two preschoolers painting at a table"
   - img "Two children talking together at church"
-  - paragraph: Kids
+  - paragraph: Kindergarten through 4th grade
   - heading "Kids" [level=2]
   - paragraph: Our Kids Ministry exists to train up children to pursue God and to pursue others. By providing a safe and loving environment, we create space for kids to explore their Bible and build strong, lasting relationships that mirror Christ’s love. We also champion the role of families, equipping them to pass on their own faith to their children.
   - link "Pre-Register Your Family":
     - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
   - link "More about Kids":
     - /url: /kids
-  - paragraph: C3SM
+  - paragraph: 5th through 12th grade
   - heading "Students" [level=2]
   - paragraph: C3SM is our church's ministry to middle and high school students. We disciple students to become lifelong proclaimers of the good news of Jesus!
   - link "More about C3SM":
