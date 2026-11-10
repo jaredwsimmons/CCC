@@ -91,6 +91,17 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'announcements',
+      title: 'Announcements',
+      type: 'object',
+      description: 'The newest announcements from Church Center (featured first), under “This week”. Edit the announcements themselves in Church Center.',
+      fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string' }),
+        defineField({ name: 'count', title: 'How many to show', type: 'number', options: { list: [3, 6] }, initialValue: 3 }),
+        defineField({ name: 'link', title: 'Link to all announcements', type: 'button' }),
+      ],
+    }),
+    defineField({
       name: 'places',
       title: 'Find your place',
       type: 'object',

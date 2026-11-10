@@ -202,6 +202,11 @@ function home(): SanityDoc {
       comingUpLabel: 'Coming up',
       calendarLink: one(btn.page('Full calendar', 'fixed-calendar')),
     },
+    announcements: {
+      heading: 'Announcements',
+      count: 3,
+      link: one(btn.page('See all announcements', 'page-announcements')),
+    },
     places: {
       heading: 'Find your place',
       tiles: [
@@ -773,6 +778,15 @@ function pages(): SanityDoc[] {
         ),
       ],
       seo: seo('Preschool, Kids and Students (C3SM) at Chelsea Community Church — something for every age on Sunday mornings, and what’s coming up.'),
+    }),
+
+    // Announcements: the current Church Center announcements, live.
+    page('/announcements', 'Announcements', {
+      header: header({ eyebrow: "What's happening", title: 'Announcements' }),
+      sections: [
+        section('announcementsSection', { emptyText: paras('There are no announcements right now. Check back soon!') }),
+      ],
+      seo: seo('The latest announcements from Chelsea Community Church — events, sign-ups and ways to get involved.'),
     }),
 
     // Other Ministries: a card for each ministry not in the menu, with its deacons and a link to its page.

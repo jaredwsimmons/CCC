@@ -15,6 +15,7 @@ import registrationCardSection from './registrationCardSection';
 import openRegistrationsSection from './openRegistrationsSection';
 import groupsSection from './groupsSection';
 import featuredEventsSection from './featuredEventsSection';
+import announcementsSection from './announcementsSection';
 import latestMessageSection from './latestMessageSection';
 import calendarEventsSection from './calendarEventsSection';
 import recentVideosSection from './recentVideosSection';
@@ -41,6 +42,7 @@ export const sectionTypes = [
   openRegistrationsSection,
   groupsSection,
   featuredEventsSection,
+  announcementsSection,
   latestMessageSection,
   calendarEventsSection,
   recentVideosSection,

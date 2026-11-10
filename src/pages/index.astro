@@ -12,16 +12,21 @@ import { imagePosition, imageUrl, type SanityImage } from '../lib/image';
 import { buttonLink, inModal, type Button } from '../lib/links';
 import { dateParts, getUpcomingEvents, onePerSeries } from '../lib/calendar';
 import { fmtDuration, getPodcastEpisodes } from '../lib/feeds';
+import { getAnnouncements } from '../lib/announcements';
+import AnnouncementList from '../components/AnnouncementList.astro';
 
-const [home, settings, upcoming, episodes] = await Promise.all([
+const [home, settings, upcoming, episodes, announcements] = await Promise.all([
   sanityFetch<any>(homeQuery, {}, Astro.cookies),
   sanityFetch<any>(settingsQuery, {}, Astro.cookies),
   getUpcomingEvents(),
   getPodcastEpisodes(),
+  getAnnouncements(),
 ]);
 const hero = home?.hero ?? {};
 const week = home?.week ?? {};
 const places = home?.places ?? {};
+const news = home?.announcements ?? {};
+const newsItems = announcements.slice(0, news.count ?? 3);
 const series = home?.currentSeries;
 const app = home?.app ?? {};
 const titleLines: string[] = (hero.title ?? '').split('\n').filter(Boolean);
@@ -65,6 +70,7 @@ const events = onePerSeries(upcoming).slice(0, 4).map((e) => ({
   external: !e.register && Boolean(e.publicUrl),
 }));
 const calendarLink = linkFor(week.calendarLink);
+const newsLink = linkFor(news.link);
 type Tile = { _key: string; link?: Button; text?: string; image?: SanityImage; cta?: string; highlight?: boolean };
 const tiles = ((places.tiles ?? []) as Tile[])
   .map((t) => ({ ...t, to: linkFor(t.link), src: imageUrl(t.image, 900), alt: t.image?.alt ?? '', style: imagePosition(t.image) }))
@@ -190,6 +196,19 @@ const ICONS: Record<string, string> = {
             </div>
           )}
         </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Announcements from Church Center; hidden when there are none or Church Center is down -->
+  {news.heading && newsItems.length > 0 && (
+    <section class="section live-data">
+      <div class="wrap">
+        <div class="news-head" data-reveal>
+          <h2>{news.heading}</h2>
+          {newsLink && <a class="panel-link" {...newsLink.attrs}>{newsLink.label}</a>}
+        </div>
+        <div class="news-list"><AnnouncementList items={newsItems} layout="cards" /></div>
       </div>
     </section>
   )}
@@ -352,6 +371,10 @@ const ICONS: Record<string, string> = {
   .date__day { display: block; font-size: 1.45rem; font-weight: 600; line-height: 1.1; }
   .event__title { display: block; font-family: var(--display); font-weight: 600; font-size: 1.12rem; line-height: 1.25; }
   .event__when { display: block; font-size: 0.95rem; color: var(--mid); }
+
+  /* ---- announcements ---- */
+  .news-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1.5rem; }
+  .news-list { margin-top: 2rem; }
 
   /* ---- find your place ---- */
   .places { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin-top: 2rem; }

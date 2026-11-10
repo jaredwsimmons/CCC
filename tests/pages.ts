@@ -19,6 +19,7 @@ export const pages: { name: string; path: string; live?: boolean }[] = [
   { name: 'women', path: '/women' },
   { name: 'worship', path: '/worship' },
   { name: 'give', path: '/give' },
+  { name: 'announcements', path: '/announcements', live: true },
   { name: 'calendar', path: '/calendar', live: true },
   { name: 'groups', path: '/groups', live: true },
   { name: 'media', path: '/media', live: true },

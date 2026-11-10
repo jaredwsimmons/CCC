@@ -59,6 +59,7 @@ export default defineType({
                 'openRegistrationsSection',
                 'groupsSection',
                 'featuredEventsSection',
+                'announcementsSection',
                 'latestMessageSection',
                 'calendarEventsSection',
                 'recentVideosSection',

@@ -143,3 +143,16 @@ test('the homepage video can be paused and played again', async ({ page }) => {
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-pressed', 'false');
 });
+
+test('announcements from Church Center show on their page and on the homepage', async ({ page }) => {
+  await page.goto('/announcements');
+  await expect(page.getByRole('heading', { level: 1, name: 'Announcements' })).toBeVisible();
+  const items = page.locator('.ann__item');
+  if ((await items.count()) === 0) test.skip(true, 'Church Center has no announcements right now');
+  await expect(items.first().locator('h3')).not.toBeEmpty();
+  await page.goto('/');
+  const home = page.locator('.ann--cards .ann__item');
+  expect(await home.count()).toBeGreaterThan(0);
+  expect(await home.count()).toBeLessThanOrEqual(6);
+  await expect(page.getByRole('link', { name: 'See all announcements' })).toHaveAttribute('href', '/announcements');
+});
