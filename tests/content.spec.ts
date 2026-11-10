@@ -96,7 +96,8 @@ test('a tap-to-open row opens, and a verse inside it does not close it', async (
   await row.locator('summary').click();
   await expect(row).toHaveAttribute('open');
   await expect(row.locator('.acc__body')).toBeVisible();
-  await row.locator('.sref').first().click();
+  // The suite runs without an ESV key, so references are plain text (.sref-plain), not tooltips (.sref).
+  await row.locator('.sref, .sref-plain').first().click();
   await expect(row).toHaveAttribute('open');
 });
 
