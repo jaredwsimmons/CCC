@@ -75,6 +75,7 @@ const ROUTE_IDS: Record<string, string> = {
   '/media': 'fixed-media',
   '/give': 'fixed-give',
   '/leaders': 'fixed-leaders',
+  '/ministry': 'page-serve', // the Ministry page was /serve; its ID stayed
 };
 const idFor = (path: string) => ROUTE_IDS[path] ?? `page-${path.replace(/^\//, '')}`;
 
@@ -178,18 +179,16 @@ function siteSettings(): SanityDoc {
 
 function home(): SanityDoc {
   const h = c.home;
-  const tile = (link: object, text: string, extra: Record<string, unknown> = {}) => ({ _type: 'placeTile', _key: key(), link: one(link as { _key?: string }), text, ...extra });
   const quick = (icon: string, link: object, text: string) => ({ _type: 'quickLink', _key: key(), icon, link: one(link as { _key?: string }), text });
   return {
     _id: 'home',
     _type: 'home',
     hero: {
-      eyebrow: 'A church family in Chelsea, Alabama',
       title: 'Pursuing God.\nPursuing others.',
       text: 'Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.',
       image: img(h.hero.image, h.hero.imageAlt),
       photos: [photo(c.students.photo.src, c.students.photo.alt), photo(c.women.photo.src, c.women.photo.alt)],
-      buttons: [btn.url('Find your place', '/#place'), btn.page("I'm New", 'page-imnew')],
+      buttons: [btn.page('Find your place', 'page-serve'), btn.page("I'm New", 'page-imnew')],
     },
     quickLinks: [
       quick('visit', btn.page("I'm New", 'page-imnew'), 'What to expect'),
@@ -203,29 +202,10 @@ function home(): SanityDoc {
       comingUpLabel: 'Coming up',
       calendarLink: one(btn.page('Full calendar', 'fixed-calendar')),
     },
-    places: {
-      heading: 'Find your place',
-      tiles: [
-        tile(btn.page('Kids & Preschool', 'page-kids'), "A safe and loving environment where kids explore their Bible and build strong, lasting relationships that mirror Christ's love.", {
-          image: img('/images/preschool-6.webp', 'A preschool teacher playing basketball outside with a child'),
-        }),
-        tile(btn.page('Students', 'page-students'), c.students.intro.split('. ')[1] ?? c.students.intro, { image: img(c.students.photo.src, c.students.photo.alt) }),
-        tile(btn.page('Community Groups', 'fixed-groups'), 'Life is better together. Groups meet during both Sunday services and throughout the week.', {
-          cta: 'Groups open to join',
-          highlight: true,
-        }),
-        tile(btn.page('Women', 'page-women'), 'Authentic friendships at every stage of life.', { image: img(c.women.photo.src, c.women.photo.alt) }),
-        tile(btn.page('Men', 'page-men'), 'Weekly Bible study, time to deepen friendships, and service alongside our mission partners.', { cta: "Men's ministry" }),
-      ],
-      moreLabel: 'More ways to be part of it',
-      moreLinks: [
-        btn.page('Missions', 'page-missions'),
-        btn.page('Prayer', 'page-prayer'),
-        btn.page('Worship', 'page-worship'),
-        btn.page('Connections', 'page-connections'),
-        btn.page('Serve', 'page-serve'),
-        btn.page('Preschool', 'page-preschool'),
-      ],
+    announcements: {
+      heading: 'Announcements',
+      count: 3,
+      link: one(btn.page('See all announcements', 'page-announcements')),
     },
     currentSeries: {
       eyebrow: 'Current sermon series',
@@ -238,9 +218,39 @@ function home(): SanityDoc {
       eyebrow: h.app.eyebrow,
       heading: h.app.title,
       text: h.app.body,
+      image: img(h.app.image, h.app.imageAlt),
       buttons: [btn.url('App Store', site.app.ios), btn.url('Google Play', site.app.android), btn.url('Set up Church Center', cc.appSetup)],
     },
   };
+}
+
+// Find your place: ministry tiles and links to the rest (on the Ministry page, /ministry).
+function placesSection() {
+  const tile = (link: object, text: string, extra: Record<string, unknown> = {}) => ({ _type: 'placeTile', _key: key(), link: one(link as { _key?: string }), text, ...extra });
+  return section('placesSection', {
+    eyebrow: 'Our ministries',
+    heading: 'Find your place',
+    tiles: [
+      tile(btn.page('Kids & Preschool', 'page-kids'), "A safe and loving environment where kids explore their Bible and build strong, lasting relationships that mirror Christ's love.", {
+        image: img('/images/preschool-6.webp', 'A preschool teacher playing basketball outside with a child'),
+      }),
+      tile(btn.page('Students', 'page-students'), c.students.intro.split('. ')[1] ?? c.students.intro, { image: img(c.students.photo.src, c.students.photo.alt) }),
+      tile(btn.page('Community Groups', 'fixed-groups'), 'Life is better together. Groups meet during both Sunday services and throughout the week.', {
+        cta: 'Groups open to join',
+        highlight: true,
+      }),
+      tile(btn.page('Women', 'page-women'), 'Authentic friendships at every stage of life.', { image: img(c.women.photo.src, c.women.photo.alt) }),
+      tile(btn.page('Men', 'page-men'), 'Weekly Bible study, time to deepen friendships, and service alongside our mission partners.', { cta: "Men's ministry" }),
+    ],
+    moreLabel: 'More ways to be part of it',
+    moreLinks: [
+      btn.page('Missions', 'page-missions'),
+      btn.page('Prayer', 'page-prayer'),
+      btn.page('Worship', 'page-worship'),
+      btn.page('Connections', 'page-connections'),
+        btn.page('Preschool', 'page-preschool'),
+    ],
+  });
 }
 
 function fixedPages(): SanityDoc[] {
@@ -422,7 +432,7 @@ function pages(): SanityDoc[] {
           label: 'This Sunday',
           subline: c.home.hero.sub,
           note: 'Programming for kids and students at both hours',
-          buttons: [btn.cc("Let Us Know You're Coming!", planVisit)],
+          buttons: [btn.cc("Let us know you're coming!", planVisit)],
           directionsLabel: 'Get directions',
         }),
         section('weeklyRhythmSection', { eyebrow: 'Every week', heading: 'The rhythm of our week' }),
@@ -437,10 +447,9 @@ function pages(): SanityDoc[] {
           body: [block(imnew.coming.body), block('Prefer to connect in person?', 'h3'), block(imnew.coming.desk)],
           photos: [photo(imnew.coming.image, imnew.coming.imageAlt)],
           photoSide: 'right',
-          buttons: [btn.cc("Let Us Know You're Coming!", planVisit)],
+          buttons: [btn.cc("Let us know you're coming!", planVisit)],
           background: 'tinted',
         }),
-        cta('Join us this Sunday', "The best way to get to know us is a Sunday morning. We'd love to meet you.", btn.url('Get directions', site.address.maps)),
       ],
       seo: seo("What to expect on a Sunday at Chelsea Community Church — services at 9:00 & 10:30 AM, the rhythm of our week, what to wear, where to go first, and how to let us know you're coming."),
     }),
@@ -500,12 +509,15 @@ function pages(): SanityDoc[] {
       seo: seo(bylaws.hero.description),
     }),
 
-    page('/serve', 'Serve', {
+    // The Ministry page: its address changed from /serve (which redirects), its ID did not.
+    page('/ministry', 'Serve', {
+      _id: 'page-serve',
       header: header({ eyebrow: 'Ministries', title: 'Serve', intro: `${serve.verse.text} (${serve.verse.ref})` }),
       sections: [
+        placesSection(),
         section('textPhotoSection', {
           eyebrow: 'Teams Mobilizer',
-          heading: 'Find your place. Know your purpose.',
+          heading: 'Know your purpose',
           body: paras(...serve.intro),
           photos: [photo(serve.image.src, serve.image.alt)],
           photoSide: 'right',
@@ -519,12 +531,6 @@ function pages(): SanityDoc[] {
             { _type: 'card', _key: key(), title: 'It Is:', bullets: serve.itIs },
             { _type: 'card', _key: key(), title: 'It Is Not:', bullets: serve.itIsNot },
           ],
-        }),
-        section('stepsSection', {
-          eyebrow: 'Instructions',
-          heading: 'Three simple steps',
-          steps: serve.instructions.map((s) => ({ _type: 'step', _key: key(), title: s.title, text: s.body })),
-          closing: serve.closing,
         }),
         cta('Questions about serving?', 'Ben Stephenson, our Family Pastor, is the one to ask.', btn.email('Email Ben for more information!', 'missions')),
       ],
@@ -621,10 +627,10 @@ function pages(): SanityDoc[] {
       sections: [
         section('textPhotoSection', {
           eyebrow: 'Monthly missions highlight',
-          heading: 'The Big Kaboom',
+          heading: missions.highlight.title,
           body: paras(missions.highlight.body),
           photoSide: 'right',
-          buttons: [btn.email('Contact Pastor Ben', 'missions')],
+          buttons: [btn.page("Men's Ministry", 'page-men'), btn.page("Women's Ministry", 'page-women')],
           background: 'plain',
         }),
         section('cardsSection', { eyebrow: 'Local mission partners', heading: 'Serving our neighbors', columns: 3, background: 'tinted', cards: partnerCards(missions.local) }),
@@ -731,6 +737,79 @@ function pages(): SanityDoc[] {
         cta('Serve with music or tech', 'Musicians, vocalists, and behind-the-scenes hands all help make Sunday distraction-free.', btn.email(worship.serveCta.label, 'worship')),
       ],
       seo: seo('Blended worship — traditional and contemporary — reflecting a congregation of all generations at Chelsea Community Church.'),
+    }),
+
+    // Kids & Students: a summary of Preschool, Kids and Students, each linking to its own page,
+    // with one list of their upcoming events.
+    page('/kids-students', 'Kids & Students', {
+      header: header({ eyebrow: 'Ministries', title: 'Kids & Students', intro: "From preschool through high school, there's a place for your kids every Sunday morning." }),
+      sections: [
+        section('textPhotoSection', {
+          eyebrow: 'Preschool',
+          heading: 'Preschool',
+          body: paras('Preschool Worship at 9:00 AM and Preschool Community Groups at 10:30 AM every Sunday. Our Preschool Check-In desk is through the entrance on the right side of the building, past the Worship Room.'),
+          photos: [photo(preschool.gallery[3], 'Two preschoolers painting at a table')],
+          photoSide: 'right',
+          buttons: [btn.cc('Pre-Register Your Family', planVisit), btn.page('More about Preschool', 'page-preschool')],
+          background: 'plain',
+        }),
+        section('textPhotoSection', {
+          eyebrow: 'Kids',
+          heading: 'Kids',
+          body: paras(kids.mission),
+          photos: [photo(preschool.gallery[4], 'Two children talking together at church')],
+          photoSide: 'left',
+          buttons: [btn.cc('Pre-Register Your Family', planVisit), btn.page('More about Kids', 'page-kids')],
+          background: 'tinted',
+        }),
+        section('textPhotoSection', {
+          eyebrow: 'C3SM',
+          heading: 'Students',
+          body: paras(students.intro),
+          photos: [photo(students.photo.src, students.photo.alt)],
+          photoSide: 'right',
+          buttons: [btn.page('More about C3SM', 'page-students')],
+          background: 'plain',
+        }),
+        upcoming('Preschool, Kids, K-5, Students, C3SM'),
+        cta(
+          'Questions about Kids & Students?',
+          'Ben Stephenson, our Family Pastor, and Drew Blake, our Pastor of Students & Worship, would love to connect.',
+          btn.email('Email Ben', 'kids'),
+          btn.email('Email Drew', 'students'),
+        ),
+      ],
+      seo: seo('Preschool, Kids and Students (C3SM) at Chelsea Community Church — something for every age on Sunday mornings, and what’s coming up.'),
+    }),
+
+    // Announcements: the current Church Center announcements, live.
+    page('/announcements', 'Announcements', {
+      header: header({ eyebrow: "What's happening", title: 'Announcements' }),
+      sections: [
+        section('announcementsSection', { emptyText: paras('There are no announcements right now. Check back soon!') }),
+      ],
+      seo: seo('The latest announcements from Chelsea Community Church — events, sign-ups and ways to get involved.'),
+    }),
+
+    // Other Ministries: a card for each ministry not in the menu, with its deacons and a link to its page.
+    page('/other-ministries', 'Other Ministries', {
+      header: header({ eyebrow: 'Ministries', title: "But wait, there's more!" }),
+      sections: [
+        section('cardsSection', {
+          columns: 3,
+          background: 'plain',
+          cards: [
+            { _type: 'card', _key: key(), title: 'Connections', text: connections.body[0], buttons: [btn.page('More about Connections', 'page-connections')], ministry: ref('ministry-connections') },
+            { _type: 'card', _key: key(), title: 'Prayer', text: 'At Chelsea Community Church we desire to be a church where prayer is central. We invite you to join us as we pray for our church, community, and world.', buttons: [btn.page('More about Prayer', 'page-prayer')], ministry: ref('ministry-prayer') },
+            { _type: 'card', _key: key(), title: 'Worship', text: worship.body[0], buttons: [btn.page('More about Worship', 'page-worship')], ministry: ref('ministry-worship') },
+            // The other ministries with deacons, as stubs until each has its own words.
+            ...c.leaders.deacons
+              .filter((d) => ['Benevolence', 'Building and Grounds', 'Communion', 'Hospitality', 'Member Care', 'Senior Adults', 'Singles', 'Special Events', 'Teller'].includes(d.area))
+              .map((d) => ({ _type: 'card', _key: key(), title: d.area, text: 'More about this ministry is coming soon.', ministry: ref(`ministry-${slug(d.area)}`) })),
+          ],
+        }),
+      ],
+      seo: seo('More ministries at Chelsea Community Church: Connections, Prayer and Worship.'),
     }),
   ];
 }

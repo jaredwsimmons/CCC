@@ -1,0 +1,55 @@
+---
+// Church Center announcements (src/lib/announcements.ts): a row of cards on the homepage
+// ("cards", summary clipped) or the full list on the Announcements page ("list").
+// Summaries are cleaned to bare paragraphs, line breaks and bold/italic before they get here.
+import type { Announcement } from '../lib/announcements';
+
+interface Props { items: Announcement[]; layout?: 'cards' | 'list'; }
+const { items, layout = 'list' } = Astro.props;
+---
+<ul class:list={['ann', `ann--${layout}`]}>
+  {items.map((a) => (
+    <li class="ann__item" data-reveal>
+      {a.image && <img class="ann__img" src={a.image} alt="" loading="lazy" />}
+      <div class="ann__body">
+        {a.featured && <span class="ann__flag">Featured</span>}
+        <h3>{a.title}</h3>
+        {a.summary && <div class="ann__summary" set:html={a.summary} />}
+        {a.link && (
+          <a class="ann__link" href={a.link.href} target={a.link.external ? '_blank' : undefined} rel={a.link.external ? 'noopener noreferrer' : undefined}>
+            Learn more <span aria-hidden="true">→</span>
+          </a>
+        )}
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .ann { list-style: none; display: grid; gap: 1.25rem; }
+  .ann__item { background: #fff; border-radius: var(--r); overflow: hidden; display: flex; text-align: left; }
+  .ann__img { object-fit: cover; aspect-ratio: 16 / 9; }
+  .ann__body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 1.25rem 1.4rem 1.4rem; flex: 1; min-width: 0; }
+  .ann__body h3 { font-size: 1.2rem; }
+  .ann__flag {
+    font-family: var(--display); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--navy); background: var(--tint); padding: 0.2rem 0.65rem; border-radius: 999px;
+  }
+  .ann__flag::before { content: "★ "; color: var(--gold-deep); }
+  .ann__summary { color: var(--mid); font-size: 0.98rem; }
+  .ann__summary :global(p + p) { margin-top: 0.7em; }
+  .ann__link { margin-top: auto; padding-top: 0.4rem; font-family: var(--display); font-weight: 600; font-size: 0.95rem; text-decoration: none; }
+
+  /* homepage: cards side by side, picture on top, summary clipped to a few lines */
+  .ann--cards { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+  .ann--cards .ann__item { flex-direction: column; }
+  .ann--cards .ann__img { width: 100%; }
+  .ann--cards .ann__summary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
+
+  /* Announcements page: one per row, picture beside the words (above them on phones) */
+  .ann--list .ann__img { width: min(38%, 360px); align-self: flex-start; margin: 1.25rem 0 1.25rem 1.25rem; border-radius: 14px; flex: none; }
+  @media (max-width: 700px) {
+    .ann--list .ann__item { flex-direction: column; }
+    .ann--list .ann__img { width: calc(100% - 2rem); margin: 1rem 1rem 0; }
+  }
+</style>

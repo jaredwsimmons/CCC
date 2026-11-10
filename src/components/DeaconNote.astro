@@ -4,6 +4,8 @@
 import { withBase } from '../data/site';
 interface Props { deacons?: string[] | null; blurb?: string; }
 const { deacons, blurb } = Astro.props;
+// A married couple is one entry ("Mike & Georgia Gabriel") but two deacons.
+const plural = (deacons?.length ?? 0) > 1 || Boolean(deacons?.some((d) => d.includes(' & ')));
 ---
 {deacons && deacons.length > 0 && (
   <div class="deacon" data-reveal>
@@ -11,7 +13,7 @@ const { deacons, blurb } = Astro.props;
       <img src={withBase('/images/icon-gold.png')} alt="" width="30" height="30" />
     </div>
     <div>
-      <p class="deacon__label">{deacons.length > 1 ? 'Deacons' : 'Deacon'}</p>
+      <p class="deacon__label">{plural ? 'Deacons' : 'Deacon'}</p>
       <p class="deacon__names">{deacons.join(', ')}</p>
       {blurb && <p class="deacon__blurb">{blurb}</p>}
     </div>

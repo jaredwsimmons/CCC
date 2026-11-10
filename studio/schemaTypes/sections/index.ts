@@ -2,6 +2,7 @@ import { defineArrayMember } from 'sanity';
 import textSection from './textSection';
 import textPhotoSection from './textPhotoSection';
 import cardsSection from './cardsSection';
+import placesSection from './placesSection';
 import scheduleSection from './scheduleSection';
 import stepsSection from './stepsSection';
 import accordionSection from './accordionSection';
@@ -15,6 +16,7 @@ import registrationCardSection from './registrationCardSection';
 import openRegistrationsSection from './openRegistrationsSection';
 import groupsSection from './groupsSection';
 import featuredEventsSection from './featuredEventsSection';
+import announcementsSection from './announcementsSection';
 import latestMessageSection from './latestMessageSection';
 import calendarEventsSection from './calendarEventsSection';
 import recentVideosSection from './recentVideosSection';
@@ -22,12 +24,13 @@ import podcastSection from './podcastSection';
 import leadersSection from './leadersSection';
 import deaconsSection from './deaconsSection';
 
-// The approved section list: 12 content sections, then the live ones. The order here
+// The approved section list: 13 content sections, then the live ones. The order here
 // is the order of the "Add section" menu.
 export const sectionTypes = [
   textSection,
   textPhotoSection,
   cardsSection,
+  placesSection,
   scheduleSection,
   stepsSection,
   accordionSection,
@@ -41,6 +44,7 @@ export const sectionTypes = [
   openRegistrationsSection,
   groupsSection,
   featuredEventsSection,
+  announcementsSection,
   latestMessageSection,
   calendarEventsSection,
   recentVideosSection,

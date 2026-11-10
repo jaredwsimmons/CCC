@@ -25,6 +25,7 @@ export default defineConfig({
     '/history': '/about',
     '/our-story': '/about',
     '/beliefs': '/about',
+    '/serve': '/ministry',
   },
   // Runtime secret for the ESV scripture tooltips (/api/esv). Optional: without it,
   // references render as plain text. Local: .dev.vars. Production: `wrangler secret put`.

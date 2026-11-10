@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
-import { background, buttons, eyebrow, heading, sectionPreview } from '../fields';
+import { background, buttons, eyebrow, heading, imageWithAlt, sectionPreview } from '../fields';
 
 export default defineType({
   name: 'cardsSection',
@@ -27,6 +27,15 @@ export default defineType({
           title: 'Card',
           type: 'object',
           fields: [
+            imageWithAlt('logo', 'Logo', 'Optional, shown at the top of the card, e.g. a partner’s logo.'),
+            defineField({
+              name: 'logoOnDark',
+              title: 'White logo',
+              type: 'boolean',
+              description: 'Turn on for a logo that is white, so it shows on navy instead of disappearing on white.',
+              initialValue: false,
+              hidden: ({ parent }) => !parent?.logo,
+            }),
             defineField({
               name: 'label',
               title: 'Small label',
@@ -37,8 +46,15 @@ export default defineType({
             defineField({ name: 'text', title: 'Text', type: 'text', rows: 3 }),
             defineField({ name: 'bullets', title: 'Bullet list', type: 'array', of: [{ type: 'string' }] }),
             { ...buttons(2), title: 'Links' },
+            defineField({
+              name: 'ministry',
+              title: 'Deacon badge',
+              type: 'reference',
+              to: [{ type: 'ministry' }],
+              description: 'Optional. Shows the deacons of this ministry on the card.',
+            }),
           ],
-          preview: { select: { title: 'title', subtitle: 'label' } },
+          preview: { select: { title: 'title', subtitle: 'label', media: 'logo' } },
         }),
       ],
     }),

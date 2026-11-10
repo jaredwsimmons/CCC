@@ -10,7 +10,9 @@ const SECTIONS = `sections[]{
   ...,
   ${BUTTONS},
   "cardLink": cardLink${BUTTON},
-  "cards": cards[]{ ..., ${BUTTONS} }
+  "cards": cards[]{ ..., ${BUTTONS}, ministry->{ name, deacons } },
+  "tiles": tiles[]{ ..., "link": link${BUTTON} },
+  "moreLinks": moreLinks[]${BUTTON}
 }`;
 
 export const settingsQuery = /* groq */ `
@@ -31,7 +33,7 @@ export const homeQuery = /* groq */ `
     hero{ ..., ${BUTTONS} },
     quickLinks[]{ ..., "link": link${BUTTON} },
     week{ ..., "calendarLink": calendarLink${BUTTON} },
-    places{ ..., tiles[]{ ..., "link": link${BUTTON} }, "moreLinks": moreLinks[]${BUTTON} },
+    announcements{ ..., "link": link${BUTTON} },
     currentSeries{ ..., ${BUTTONS} },
     app{ ..., ${BUTTONS} }
   }

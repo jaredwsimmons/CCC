@@ -1,0 +1,14 @@
+---
+// The current announcements from Church Center, live (the Announcements page).
+import Section from '../Section.astro';
+import AnnouncementList from '../AnnouncementList.astro';
+import RichText from '../RichText.astro';
+import { getAnnouncements } from '../../lib/announcements';
+const { s } = Astro.props;
+const items = await getAnnouncements();
+---
+{(items.length > 0 || s.emptyText?.length > 0) && (
+  <Section eyebrow={s.eyebrow} title={s.heading} class="live-data">
+    {items.length > 0 ? <AnnouncementList items={items} layout="list" /> : <div data-reveal><RichText value={s.emptyText} /></div>}
+  </Section>
+)}
