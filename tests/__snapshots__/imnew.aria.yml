@@ -1,8 +1,17 @@
 - main:
   - paragraph: I'm New
   - heading "What to Expect" [level=1]
+  - img "Aerial view of the Chelsea Community Church building beside the Chelsea Park clocktower"
+  - paragraph: This Sunday
+  - paragraph: /9:\d+ & \d+:\d+ AM/
+  - paragraph: Worship & Community Groups
+  - list:
+    - listitem: /\d+ Chelsea Park Dr\., Chelsea, AL \d+/
+    - listitem: Programming for kids and students at both hours
   - link "Let Us Know You're Coming!":
     - /url: https://chelseachurch.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+  - link "Get directions":
+    - /url: https://maps.app.goo.gl/2eQ6opgKF2mtYANx8
   - paragraph: Every week
   - heading "The rhythm of our week" [level=2]
   - text: Worship

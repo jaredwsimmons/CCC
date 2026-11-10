@@ -1,8 +1,10 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
-import { buttons, eyebrow, imageWithAlt } from './fields';
+import { buttons, eyebrow, imageWithAlt, imageMember } from './fields';
 
 // The homepage keeps its hand-tuned layout; staff edit its words, buttons and photos.
-// The service times and address come from Site Settings.
+// It's about the life of the church; the visitor details (service times, address,
+// directions) live on I'm New. The weekly schedule comes from Weekly rhythm cards and the
+// "Coming up" events live from Church Center.
 export default defineType({
   name: 'home',
   title: 'Home page',
@@ -28,26 +30,104 @@ export default defineType({
           description: 'Each line shows on its own line.',
           validation: (Rule) => Rule.required(),
         }),
-        defineField({ name: 'subline', title: 'Line under the title', type: 'string', description: 'e.g. “Worship & Community Groups”. The service times are added after it.' }),
-        imageWithAlt('image', 'Photo', 'Shown behind the title, and instead of the video on slow connections.'),
+        defineField({ name: 'text', title: 'Text under the title', type: 'text', rows: 3 }),
+        imageWithAlt('image', 'Main photo', 'Shown in the large frame, and instead of the video on slow connections.'),
+        defineField({
+          name: 'photos',
+          title: 'Smaller photos',
+          type: 'array',
+          description: 'Up to two, stacked beside the main photo on wide screens.',
+          of: [imageMember],
+          validation: (Rule) => Rule.max(2),
+        }),
         buttons(2),
       ],
     }),
     defineField({
-      name: 'band',
-      title: 'Band under the top of the page',
-      type: 'object',
-      description: 'The service times and address come from Site Settings.',
-      fields: [
-        defineField({ name: 'sundayLabel', title: 'Label before the service times', type: 'string' }),
-        defineField({ name: 'directionsLabel', title: 'Directions link text', type: 'string' }),
+      name: 'quickLinks',
+      title: 'Quick links',
+      type: 'array',
+      description: 'The row of tiles that overlaps the bottom of the top section.',
+      validation: (Rule) => Rule.max(4),
+      of: [
+        defineArrayMember({
+          name: 'quickLink',
+          title: 'Quick link',
+          type: 'object',
+          fields: [
+            defineField({ name: 'link', title: 'Title and where it goes', type: 'button', validation: (Rule) => Rule.required() }),
+            defineField({ name: 'text', title: 'Line under the title', type: 'string' }),
+            defineField({
+              name: 'icon',
+              title: 'Icon',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Map pin', value: 'visit' },
+                  { title: 'Play', value: 'watch' },
+                  { title: 'People', value: 'groups' },
+                  { title: 'Heart', value: 'prayer' },
+                  { title: 'Calendar', value: 'calendar' },
+                  { title: 'Gift', value: 'give' },
+                ],
+              },
+              initialValue: 'visit',
+            }),
+          ],
+          preview: { select: { title: 'link.label', subtitle: 'text' } },
+        }),
       ],
     }),
     defineField({
-      name: 'welcome',
-      title: 'Welcome',
+      name: 'week',
+      title: 'This week',
       type: 'object',
-      fields: [eyebrow, defineField({ name: 'heading', title: 'Heading', type: 'string' }), defineField({ name: 'text', title: 'Text', type: 'text', rows: 4 }), buttons(2)],
+      description: 'The weekly schedule (from Weekly rhythm cards) beside upcoming events from Church Center.',
+      fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string' }),
+        defineField({ name: 'everyWeekLabel', title: 'Label over the weekly schedule', type: 'string' }),
+        defineField({ name: 'comingUpLabel', title: 'Label over the events', type: 'string' }),
+        defineField({ name: 'calendarLink', title: 'Link to the calendar', type: 'button' }),
+      ],
+    }),
+    defineField({
+      name: 'places',
+      title: 'Find your place',
+      type: 'object',
+      fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string' }),
+        defineField({
+          name: 'tiles',
+          title: 'Tiles',
+          type: 'array',
+          description: 'The first tile is shown wider. A tile without a photo shows its text on a plain or pale-blue tile.',
+          validation: (Rule) => Rule.max(6),
+          of: [
+            defineArrayMember({
+              name: 'placeTile',
+              title: 'Tile',
+              type: 'object',
+              fields: [
+                defineField({ name: 'link', title: 'Title and where it goes', type: 'button', validation: (Rule) => Rule.required() }),
+                defineField({ name: 'text', title: 'Text', type: 'text', rows: 2 }),
+                imageWithAlt('image', 'Photo'),
+                defineField({ name: 'cta', title: 'Link text', type: 'string', description: 'Optional, e.g. “Groups open to join”. Shown with an arrow.' }),
+                defineField({ name: 'highlight', title: 'Pale blue tile', type: 'boolean', initialValue: false }),
+              ],
+              preview: { select: { title: 'link.label', subtitle: 'text', media: 'image' } },
+            }),
+          ],
+        }),
+        defineField({ name: 'moreLabel', title: 'Label before the extra links', type: 'string' }),
+        defineField({
+          name: 'moreLinks',
+          title: 'Extra links',
+          type: 'array',
+          description: 'Ministries without a tile, shown as small buttons.',
+          of: [defineArrayMember({ type: 'button' })],
+          validation: (Rule) => Rule.max(10),
+        }),
+      ],
     }),
     defineField({
       name: 'currentSeries',
@@ -70,35 +150,7 @@ export default defineType({
         eyebrow,
         defineField({ name: 'heading', title: 'Heading', type: 'string' }),
         defineField({ name: 'text', title: 'Text', type: 'text', rows: 3 }),
-        imageWithAlt('image', 'Photo'),
         buttons(3),
-      ],
-    }),
-    defineField({
-      name: 'contact',
-      title: 'Get in touch',
-      type: 'object',
-      fields: [
-        eyebrow,
-        defineField({ name: 'heading', title: 'Heading', type: 'string' }),
-        defineField({
-          name: 'cards',
-          title: 'Cards',
-          type: 'array',
-          validation: (Rule) => Rule.max(4),
-          of: [
-            defineArrayMember({
-              name: 'contactCard',
-              title: 'Card',
-              type: 'object',
-              fields: [
-                defineField({ name: 'link', title: 'Card title and where it goes', type: 'button', validation: (Rule) => Rule.required() }),
-                defineField({ name: 'text', title: 'Text', type: 'string' }),
-              ],
-              preview: { select: { title: 'link.label', subtitle: 'text' } },
-            }),
-          ],
-        }),
       ],
     }),
     defineField({

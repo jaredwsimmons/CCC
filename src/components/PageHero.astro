@@ -1,7 +1,7 @@
 ---
-// Page hero. With an image: navy-overlay photo hero. Without: quiet paper hero
-// with the brand's gold-dash eyebrow — a left-aligned, vertically-middle title
-// with an optional aside badge/button on the right.
+// Page hero. With an image: the navy "feature" hero, title on the left and the photo framed
+// on the right. Without: the light "quiet" hero for ministry and long-reading pages, with
+// an optional aside (the deacon card) on the right. Both carry the pill label.
 interface Props {
   eyebrow?: string;
   title: string;
@@ -12,22 +12,24 @@ interface Props {
 const { eyebrow, title, lead, image, imageAlt = '' } = Astro.props;
 ---
 {image ? (
-  <section class="hero phero--img">
-    <div class="hero__img" aria-hidden={imageAlt === '' ? 'true' : undefined}>
-      <img src={image} alt={imageAlt} loading="eager" fetchpriority="high" />
-    </div>
+  <section class="hero phero--feature">
     <div class="wrap inner">
-      {eyebrow && <p class="eyebrow on-dark">{eyebrow}</p>}
-      <h1>{title}</h1>
-      {lead && <p class="lead" style="color:rgba(251,249,244,0.9)">{lead}</p>}
-      <div class="actions"><slot /></div>
+      <div class="phero__main">
+        {eyebrow && <p class="chip">{eyebrow}</p>}
+        <h1>{title}</h1>
+        {lead && <p class="lead">{lead}</p>}
+        <div class="actions"><slot /></div>
+      </div>
+      <div class="phero__photo">
+        <img src={image} alt={imageAlt} loading="eager" fetchpriority="high" />
+      </div>
     </div>
   </section>
 ) : (
   <section class="phero--paper">
     <div class="wrap inner">
       <div class="phero__main">
-        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        {eyebrow && <p class="chip">{eyebrow}</p>}
         <h1>{title}</h1>
         {lead && <p class="lead">{lead}</p>}
         <div class="actions"><slot /></div>
@@ -38,9 +40,22 @@ const { eyebrow, title, lead, image, imageAlt = '' } = Astro.props;
 )}
 
 <style>
-  .phero--img .inner { padding-block: clamp(4rem, 11vw, 7.5rem); max-width: none; }
-  .phero--img h1 { max-width: 18ch; }
-  .phero--img .lead { margin-top: 0.9rem; max-width: 55ch; }
+  h1 { font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.04; letter-spacing: -0.03em; }
+  .chip { margin-bottom: 1rem; }
+  .lead { margin-top: 1rem; }
+
+  .phero--feature .inner {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem 4rem;
+  }
+  .phero--feature .phero__main { flex: 1 1 420px; min-width: 0; }
+  .phero--feature h1 { max-width: 14ch; }
+  .phero--feature .lead { color: rgba(251, 249, 244, 0.9); max-width: 34em; }
+  .phero__photo { flex: 1 1 380px; min-width: 0; }
+  .phero__photo img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--r); }
 
   .phero--paper {
     background: #fff;
@@ -54,7 +69,6 @@ const { eyebrow, title, lead, image, imageAlt = '' } = Astro.props;
     flex-wrap: wrap;
   }
   .phero__main { flex: 1 1 460px; min-width: 0; }
-  .phero--paper .lead { margin-top: 0.8rem; }
   /* aside grows to fill the right column and centers the badge within it */
   .phero__aside { flex: 1 1 300px; display: flex; justify-content: center; }
   .phero__aside:empty { display: none; }

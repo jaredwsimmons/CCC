@@ -1,22 +1,90 @@
 - main:
-  - img "The Chelsea Community Church family standing in worship on Sunday morning"
   - paragraph: A church family in Chelsea, Alabama
   - heading "Pursuing God. Pursuing others." [level=1]
-  - paragraph: /Worship & Community Groups · 9:\d+ AM & \d+:\d+ AM/
-  - link "Plan a Visit":
-    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
+  - paragraph: Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.
+  - link "Find your place":
+    - /url: /#place
   - link "I'm New":
     - /url: /imnew
-  - text: /This Sunday · 9:\d+ & \d+:\d+ AM \d+ Chelsea Park Dr\., Chelsea, AL \d+/
-  - link "Get directions":
-    - /url: https://maps.app.goo.gl/2eQ6opgKF2mtYANx8
-  - paragraph: Welcome
-  - heading "Welcome to Chelsea Community Church" [level=2]
-  - paragraph: Chelsea Community Church exists to pursue God and pursue others, and we desire to be known as a people who love God and love others well. Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.
-  - link "I'm New":
-    - /url: /imnew
-  - link "Learn More":
-    - /url: /about
+  - img "The Chelsea Community Church family standing in worship on Sunday morning"
+  - img "C3SM students and leaders on a summer trip"
+  - img "Women of Chelsea Community Church at a ministry event"
+  - navigation "Quick links":
+    - list:
+      - listitem:
+        - link "I'm New What to expect":
+          - /url: /imnew
+      - listitem:
+        - link "Watch & Listen Sunday's message":
+          - /url: /media
+      - listitem:
+        - link "Find a Group Groups open to join":
+          - /url: /groups
+      - listitem:
+        - link "Prayer Share a prayer request":
+          - /url: https://chelseachurch.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
+  - heading "This week at Chelsea" [level=2]
+  - paragraph: Every week
+  - list:
+    - listitem:
+      - paragraph: /Sundays · 9:\d+ & \d+:\d+ AM/
+      - heading "Sunday Worship" [level=3]
+      - paragraph: Two identical gatherings, with programming for kids and students at both hours.
+    - listitem:
+      - paragraph: Both Sunday services
+      - heading "Kids & Students" [level=3]
+      - paragraph: Preschool through high school meet at both Sunday services; students also gather Wednesday nights at 6 PM.
+    - listitem:
+      - paragraph: Everyday
+      - heading "Community Groups" [level=3]
+      - paragraph: Adults do life together in groups throughout the week.
+    - listitem:
+      - paragraph: 5th Sundays
+      - heading "Family Worship" [level=3]
+      - paragraph: On months with a 5th Sunday, we cancel all age-graded ministries — Preschool through Students — and the whole church worships together.
+  - heading "Find your place" [level=2]
+  - list:
+    - listitem:
+      - link "A preschool teacher playing basketball outside with a child Kids & Preschool A safe and loving environment where kids explore their Bible and build strong, lasting relationships that mirror Christ's love.":
+        - /url: /kids
+        - img "A preschool teacher playing basketball outside with a child"
+        - text: Kids & Preschool A safe and loving environment where kids explore their Bible and build strong, lasting relationships that mirror Christ's love.
+    - listitem:
+      - link "C3SM students and leaders on a summer trip Students We disciple students to become lifelong proclaimers of the good news of Jesus!":
+        - /url: /students
+        - img "C3SM students and leaders on a summer trip"
+        - text: ""
+    - listitem:
+      - link "Community Groups Life is better together. Groups meet during both Sunday services and throughout the week. Groups open to join":
+        - /url: /groups
+    - listitem:
+      - link "Women of Chelsea Community Church at a ministry event Women Authentic friendships at every stage of life.":
+        - /url: /women
+        - img "Women of Chelsea Community Church at a ministry event"
+        - text: ""
+    - listitem:
+      - link "Men Weekly Bible study, time to deepen friendships, and service alongside our mission partners. Men's ministry":
+        - /url: /men
+  - paragraph: More ways to be part of it
+  - list:
+    - listitem:
+      - link "Missions":
+        - /url: /missions
+    - listitem:
+      - link "Prayer":
+        - /url: /prayer
+    - listitem:
+      - link "Worship":
+        - /url: /worship
+    - listitem:
+      - link "Connections":
+        - /url: /connections
+    - listitem:
+      - link "Serve":
+        - /url: /serve
+    - listitem:
+      - link "Preschool":
+        - /url: /preschool
   - img "Jesus Storyteller — Learning from the Parables of Jesus, current sermon series art"
   - paragraph: Current sermon series
   - heading "Jesus Storyteller" [level=2]
@@ -34,26 +102,3 @@
     - /url: https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter
   - link "Set up Church Center":
     - /url: https://chelseachurch.churchcenter.com/setup
-  - img "The Church Center app for Chelsea Community Church on a phone, with App Store and Google Play badges"
-  - paragraph: Get in touch
-  - heading "We're here to listen" [level=2]
-  - link "Email Us Get in touch with us, we're here to listen!":
-    - /url: mailto:rebecca@chelseachurch.com
-    - heading "Email Us" [level=3]
-    - paragraph: Get in touch with us, we're here to listen!
-  - link "Prayer Let us know how we can pray for you.":
-    - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
-    - heading "Prayer" [level=3]
-    - paragraph: Let us know how we can pray for you.
-  - link "Facebook Connect with us and stay up-to-date!":
-    - /url: https://www.facebook.com/share/1ERuoVkBVp/
-    - heading "Facebook" [level=3]
-    - paragraph: Connect with us and stay up-to-date!
-  - link "Instagram Connect with us and stay up-to-date!":
-    - /url: https://www.instagram.com/chelseacommunitychurch
-    - heading "Instagram" [level=3]
-    - paragraph: Connect with us and stay up-to-date!
-  - paragraph:
-    - text: /\d+ Chelsea Park Dr\., Chelsea, AL \d+ ·/
-    - link /\d+-\d+-\d+/:
-      - /url: tel:+12052010759

@@ -1,0 +1,2 @@
+# Playwright compares content snapshots byte for byte, so keep them LF on Windows checkouts too.
+tests/__snapshots__/*.yml text eol=lf

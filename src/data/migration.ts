@@ -178,22 +178,54 @@ function siteSettings(): SanityDoc {
 
 function home(): SanityDoc {
   const h = c.home;
+  const tile = (link: object, text: string, extra: Record<string, unknown> = {}) => ({ _type: 'placeTile', _key: key(), link: one(link as { _key?: string }), text, ...extra });
+  const quick = (icon: string, link: object, text: string) => ({ _type: 'quickLink', _key: key(), icon, link: one(link as { _key?: string }), text });
   return {
     _id: 'home',
     _type: 'home',
     hero: {
       eyebrow: 'A church family in Chelsea, Alabama',
       title: 'Pursuing God.\nPursuing others.',
-      subline: h.hero.sub,
+      text: 'Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.',
       image: img(h.hero.image, h.hero.imageAlt),
-      buttons: [btn.cc('Plan a Visit', planVisit), btn.page("I'm New", 'page-imnew')],
+      photos: [photo(c.students.photo.src, c.students.photo.alt), photo(c.women.photo.src, c.women.photo.alt)],
+      buttons: [btn.url('Find your place', '/#place'), btn.page("I'm New", 'page-imnew')],
     },
-    band: { sundayLabel: 'This Sunday', directionsLabel: 'Get directions' },
-    welcome: {
-      eyebrow: h.welcome.eyebrow,
-      heading: h.welcome.title,
-      text: h.welcome.body,
-      buttons: [btn.page("I'm New", 'page-imnew'), btn.page('Learn More', 'page-about')],
+    quickLinks: [
+      quick('visit', btn.page("I'm New", 'page-imnew'), 'What to expect'),
+      quick('watch', btn.page('Watch & Listen', 'fixed-media'), "Sunday's message"),
+      quick('groups', btn.page('Find a Group', 'fixed-groups'), 'Groups open to join'),
+      quick('prayer', btn.cc('Prayer', cc.forms.prayer), 'Share a prayer request'),
+    ],
+    week: {
+      heading: 'This week at Chelsea',
+      everyWeekLabel: 'Every week',
+      comingUpLabel: 'Coming up',
+      calendarLink: one(btn.page('Full calendar', 'fixed-calendar')),
+    },
+    places: {
+      heading: 'Find your place',
+      tiles: [
+        tile(btn.page('Kids & Preschool', 'page-kids'), "A safe and loving environment where kids explore their Bible and build strong, lasting relationships that mirror Christ's love.", {
+          image: img('/images/preschool-6.webp', 'A preschool teacher playing basketball outside with a child'),
+        }),
+        tile(btn.page('Students', 'page-students'), c.students.intro.split('. ')[1] ?? c.students.intro, { image: img(c.students.photo.src, c.students.photo.alt) }),
+        tile(btn.page('Community Groups', 'fixed-groups'), 'Life is better together. Groups meet during both Sunday services and throughout the week.', {
+          cta: 'Groups open to join',
+          highlight: true,
+        }),
+        tile(btn.page('Women', 'page-women'), 'Authentic friendships at every stage of life.', { image: img(c.women.photo.src, c.women.photo.alt) }),
+        tile(btn.page('Men', 'page-men'), 'Weekly Bible study, time to deepen friendships, and service alongside our mission partners.', { cta: "Men's ministry" }),
+      ],
+      moreLabel: 'More ways to be part of it',
+      moreLinks: [
+        btn.page('Missions', 'page-missions'),
+        btn.page('Prayer', 'page-prayer'),
+        btn.page('Worship', 'page-worship'),
+        btn.page('Connections', 'page-connections'),
+        btn.page('Serve', 'page-serve'),
+        btn.page('Preschool', 'page-preschool'),
+      ],
     },
     currentSeries: {
       eyebrow: 'Current sermon series',
@@ -206,18 +238,7 @@ function home(): SanityDoc {
       eyebrow: h.app.eyebrow,
       heading: h.app.title,
       text: h.app.body,
-      image: img(h.app.image, h.app.imageAlt),
       buttons: [btn.url('App Store', site.app.ios), btn.url('Google Play', site.app.android), btn.url('Set up Church Center', cc.appSetup)],
-    },
-    contact: {
-      eyebrow: 'Get in touch',
-      heading: "We're here to listen",
-      cards: [
-        { _type: 'contactCard', _key: key(), link: one(btn.email('Email Us', 'church-office')), text: "Get in touch with us, we're here to listen!" },
-        { _type: 'contactCard', _key: key(), link: one(btn.cc('Prayer', cc.forms.prayer)), text: 'Let us know how we can pray for you.' },
-        { _type: 'contactCard', _key: key(), link: one(btn.url('Facebook', site.social.facebook)), text: 'Connect with us and stay up-to-date!' },
-        { _type: 'contactCard', _key: key(), link: one(btn.url('Instagram', site.social.instagram)), text: 'Connect with us and stay up-to-date!' },
-      ],
     },
   };
 }
@@ -390,8 +411,20 @@ function pages(): SanityDoc[] {
 
   return [
     page('/imnew', "I'm New", {
-      header: header({ eyebrow: "I'm New", title: imnew.hero.title, buttons: [btn.cc("Let Us Know You're Coming!", planVisit)] }),
+      header: header({
+        eyebrow: "I'm New",
+        title: imnew.hero.title,
+        intro: "The best way to get to know us is a Sunday morning. We'd love to meet you.",
+        image: img(imnew.hero.image, imnew.hero.imageAlt),
+      }),
       sections: [
+        section('visitSection', {
+          label: 'This Sunday',
+          subline: c.home.hero.sub,
+          note: 'Programming for kids and students at both hours',
+          buttons: [btn.cc("Let Us Know You're Coming!", planVisit)],
+          directionsLabel: 'Get directions',
+        }),
         section('weeklyRhythmSection', { eyebrow: 'Every week', heading: 'The rhythm of our week' }),
         section('cardsSection', {
           columns: 2,

@@ -2,7 +2,7 @@
 import Section from '../Section.astro';
 const { s } = Astro.props;
 ---
-<Section variant="navy">
+<Section variant="alt">
   <figure class="quote" data-reveal>
     <blockquote>{s.text}</blockquote>
     <figcaption>{s.reference}</figcaption>
@@ -15,12 +15,12 @@ const { s } = Astro.props;
     font-family: var(--display);
     font-size: clamp(1.3rem, 2.8vw, 1.8rem);
     font-weight: 500;
-    color: #fff;
+    color: var(--navy);
     line-height: 1.4;
   }
   .quote figcaption {
     margin-top: 1.1rem;
-    color: var(--gold);
+    color: var(--blue);
     font-family: var(--display);
     font-weight: 600;
     letter-spacing: 0.05em;

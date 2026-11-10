@@ -12,6 +12,8 @@ if (base && path.startsWith(base)) path = path.slice(base.length) || '/';
 path = path.replace(/\/$/, '') || '/';
 const isActive = (href: string) =>
   href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+// A menu with a dropdown is current when you're on it or on any page in its list.
+const isActiveItem = (item: NavItem) => isActive(item.href) || Boolean(item.children?.some((c) => isActive(c.href)));
 ---
 <header class="site-header">
   <div class="wrap bar">
@@ -38,7 +40,7 @@ const isActive = (href: string) =>
               <a
                 href={withBase(item.href)}
                 aria-haspopup="true"
-                aria-current={isActive(item.href) ? 'page' : undefined}
+                aria-current={isActiveItem(item) ? 'page' : undefined}
               >
                 {item.label}
                 <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -114,7 +116,13 @@ const isActive = (href: string) =>
     border-radius: 8px;
   }
   .nav a:not(.btn):hover { color: var(--blue); background: var(--paper); }
-  .nav a[aria-current='page'] { color: var(--blue); }
+  .nav a[aria-current='page'] {
+    color: var(--navy);
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 8px;
+  }
   .nav-give { margin-left: 0.4rem; }
 
   /* dropdowns */

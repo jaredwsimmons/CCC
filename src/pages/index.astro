@@ -1,164 +1,370 @@
 ---
-// The homepage keeps its hand-tuned layout; its words, buttons and photos come from the
-// Home page document in Sanity, and the service times and address from Site Settings.
+// The homepage: the life of the church. Its words, buttons and photos come from the Home
+// page document in Sanity; the weekly schedule from Weekly rhythm cards (Site Settings);
+// "Coming up" live from Church Center (cached, src/lib/calendar.ts). Visitor details —
+// service times, address, directions — live on I'm New.
 import Base from '../layouts/Base.astro';
-import Section from '../components/Section.astro';
 import Buttons from '../components/Buttons.astro';
 import { withBase } from '../data/site';
 import { sanityFetch } from '../lib/sanity';
 import { homeQuery, settingsQuery } from '../lib/queries';
-import { imagePosition, imageUrl } from '../lib/image';
-import { buttonLink } from '../lib/links';
-import { shortTimes, telHref } from '../lib/format';
+import { imagePosition, imageUrl, type SanityImage } from '../lib/image';
+import { buttonLink, inModal, type Button } from '../lib/links';
+import { dateParts, getUpcomingEvents, onePerSeries } from '../lib/calendar';
 
-const [home, settings] = await Promise.all([sanityFetch<any>(homeQuery, {}, Astro.cookies), sanityFetch<any>(settingsQuery, {}, Astro.cookies)]);
+const [home, settings, upcoming] = await Promise.all([
+  sanityFetch<any>(homeQuery, {}, Astro.cookies),
+  sanityFetch<any>(settingsQuery, {}, Astro.cookies),
+  getUpcomingEvents(),
+]);
 const hero = home?.hero ?? {};
-const welcome = home?.welcome ?? {};
-const app = home?.app ?? {};
+const week = home?.week ?? {};
+const places = home?.places ?? {};
 const series = home?.currentSeries;
-const band = home?.band ?? {};
-const contact = home?.contact ?? {};
-const a = settings?.address;
-const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
-const times: string[] = settings?.serviceTimes ?? [];
+const app = home?.app ?? {};
 const titleLines: string[] = (hero.title ?? '').split('\n').filter(Boolean);
-const heroImage = imageUrl(hero.image, 2000);
-const seriesImage = imageUrl(series?.image, 1200);
-const appImage = imageUrl(app.image, 1200);
+const heroImage = imageUrl(hero.image, 1400);
+const sidePhotos = ((hero.photos ?? []) as NonNullable<SanityImage>[])
+  .map((p) => ({ src: imageUrl(p, 700), alt: p.alt ?? '', style: imagePosition(p) }))
+  .filter((p) => p.src)
+  .slice(0, 2);
+const seriesImage = imageUrl(series?.image, 1000);
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 
+/** A Sanity button as link attributes, or null if it isn't filled in. */
+const linkFor = (b?: Button | null) => {
+  const link = buttonLink(b);
+  return link && b?.label ? { label: b.label, attrs: { href: link.href, ...(link.newTab ? ext : {}) } } : null;
+};
+
+const quickLinks = ((home?.quickLinks ?? []) as { _key: string; icon?: string; text?: string; link?: Button }[])
+  .map((q) => ({ ...q, to: linkFor(q.link) }))
+  .filter((q) => q.to);
+const rhythm = (settings?.weeklyRhythm ?? []) as { title?: string; time?: string; description?: string }[];
+const events = onePerSeries(upcoming).slice(0, 4).map((e) => ({
+  ...e,
+  d: dateParts(e.date),
+  href: e.register ? inModal(e.register) : e.publicUrl,
+  external: !e.register && Boolean(e.publicUrl),
+}));
+const calendarLink = linkFor(week.calendarLink);
+type Tile = { _key: string; link?: Button; text?: string; image?: SanityImage; cta?: string; highlight?: boolean };
+const tiles = ((places.tiles ?? []) as Tile[])
+  .map((t) => ({ ...t, to: linkFor(t.link), src: imageUrl(t.image, 900), alt: t.image?.alt ?? '', style: imagePosition(t.image) }))
+  .filter((t) => t.to);
+const moreLinks = ((places.moreLinks ?? []) as Button[]).map(linkFor).filter((l) => l !== null);
+
+// Stroke icons for the quick links, chosen in Sanity by name.
+const ICONS: Record<string, string> = {
+  visit: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  watch: '<circle cx="12" cy="12" r="9"/><path d="M10 8.5l5.5 3.5-5.5 3.5z"/>',
+  groups: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9.5" r="2.2"/><path d="M16.5 14.2c2.6.4 4.5 2.6 4.5 5.3"/>',
+  prayer: '<path d="M12 20s-7-4.4-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.6 12 20 12 20z"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  give: '<rect x="3.5" y="9" width="17" height="11" rx="2"/><path d="M12 9v11M3.5 13h17M12 9c-1.5-3-5-3.5-5-1.5S10 9 12 9zm0 0c1.5-3 5-3.5 5-1.5S14 9 12 9z"/>',
+};
 ---
 <Base description={home?.seo?.description}>
   {home?.announcement && (
     <div class="announcement" role="status">
-      <div class="wrap">{home.announcement}</div>
+      <div class="wrap"><span class="dot" aria-hidden="true"></span>{home.announcement}</div>
     </div>
   )}
 
-  <!-- Hero — the current site's background video over a real photo fallback.
-       The photo paints first (and stays for reduced-motion / JS-off / slow
-       connections); the video fades over it once it can play. -->
+  <!-- Hero: the church's background video plays in the large frame, over the main photo
+       (which paints first and stays for reduced motion, no JS and slow connections). -->
   <section class="hero home-hero">
-    <div class="hero__img">
-      {heroImage && <img src={heroImage} alt={hero.image?.alt ?? ''} style={imagePosition(hero.image)} loading="eager" fetchpriority="high" />}
-      <video class="hero__video" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
-        <source src={withBase('/videos/hero.mp4')} type="video/mp4" />
-      </video>
-    </div>
     <div class="wrap inner">
-      {hero.eyebrow && <p class="eyebrow on-dark">{hero.eyebrow}</p>}
-      <h1>{titleLines.map((line, i) => <>{i > 0 && <br />}{line}</>)}</h1>
-      <div class="rule" aria-hidden="true"></div>
-      {(hero.subline || times.length > 0) && (
-        <p class="sub">{hero.subline}{hero.subline && times.length > 0 && ' · '}{times.length > 0 && <b>{times.join(' & ')}</b>}</p>
+      <div class="hero-text">
+        {hero.eyebrow && <p class="chip">{hero.eyebrow}</p>}
+        <h1>{titleLines.map((line, i) => <>{i > 0 && <br />}{line}</>)}</h1>
+        {hero.text && <p class="hero-sub">{hero.text}</p>}
+        <div class="actions"><Buttons list={hero.buttons} large bare dark /></div>
+      </div>
+      {heroImage && (
+        <div class="hero-media">
+          <div class="frame frame--main">
+            <img src={heroImage} alt={hero.image?.alt ?? ''} style={imagePosition(hero.image)} loading="eager" fetchpriority="high" />
+            <video class="hero__video" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
+              <source src={withBase('/videos/hero.mp4')} type="video/mp4" />
+            </video>
+            <button class="video-toggle" type="button" aria-pressed="false" data-video-toggle>
+              <span class="sr-only">Pause background video</span>
+              <svg class="i-pause" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+              <svg class="i-play" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+            </button>
+          </div>
+          {sidePhotos.length > 0 && (
+            <div class="side">
+              {sidePhotos.map((p) => <div class="frame"><img src={p.src} alt={p.alt} style={p.style} loading="eager" /></div>)}
+            </div>
+          )}
+        </div>
       )}
-      <div class="actions"><Buttons list={hero.buttons} large bare dark /></div>
     </div>
   </section>
 
-  <!-- Blue band — this Sunday -->
-  {(times.length > 0 || address) && (
-    <div class="band">
-      <div class="wrap">
-        <span class="dot" aria-hidden="true"></span>
-        {times.length > 0 && <span>{band.sundayLabel && `${band.sundayLabel} · `}{shortTimes(times)}</span>}
-        {address && <span class="band-addr">{address}</span>}
-        {a?.mapsUrl && band.directionsLabel && <a href={a.mapsUrl} {...ext}>{band.directionsLabel}</a>}
-      </div>
-    </div>
+  {quickLinks.length > 0 && (
+    <nav class="lift quick" aria-label="Quick links">
+      <ul class="wrap quick__list">
+        {quickLinks.map((q) => (
+          <li>
+            <a class="quick__tile lift-shadow" {...q.to!.attrs}>
+              <span class="quick__icon" aria-hidden="true">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={ICONS[q.icon ?? ''] ?? ICONS.visit} />
+              </span>
+              <span>
+                <span class="quick__title">{q.to!.label}</span>
+                {q.text && <span class="quick__text">{q.text}</span>}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   )}
 
-  <!-- Welcome -->
-  <Section eyebrow={welcome.eyebrow} title={welcome.heading} center>
-    {welcome.text && <p class="lead measure" data-reveal>{welcome.text}</p>}
-    <div class="welcome-actions" data-reveal><Buttons list={welcome.buttons} primary="blue" bare /></div>
-  </Section>
+  <!-- This week: the weekly schedule beside upcoming events -->
+  {(rhythm.length > 0 || events.length > 0) && (
+    <section class="section">
+      <div class="wrap">
+        {week.heading && <h2 data-reveal>{week.heading}</h2>}
+        <div class="week">
+          {rhythm.length > 0 && (
+            <div class="panel panel--navy" data-reveal>
+              {week.everyWeekLabel && <p class="panel-label">{week.everyWeekLabel}</p>}
+              <ul class="rhythm">
+                {rhythm.map((r) => (
+                  <li>
+                    {r.time && <p class="rhythm__when">{r.time}</p>}
+                    <div>
+                      <h3>{r.title}</h3>
+                      {r.description && <p>{r.description}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {events.length > 0 && (
+            <div class="panel live-data" data-reveal>
+              <div class="panel-head">
+                {week.comingUpLabel && <p class="panel-label">{week.comingUpLabel}</p>}
+                {calendarLink && <a class="panel-link" {...calendarLink.attrs}>{calendarLink.label}</a>}
+              </div>
+              <ul class="events">
+                {events.map((e) => {
+                  const body = (
+                    <>
+                      <span class="date" aria-hidden="true"><span class="date__mo">{e.d.month}</span><span class="date__day">{e.d.day}</span></span>
+                      <span>
+                        <span class="event__title">{e.title}</span>
+                        <span class="event__when">{e.d.weekday} · {e.timeLabel}</span>
+                      </span>
+                    </>
+                  );
+                  return (
+                    <li>
+                      {e.href ? <a class="event" href={e.href} {...(e.external ? ext : {})}>{body}</a> : <div class="event">{body}</div>}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
 
-  <!-- Current series; hidden when no series is set -->
-  {series?.title && (
-    <Section variant="navy">
-      <div class="split">
-        {seriesImage && (
-          <div class="photo" data-reveal>
-            <img src={seriesImage} alt={series.image?.alt ?? ''} loading="lazy" />
+  <!-- Find your place -->
+  {tiles.length > 0 && (
+    <section class="section places-section" id="place">
+      <div class="wrap">
+        {places.heading && <h2 data-reveal>{places.heading}</h2>}
+        <ul class="places">
+          {tiles.map((t) => (
+            <li data-reveal>
+              <a class:list={['tile', { 'tile--photo': t.src, 'tile--tint': !t.src && t.highlight }]} {...t.to!.attrs}>
+                {t.src && <img src={t.src} alt={t.alt} style={t.style} loading="lazy" />}
+                <span class="tile__body">
+                  <span class="tile__title">{t.to!.label}</span>
+                  {t.text && <span class="tile__text">{t.text}</span>}
+                  {t.cta && <span class="tile__cta">{t.cta} <span aria-hidden="true">→</span></span>}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        {moreLinks.length > 0 && (
+          <div class="more" data-reveal>
+            {places.moreLabel && <p>{places.moreLabel}</p>}
+            <ul>{moreLinks.map((l) => <li><a {...l!.attrs}>{l!.label}</a></li>)}</ul>
           </div>
         )}
-        <div data-reveal>
-          {series.eyebrow && <p class="eyebrow on-dark">{series.eyebrow}</p>}
-          <h2>{series.title}</h2>
-          {series.description && <p style="margin-top:0.9rem">{series.description}</p>}
-          <div class="series-actions"><Buttons list={series.buttons} dark bare /></div>
-        </div>
       </div>
-    </Section>
+    </section>
   )}
 
-  <!-- App spotlight -->
-  <Section variant="white" eyebrow={app.eyebrow} title={app.heading}>
-    <div class="split">
-      <div data-reveal>
-        {app.text && <p class="measure">{app.text}</p>}
-        <div class="app-actions"><Buttons list={app.buttons} primary="blue" solid={2} bare /></div>
+  <!-- The current series beside the app -->
+  {(series?.title || app.heading) && (
+    <section class="section last">
+      <div class="wrap pair">
+        {series?.title && (
+          <div class="panel series" data-reveal>
+            {seriesImage && <img src={seriesImage} alt={series.image?.alt ?? ''} loading="lazy" />}
+            <div>
+              {series.eyebrow && <p class="eyebrow">{series.eyebrow}</p>}
+              <h2>{series.title}</h2>
+              {series.description && <p class="muted">{series.description}</p>}
+              <Buttons list={series.buttons} primary="blue" />
+            </div>
+          </div>
+        )}
+        {app.heading && (
+          <div class="panel app" data-reveal>
+            {app.eyebrow && <p class="eyebrow">{app.eyebrow}</p>}
+            <h2>{app.heading}</h2>
+            {app.text && <p class="muted">{app.text}</p>}
+            <Buttons list={app.buttons} solid={0} />
+          </div>
+        )}
       </div>
-      {appImage && (
-        <div class="photo photo--plain" data-reveal>
-          <img src={appImage} alt={app.image?.alt ?? ''} loading="lazy" />
-        </div>
-      )}
-    </div>
-  </Section>
-
-  <!-- Get in touch — the current site's footer tiles, as cards -->
-  <Section eyebrow={contact.eyebrow} title={contact.heading} center>
-    <div class="grid cols-4">
-      {(contact.cards ?? []).map((c: any) => {
-        const link = buttonLink(c.link);
-        return link && (
-          <a class="card touch" href={link.href} {...(link.newTab ? ext : {})} data-reveal>
-            <h3>{c.link.label}</h3>
-            {c.text && <p>{c.text}</p>}
-          </a>
-        );
-      })}
-    </div>
-    {(address || settings?.phone) && (
-      <p class="visit-line" data-reveal>
-        {address && <b>{address}</b>}{address && settings?.phone && ' · '}{settings?.phone && <a href={telHref(settings.phone)}>{settings.phone}</a>}
-      </p>
-    )}
-  </Section>
+    </section>
+  )}
 </Base>
 
+<script is:inline>
+  // Pause / play for the hero video (people who find motion distracting can stop it).
+  (function () {
+    var btn = document.querySelector('[data-video-toggle]');
+    var video = document.querySelector('.hero__video');
+    if (!btn || !video) return;
+    var label = btn.querySelector('.sr-only');
+    btn.addEventListener('click', function () {
+      var pause = !video.paused;
+      if (pause) video.pause(); else video.play();
+      btn.setAttribute('aria-pressed', String(pause));
+      label.textContent = pause ? 'Play background video' : 'Pause background video';
+    });
+  })();
+</script>
+
 <style>
-  .announcement { background: var(--gold); color: var(--navy); font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
-  .announcement .wrap { padding-block: 0.7rem; text-align: center; }
+  .announcement { background: var(--tint); color: var(--navy); font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
+  .announcement .wrap { padding-block: 0.7rem; display: flex; align-items: center; justify-content: center; gap: 0.6rem; text-align: center; }
+  .announcement .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); flex: none; }
 
-  .home-hero .inner { padding-block: clamp(4.5rem, 13vw, 8.5rem); }
-  .hero__video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  /* ---- hero ---- */
+  .home-hero .inner {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2.5rem 4rem;
   }
+  .hero-text { flex: 1.3 1 440px; min-width: 0; }
+  .hero-text .chip { margin-bottom: 1.1rem; }
+  .home-hero h1 { font-size: clamp(2.5rem, 5.4vw, 3.9rem); line-height: 1.02; letter-spacing: -0.03em; }
+  .hero-sub { margin-top: 1.4rem; font-size: clamp(1.05rem, 1.6vw, 1.2rem); max-width: 32em; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.9rem; }
+
+  .hero-media { flex: 1 1 420px; min-width: 0; display: flex; gap: 1rem; align-items: flex-start; }
+  .frame { position: relative; border-radius: var(--r); overflow: hidden; background: var(--navy-deep); }
+  .frame img { width: 100%; height: 100%; object-fit: cover; }
+  .frame--main { flex: 3 1 0; min-width: 0; height: clamp(280px, 32vw, 420px); }
+  .side { flex: 2 1 0; min-width: 0; display: grid; gap: 1rem; margin-top: 2.25rem; }
+  .side .frame { height: clamp(130px, 15vw, 196px); }
+  @media (max-width: 860px) {
+    .side { display: none; }
+    .frame--main { height: clamp(210px, 55vw, 360px); }
+  }
+  .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .video-toggle {
+    position: absolute; left: 0.85rem; bottom: 0.85rem; width: 44px; height: 44px; border-radius: 50%;
+    border: 0; background: var(--navy-deep); color: #fff; display: grid; place-items: center; cursor: pointer;
+  }
+  .video-toggle .i-play, .video-toggle[aria-pressed='true'] .i-pause { display: none; }
+  .video-toggle[aria-pressed='true'] .i-play { display: block; }
+  :global(html:not(.js)) .video-toggle { display: none; }
   @media (prefers-reduced-motion: reduce) {
-    .hero__video { display: none; }
+    .hero__video, .video-toggle { display: none; }
   }
-  .home-hero h1 { font-size: clamp(2.4rem, 6.5vw, 4.1rem); }
-  .home-hero .sub { font-family: var(--display); font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 500; }
-  .home-hero .sub b { color: var(--gold); font-weight: 600; }
-  .home-hero .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
 
-  .band-addr { color: rgba(251, 249, 244, 0.75); }
-  @media (max-width: 700px) { .band-addr { display: none; } }
+  /* ---- quick links ---- */
+  .quick__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 1rem; }
+  .quick__tile {
+    height: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 1rem; padding: 1.25rem;
+    background: #fff; border-radius: var(--r); text-decoration: none; color: var(--navy);
+    transition: transform 0.16s ease;
+  }
+  .quick__tile:hover { color: var(--navy); transform: translateY(-2px); }
+  .quick__icon { flex: none; width: 52px; height: 52px; border-radius: 14px; background: var(--tint); color: var(--blue); display: grid; place-items: center; }
+  .quick__title { display: block; font-family: var(--display); font-weight: 600; font-size: 1.1rem; line-height: 1.25; }
+  .quick__text { display: block; font-size: 0.95rem; color: var(--mid); }
+  @media (max-width: 620px) {
+    .quick__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+    .quick__tile { flex-direction: column; align-items: flex-start; gap: 0.6rem; padding: 1rem; }
+    .quick__icon { width: 44px; height: 44px; }
+  }
 
-  .welcome-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
-  .series-actions, .app-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.4rem; }
+  /* ---- this week ---- */
+  .week { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 1.5rem; margin-top: 2rem; align-items: start; }
+  .panel-label { font-family: var(--display); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); }
+  .panel--navy .panel-label { color: var(--gold); }
+  .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .panel-link { font-family: var(--display); font-weight: 600; font-size: 0.95rem; padding-block: 0.6rem; }
+  .rhythm { list-style: none; margin-top: 0.5rem; }
+  .rhythm li { display: flex; gap: 1.25rem; padding: 1.1rem 0; border-top: 1px solid rgba(251, 249, 244, 0.16); }
+  .rhythm li:first-child { border-top: 0; }
+  .rhythm__when { flex: none; width: 7.5rem; font-family: var(--display); font-weight: 600; font-size: 0.92rem; line-height: 1.4; color: var(--gold); padding-top: 0.15rem; }
+  .rhythm h3 { font-size: 1.2rem; }
+  .rhythm p { font-size: 1rem; margin-top: 0.2rem; }
+  @media (max-width: 480px) { .rhythm li { flex-direction: column; gap: 0.2rem; } .rhythm__when { width: auto; } }
+  .events { list-style: none; margin-top: 0.4rem; }
+  .events li + li { border-top: 1px solid var(--hair); }
+  .event { display: flex; gap: 1.1rem; align-items: center; padding: 0.9rem 0; text-decoration: none; color: var(--navy); }
+  a.event:hover .event__title { color: var(--blue); }
+  .date { flex: none; width: 60px; padding: 0.45rem 0; border-radius: 14px; background: var(--tint); text-align: center; font-family: var(--display); }
+  .date__mo { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); }
+  .date__day { display: block; font-size: 1.45rem; font-weight: 600; line-height: 1.1; }
+  .event__title { display: block; font-family: var(--display); font-weight: 600; font-size: 1.12rem; line-height: 1.25; }
+  .event__when { display: block; font-size: 0.95rem; color: var(--mid); }
 
-  .photo--plain { border: 1px solid var(--hair); }
+  /* ---- find your place ---- */
+  .places { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+  .places > li:first-child { grid-column: span 2; }
+  @media (max-width: 900px) { .places { grid-template-columns: repeat(2, minmax(0, 1fr)); } .places > li:first-child { grid-column: 1 / -1; } }
+  @media (max-width: 560px) { .places { grid-template-columns: 1fr; } }
+  .tile {
+    height: 100%; box-sizing: border-box; display: flex; flex-direction: column; background: #fff; border-radius: 24px;
+    overflow: hidden; text-decoration: none; color: var(--navy); transition: transform 0.16s ease;
+  }
+  .tile:hover { color: var(--navy); transform: translateY(-2px); }
+  .tile img { width: 100%; height: clamp(170px, 18vw, 240px); object-fit: cover; }
+  .tile--tint { background: var(--tint); }
+  .tile__body { display: flex; flex-direction: column; flex: 1; padding: 1.4rem 1.6rem 1.6rem; }
+  .tile:not(.tile--photo) .tile__body { padding-top: 1.75rem; min-height: 13rem; box-sizing: border-box; }
+  .tile__title { font-family: var(--display); font-weight: 600; font-size: 1.55rem; letter-spacing: -0.015em; line-height: 1.15; }
+  .tile__text { margin-top: 0.4rem; color: var(--mid); }
+  .tile--tint .tile__text { color: #3d4f5e; }
+  .tile__cta { margin-top: auto; padding-top: 1.1rem; font-family: var(--display); font-weight: 600; color: var(--blue); }
+  .more { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin-top: 1.5rem; }
+  .more p { font-family: var(--display); font-weight: 600; font-size: 0.95rem; color: var(--mid); }
+  .more ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .more a {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 1.2rem; border-radius: 999px;
+    background: #fff; border: 1px solid var(--hair); font-family: var(--display); font-weight: 600; font-size: 0.95rem; text-decoration: none;
+  }
+  .more a:hover { border-color: var(--blue); }
 
-  .touch { text-decoration: none; display: block; transition: transform 0.16s ease, box-shadow 0.16s ease; }
-  .touch:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(25,55,79,0.06), 0 14px 30px -12px rgba(25,55,79,0.18); }
-  .touch h3 { color: var(--blue); }
-  .visit-line { margin-top: 2rem; color: var(--mid); font-size: 0.98rem; }
+  /* ---- series + app ---- */
+  .pair { display: grid; grid-template-columns: 3fr 2fr; gap: 1.25rem; align-items: stretch; }
+  @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
+  .series { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.5rem 2rem; align-items: start; }
+  @media (max-width: 620px) { .series { grid-template-columns: 1fr; } }
+  .series img { width: 100%; border-radius: 16px; }
+  .series h2, .app h2 { font-size: clamp(1.6rem, 2.6vw, 1.9rem); }
+  .muted { color: var(--mid); margin-top: 0.6rem; font-size: 1rem; }
+  .app { display: flex; flex-direction: column; justify-content: center; }
 </style>

@@ -46,18 +46,18 @@ const fmtDate = (d: Date | null) =>
   .ep {
     position: relative;
     display: grid; grid-template-columns: 84px 1fr; gap: 1.1rem; align-items: center;
-    background: #fff; border: 1px solid var(--hair); border-radius: var(--r);
-    padding: 0.9rem 1.1rem; text-decoration: none; box-shadow: var(--shadow);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    background: #fff; border-radius: var(--r);
+    padding: 0.9rem 1.1rem; text-decoration: none;
+    transition: transform 0.15s ease;
   }
-  .ep:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(25,55,79,0.06), 0 14px 30px -12px rgba(25,55,79,0.18); }
+  .ep:hover { transform: translateY(-1px); }
   /* keeps an open scripture tooltip above the next card */
   .ep:hover, .ep:focus-within { z-index: 1; }
   /* the title's link covers the whole card; the scripture reference sits above it */
   .ep__link { color: inherit; text-decoration: none; }
   .ep__link::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); }
   .ep__sub :global(.sref) { z-index: 1; }
-  .ep__art { width: 84px; height: 84px; border-radius: 10px; object-fit: cover; }
+  .ep__art { width: 84px; height: 84px; border-radius: 14px; object-fit: cover; }
   .ep__body h3 { font-size: 1.05rem; color: var(--navy); }
   .ep:hover .ep__body h3 { color: var(--blue); }
   .ep__sub { font-size: 0.92rem; color: var(--mid); margin-top: 0.15rem; }

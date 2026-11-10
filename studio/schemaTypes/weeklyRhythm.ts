@@ -10,7 +10,7 @@ export default defineType({
       name: 'tiles',
       title: 'Cards',
       type: 'array',
-      description: 'Shown on the I’m New and Calendar pages, and anywhere a Weekly rhythm section is added.',
+      description: 'Shown on the homepage (This week), the I’m New and Calendar pages, and anywhere a Weekly rhythm section is added.',
       of: [
         defineArrayMember({
           name: 'rhythmTile',
