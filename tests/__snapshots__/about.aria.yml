@@ -3,58 +3,63 @@
   - heading "Our Story & What We Believe" [level=1]
   - paragraph: Our vision
   - heading "Pursuing God. Pursuing others." [level=2]
-  - paragraph: "/We believe God has called us to be a church that pursues Him and others, both inside and outside the church: loving God with all our heart, soul, and mind and loving our neighbors as ourselves \\(Matthew \\d+:\\d+-\\d+\\)\\. To do this, we must know our purpose, live intentionally, and live in community\\./"
-  - paragraph: The Scriptures teach us that our purpose is to know God, be transformed, and tell others the good news of Jesus Christ.
-  - paragraph: To live intentionally, we take practical steps to spend time with God through spiritual disciplines, to be connected to the church in dynamic relationships with others, and proclaim the gospel as we tell others about what Christ has done for them.
-  - paragraph: As we understand our purpose and live intentionally, we do so in community. God has given us one another, the church, to encourage and spur one another on to good works — to love one another. At Chelsea Community Church, we seek to love one another in the friendship and fellowship of Christian community and our neighbors as ourselves.
+  - paragraph: "/God has called us to pursue Him and others: loving God with all our heart, soul, and mind, and our neighbors as ourselves \\(Matthew \\d+:\\d+-\\d+\\)\\./"
+  - heading "Know our purpose" [level=3]
+  - paragraph: To know God, be transformed, and tell others the good news of Jesus Christ.
+  - heading "Live intentionally" [level=3]
+  - paragraph: Spending time with God, staying connected to the church, and telling others what Christ has done for them.
+  - heading "Live in community" [level=3]
+  - paragraph: God has given us one another, to encourage and spur one another on to good works.
   - paragraph: How we got here
   - heading "Planting roots as Chelsea grows" [level=2]
-  - paragraph: /In January of \d+ a church called Double Oak Community Church began meeting in the town of Mt\. Laurel east of Birmingham on Highway \d+\. The heart of that church from its founding was to be an anchor point for ministry as the metro area spread farther out, particular toward the city of Chelsea\. So on August \d+, \d+, they started a second campus that met in Chelsea Park Elementary School\. Land was purchased and a building was built right under the clocktower of the Chelsea Park neighborhood, and a new church began to grow\. After a congregational vote in December \d+, the Chelsea Campus began the process of pursuing independence, officially becoming Chelsea Community Church in \d+\. We are excited to be planting our roots just as Chelsea begins its own expansion\. We are here to proclaim the Gospel of Jesus Christ and the hope of his Kingdom in Chelsea\./
-  - paragraph: Our affiliation
-  - heading "A community church in the Baptist tradition" [level=2]
-  - paragraph:
-    - text: While maintaining our autonomy as a local body of believers, we identify ourselves as a community church in the Baptist tradition.
-    - link "Learn about Double Oak Community Church →":
-      - /url: https://docc.org/
+  - list:
+    - listitem:
+      - heading /\d+/ [level=3]
+      - paragraph: Double Oak Community Church begins meeting in Mt. Laurel, with a heart to reach the growing metro area.
+    - listitem:
+      - heading /\d+/ [level=3]
+      - paragraph: A Chelsea campus opens at Chelsea Park Elementary, then builds under the clocktower.
+    - listitem:
+      - heading /\d+/ [level=3]
+      - paragraph: The congregation votes to pursue independence.
+    - listitem:
+      - heading /\d+/ [level=3]
+      - paragraph: We become Chelsea Community Church, planting roots as Chelsea grows.
+  - paragraph: While maintaining our autonomy as a local body of believers, we identify ourselves as a community church in the Baptist tradition.
+  - link "Learn about Double Oak Community Church →":
+    - /url: https://docc.org/
   - paragraph: God's Story
   - heading "The Bible tells the story of God pursuing us." [level=2]
-  - paragraph: From the very beginning, God has pursued us. After Adam and Eve sinned, they did not run toward God; they ran away from Him, hiding among the trees of the garden (Genesis 3:8-9).
-  - paragraph: But God pursued them. “The Lord God called to the man, ‘Where are you?’”
-  - paragraph: God has always been in pursuit of us, so that we could be in relationship with Him.
-  - paragraph: /Jesus used the parables of the lost sheep and the lost coin \(Luke \d+:3–\d+\) to teach that God pursues us\. Jesus’ purpose on earth was to “seek and to save that which is lost” \(Luke \d+:\d+\)\. To seek something is to pursue it\. You pursue what is important to you\. Because we are important to Him, being created in His image and for His glory, God has pursued a relationship with us through the life, death, and resurrection of His son, Jesus Christ\./
-  - paragraph: /God continues to pursue us, even after we have trusted in Christ for salvation\. Through the Holy Spirit, God comforts \(James 4:8\), corrects \(2 Timothy 3:\d+\), and compels His children to obey His Word\. He pursues us, conforming us to the image of His Son \(Romans 8:\d+; Hebrews \d+:5–7\)\./
-  - paragraph: /He pursues us because it is only as we abide in Him and He in us that we can bear much fruit for His kingdom \(John \d+:1–8\)\. His pursuit is for our good\. There is no greater joy than being the objects of the Lord’s pursuit and following Him in response to His incredible love for us in Christ Jesus\./
-  - img "Detail of God from Michelangelo's Creation of Adam, reaching toward Adam"
+  - paragraph: From the very beginning, God has pursued us. When Adam and Eve sinned, they hid among the trees of the garden, but God went after them. “The Lord God called to the man, ‘Where are you?’” (Genesis 3:8-9).
+  - paragraph: /He pursued us most fully in Jesus, who came “to seek and to save that which is lost” \(Luke \d+:\d+\), through His life, death, and resurrection\./
+  - paragraph: He still pursues us today. Through the Holy Spirit, He comforts us, corrects us, and conforms us to the image of His Son. There is no greater joy than following Him in response to His incredible love for us in Christ Jesus.
   - img "Detail of Michelangelo’s Creation of Adam — two hands reaching toward one another"
-  - img "Detail of Adam from Michelangelo's Creation of Adam, reaching out"
   - paragraph: Our Beliefs
   - heading "What we hold to" [level=2]
-  - text: /2 Timothy 3:\d+-\d+; 2 Peter 1:\d+-\d+; Hebrews 4:\d+/
-  - heading "The Bible" [level=3]
-  - paragraph: /We believe that the Scriptures in all \d+ books of the Old and New Testaments are verbally inspired of God, error free in the original manuscripts, and the supreme authority of faith and practice for followers of Christ\./
-  - text: Deuteronomy 6:4
-  - heading "God" [level=3]
-  - paragraph: We believe there is one living and true God, who is one in essence, while eternally existing in three distinct persons; Father, Son, and Holy Spirit.
-  - text: /Genesis 1:\d+-\d+; Romans 1:\d+-\d+, 3:\d+-\d+/
-  - heading "Man" [level=3]
-  - paragraph: We believe that mankind was directly created in the image of God to enjoy His fellowship and fulfill His purposes on earth. However, in Adam, all mankind fell into sin; consequently all people are spiritually dead and subject to the certainty of both physical and spiritual death apart from faith in Jesus Christ.
-  - text: /John 1:\d+, 3:\d+, \d+:6; Ephesians 2:8-9/
-  - heading "Salvation" [level=3]
-  - paragraph: We believe that salvation is by grace alone, through faith alone in Jesus Christ alone. All who believe in Him are declared righteous by the Father on the grounds of Jesus Christ’s life, death and resurrection, being regenerated by and baptized in the Holy Spirit.
-  - text: /Acts 2:\d+-\d+; Hebrews \d+:\d+-\d+; 1 Corinthians \d+-\d+/
-  - heading "The Church" [level=3]
-  - paragraph: We believe that all who are “born again” by the Holy Spirit belong to the one true church and are instructed by the Scriptures to associate themselves in local, visible churches.
-  - text: /Matthew \d+:\d+-\d+; Romans 6:3-7; 1 Corinthians \d+:\d+-\d+/
-  - heading "Ordinances" [level=3]
-  - paragraph: We believe that baptism is an essential “first step” for all who, having believed in Christ for salvation, desire to walk as His disciple. Baptism is a clear injunction of the Scriptures which outwardly expresses the inward reality of new life in Christ. Our method of baptism is immersion as described in the New Testament and practiced in the early church. We believe that the Lord’s Supper is a memorial of Christ and His redemptive death. It is also an expression of our fellowship with one another. In communion, we are reminded of Christ’s first coming and encouraged to look forward to His coming again.
-  - text: /Matthew \d+:\d+; 1 Thessalonians 4:\d+-\d+/
-  - heading "The Future" [level=3]
-  - paragraph: We believe the next great event of human history will be the personal return of Jesus Christ. This is the blessed hope for which all those who love Christ yearn. While the exact time of Christ’s return is unknown, it is imminent and certain.
-  - heading "Church Bylaws" [level=3]
+  - group:
+    - heading "The Bible" [level=3]
+    - text: +
+  - group:
+    - heading "God" [level=3]
+    - text: +
+  - group:
+    - heading "Man" [level=3]
+    - text: +
+  - group:
+    - heading "Salvation" [level=3]
+    - text: +
+  - group:
+    - heading "The Church" [level=3]
+    - text: +
+  - group:
+    - heading "Ordinances" [level=3]
+    - text: +
+  - group:
+    - heading "The Future" [level=3]
+    - text: +
   - paragraph: How we govern ourselves as a congregation — Christ ruled, elder led, and congregationally accountable.
-  - paragraph:
-    - link "Read our church bylaws →":
-      - /url: /bylaws
+  - link "Read our church bylaws →":
+    - /url: /bylaws
   - heading "Come and see" [level=2]
   - paragraph: The best way to get to know us is a Sunday morning. We'd love to meet you.
   - link "Plan a Visit":
