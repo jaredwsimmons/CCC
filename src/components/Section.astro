@@ -32,9 +32,12 @@ const sectionClass = [
   .filter(Boolean)
   .join(' ');
 const hasHead = eyebrow || title || lead;
+// Navy and tinted sections sit in a rounded panel on the paper page, not a full-width band.
+const panel = variant === 'navy' ? 'panel panel--navy' : variant === 'alt' ? 'panel panel--tint' : undefined;
 ---
 <section class={sectionClass} id={id}>
   <div class="wrap">
+    <div class={panel}>
     {hasHead && (
       <div class="section-head" data-reveal>
         {eyebrow && <p class="eyebrow">{eyebrow}</p>}
@@ -43,5 +46,6 @@ const hasHead = eyebrow || title || lead;
       </div>
     )}
     <slot />
+    </div>
   </div>
 </section>

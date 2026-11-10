@@ -46,9 +46,9 @@ const variant = variantFor(s.background);
     top: 0;
     width: 2.2rem;
     height: 2.2rem;
-    border-radius: 50%;
-    background: var(--gold);
-    color: var(--navy);
+    border-radius: 10px;
+    background: var(--tint);
+    color: var(--blue);
     font-family: var(--display);
     font-weight: 600;
     display: grid;
@@ -58,7 +58,7 @@ const variant = variantFor(s.background);
   .steps--timeline { gap: 0; }
   .steps--timeline li { padding: 0 0 1.25rem 2rem; min-height: 0; }
   .steps--timeline li:last-child { padding-bottom: 0; }
-  .steps--timeline li::before { content: ""; top: 0.3rem; width: 0.8rem; height: 0.8rem; }
+  .steps--timeline li::before { content: ""; top: 0.3rem; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: var(--gold); }
   .steps--timeline li:not(:last-child)::after {
     content: "";
     position: absolute;

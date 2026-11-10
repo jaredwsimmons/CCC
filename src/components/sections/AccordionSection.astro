@@ -31,15 +31,15 @@ const dark = variant === 'navy';
 
 <style>
   .acc { display: grid; gap: 0.6rem; max-width: 760px; margin-inline: auto; text-align: left; }
-  .acc__item { background: #fff; border: 1px solid var(--hair); border-radius: var(--r-sm); color: var(--ink); }
+  .acc__item { background: #fff; border-radius: 16px; color: var(--ink); }
   .acc summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
     min-height: 3.25rem;
-    padding: 0.6rem 1.1rem;
-    border-radius: var(--r-sm);
+    padding: 0.6rem 1.25rem;
+    border-radius: 16px;
     cursor: pointer;
     list-style: none;
   }
@@ -55,7 +55,7 @@ const dark = variant === 'navy';
   }
   .acc__item[open] summary::after { transform: rotate(45deg); }
   .acc h3 { font-size: 1.05rem; margin: 0; }
-  .acc__body { padding: 0 1.1rem 1.1rem; }
+  .acc__body { padding: 0 1.25rem 1.25rem; }
   .acc__refs {
     font-family: var(--display);
     font-size: 0.72rem;
