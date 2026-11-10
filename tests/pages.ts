@@ -8,6 +8,8 @@ export const pages: { name: string; path: string; live?: boolean }[] = [
   { name: 'bylaws', path: '/bylaws' },
   { name: 'serve', path: '/serve' },
   { name: 'connections', path: '/connections' },
+  { name: 'kids-students', path: '/kids-students' },
+  { name: 'other-ministries', path: '/other-ministries' },
   { name: 'kids', path: '/kids' },
   { name: 'men', path: '/men' },
   { name: 'missions', path: '/missions' },

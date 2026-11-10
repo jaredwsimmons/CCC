@@ -133,7 +133,7 @@ export default defineType({
       name: 'currentSeries',
       title: 'Current sermon series',
       type: 'object',
-      description: 'Its art is also used on the Media page for episodes without their own.',
+      description: 'The homepage shows the newest sermon from the podcast feed here; these words and art stand in when the feed can’t be reached. The art is also used on the Media page for episodes without their own.',
       fields: [
         eyebrow,
         defineField({ name: 'title', title: 'Series title', type: 'string' }),
@@ -150,6 +150,7 @@ export default defineType({
         eyebrow,
         defineField({ name: 'heading', title: 'Heading', type: 'string' }),
         defineField({ name: 'text', title: 'Text', type: 'text', rows: 3 }),
+        imageWithAlt('image', 'Photo', 'Shown at the top of the box.'),
         buttons(3),
       ],
     }),

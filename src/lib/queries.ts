@@ -10,7 +10,7 @@ const SECTIONS = `sections[]{
   ...,
   ${BUTTONS},
   "cardLink": cardLink${BUTTON},
-  "cards": cards[]{ ..., ${BUTTONS} }
+  "cards": cards[]{ ..., ${BUTTONS}, ministry->{ name, deacons } }
 }`;
 
 export const settingsQuery = /* groq */ `

@@ -11,11 +11,13 @@ import { homeQuery, settingsQuery } from '../lib/queries';
 import { imagePosition, imageUrl, type SanityImage } from '../lib/image';
 import { buttonLink, inModal, type Button } from '../lib/links';
 import { dateParts, getUpcomingEvents, onePerSeries } from '../lib/calendar';
+import { fmtDuration, getPodcastEpisodes } from '../lib/feeds';
 
-const [home, settings, upcoming] = await Promise.all([
+const [home, settings, upcoming, episodes] = await Promise.all([
   sanityFetch<any>(homeQuery, {}, Astro.cookies),
   sanityFetch<any>(settingsQuery, {}, Astro.cookies),
   getUpcomingEvents(),
+  getPodcastEpisodes(),
 ]);
 const hero = home?.hero ?? {};
 const week = home?.week ?? {};
@@ -29,6 +31,21 @@ const sidePhotos = ((hero.photos ?? []) as NonNullable<SanityImage>[])
   .filter((p) => p.src)
   .slice(0, 2);
 const seriesImage = imageUrl(series?.image, 1000);
+// The series box shows the newest sermon from the podcast feed, as the Media page does; the
+// series words and art from Sanity stand in when the feed can't be reached.
+const latest = episodes[0];
+const sermon = latest
+  ? {
+      title: latest.title,
+      text: latest.subtitle,
+      meta: [latest.date?.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), fmtDuration(latest.duration)].filter(Boolean).join(' · '),
+      image: latest.image || seriesImage,
+      alt: latest.image ? latest.title : series?.image?.alt ?? '',
+    }
+  : series?.title
+    ? { title: series.title, text: series.description, meta: '', image: seriesImage, alt: series.image?.alt ?? '' }
+    : null;
+const appImage = imageUrl(app.image, 1000);
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 
 /** A Sanity button as link attributes, or null if it isn't filled in. */
@@ -207,22 +224,24 @@ const ICONS: Record<string, string> = {
   )}
 
   <!-- The current series beside the app -->
-  {(series?.title || app.heading) && (
+  {(sermon || app.heading) && (
     <section class="section last">
       <div class="wrap pair">
-        {series?.title && (
-          <div class="panel series" data-reveal>
-            {seriesImage && <img src={seriesImage} alt={series.image?.alt ?? ''} loading="lazy" />}
+        {sermon && (
+          <div class="panel series live-data" data-reveal>
+            {sermon.image && <img src={sermon.image} alt={sermon.alt} loading="lazy" />}
             <div>
-              {series.eyebrow && <p class="eyebrow">{series.eyebrow}</p>}
-              <h2>{series.title}</h2>
-              {series.description && <p class="muted">{series.description}</p>}
-              <Buttons list={series.buttons} primary="blue" />
+              {series?.eyebrow && <p class="eyebrow">{series.eyebrow}</p>}
+              <h2>{sermon.title}</h2>
+              {sermon.text && <p class="muted">{sermon.text}</p>}
+              {sermon.meta && <p class="meta">{sermon.meta}</p>}
+              <Buttons list={series?.buttons} primary="blue" />
             </div>
           </div>
         )}
         {app.heading && (
           <div class="panel app" data-reveal>
+            {appImage && <img src={appImage} alt={app.image?.alt ?? ''} loading="lazy" />}
             {app.eyebrow && <p class="eyebrow">{app.eyebrow}</p>}
             <h2>{app.heading}</h2>
             {app.text && <p class="muted">{app.text}</p>}
@@ -280,6 +299,9 @@ const ICONS: Record<string, string> = {
     .frame--main { height: clamp(210px, 55vw, 360px); }
   }
   .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* hero.mp4 has black bars baked into its top and bottom (23px of each 720px frame); a 7%
+     zoom pushes them past the frame's edges, which already clip. */
+  .hero__video { transform: scale(1.07); }
   .video-toggle {
     position: absolute; left: 0.85rem; bottom: 0.85rem; width: 44px; height: 44px; border-radius: 50%;
     border: 0; background: var(--navy-deep); color: #fff; display: grid; place-items: center; cursor: pointer;
@@ -349,9 +371,9 @@ const ICONS: Record<string, string> = {
   .tile__text { margin-top: 0.4rem; color: var(--mid); }
   .tile--tint .tile__text { color: #3d4f5e; }
   .tile__cta { margin-top: auto; padding-top: 1.1rem; font-family: var(--display); font-weight: 600; color: var(--blue); }
-  .more { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin-top: 1.5rem; }
+  .more { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.6rem 1rem; margin-top: 1.5rem; text-align: center; }
   .more p { font-family: var(--display); font-weight: 600; font-size: 0.95rem; color: var(--mid); }
-  .more ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .more ul { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
   .more a {
     display: inline-flex; align-items: center; min-height: 44px; padding: 0 1.2rem; border-radius: 999px;
     background: #fff; border: 1px solid var(--hair); font-family: var(--display); font-weight: 600; font-size: 0.95rem; text-decoration: none;
@@ -359,12 +381,12 @@ const ICONS: Record<string, string> = {
   .more a:hover { border-color: var(--blue); }
 
   /* ---- series + app ---- */
-  .pair { display: grid; grid-template-columns: 3fr 2fr; gap: 1.25rem; align-items: stretch; }
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; align-items: stretch; }
   @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
-  .series { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.5rem 2rem; align-items: start; }
-  @media (max-width: 620px) { .series { grid-template-columns: 1fr; } }
-  .series img { width: 100%; border-radius: 16px; }
+  /* photo on top, words below */
+  .series, .app { display: flex; flex-direction: column; }
+  .series img, .app img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 16px; margin-bottom: 1.4rem; }
+  .meta { font-size: 0.9rem; color: var(--mid); margin-top: 0.3rem; }
   .series h2, .app h2 { font-size: clamp(1.6rem, 2.6vw, 1.9rem); }
   .muted { color: var(--mid); margin-top: 0.6rem; font-size: 1rem; }
-  .app { display: flex; flex-direction: column; justify-content: center; }
 </style>

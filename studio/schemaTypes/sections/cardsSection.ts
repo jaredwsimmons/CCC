@@ -37,6 +37,13 @@ export default defineType({
             defineField({ name: 'text', title: 'Text', type: 'text', rows: 3 }),
             defineField({ name: 'bullets', title: 'Bullet list', type: 'array', of: [{ type: 'string' }] }),
             { ...buttons(2), title: 'Links' },
+            defineField({
+              name: 'ministry',
+              title: 'Deacon badge',
+              type: 'reference',
+              to: [{ type: 'ministry' }],
+              description: 'Optional. Shows the deacons of this ministry on the card.',
+            }),
           ],
           preview: { select: { title: 'title', subtitle: 'label' } },
         }),

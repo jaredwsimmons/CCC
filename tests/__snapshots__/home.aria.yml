@@ -85,14 +85,7 @@
     - listitem:
       - link "Preschool":
         - /url: /preschool
-  - img "Jesus Storyteller — Learning from the Parables of Jesus, current sermon series art"
-  - paragraph: Current sermon series
-  - heading "Jesus Storyteller" [level=2]
-  - paragraph: "/This summer, join us for Jesus Storyteller: Learning from the Parables of Jesus — a journey through the unforgettable stories Jesus used to reveal truth, challenge hearts, and invite people into the Kingdom of God\\. From lost sons and good Samaritans to persistent widows and mustard seeds, these timeless parables still speak powerfully today\\. Come discover how the stories Jesus told can transform the way we live, love, and follow Him\\. Join us Sunday at 9:\\d+ or \\d+:\\d+ AM!/"
-  - link "Watch Service":
-    - /url: https://www.youtube.com/@chelsea_community_church/playlists
-  - link "Listen on Spotify":
-    - /url: https://open.spotify.com/show/4Hx7Zb0hZtARV8p3q0J4lA
+  - img "The Church Center app for Chelsea Community Church on a phone, with App Store and Google Play badges"
   - paragraph: Spotlight
   - heading "New church app" [level=2]
   - paragraph: Give, sign up for events, connect with a community, check your family in, and more! Download the Church Center app today, search for Chelsea Community Church, and log in with the email or phone number connected to your Planning Center profile.

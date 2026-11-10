@@ -1,0 +1,24 @@
+- main:
+  - paragraph: Ministries
+  - heading "Other Ministries" [level=1]
+  - heading "Connections" [level=3]
+  - paragraph: Our connections team is available each Sunday morning to assist every guest and church member. We will help everyone get connected to age specific ministries, community groups and events. We will also be happy to answer any questions that you may have and share information about our church.
+  - paragraph:
+    - link "More about Connections":
+      - /url: /connections
+  - paragraph: Deacons
+  - paragraph: Lee & Susanne Wood
+  - heading "Prayer" [level=3]
+  - paragraph: At Chelsea Community Church we desire to be a church where prayer is central. We invite you to join us as we pray for our church, community, and world.
+  - paragraph:
+    - link "More about Prayer":
+      - /url: /prayer
+  - paragraph: Deacon
+  - paragraph: Liz Clayton
+  - heading "Worship" [level=3]
+  - paragraph: All of our Sunday worship services feature a blended worship style, including elements of both traditional and contemporary music. Our worship reflects our congregation which is a blend of all generations.
+  - paragraph:
+    - link "More about Worship":
+      - /url: /worship
+  - paragraph: Deacon
+  - paragraph: Tanner Cain

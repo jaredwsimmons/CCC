@@ -238,6 +238,7 @@ function home(): SanityDoc {
       eyebrow: h.app.eyebrow,
       heading: h.app.title,
       text: h.app.body,
+      image: img(h.app.image, h.app.imageAlt),
       buttons: [btn.url('App Store', site.app.ios), btn.url('Google Play', site.app.android), btn.url('Set up Church Center', cc.appSetup)],
     },
   };
@@ -422,7 +423,7 @@ function pages(): SanityDoc[] {
           label: 'This Sunday',
           subline: c.home.hero.sub,
           note: 'Programming for kids and students at both hours',
-          buttons: [btn.cc("Let Us Know You're Coming!", planVisit)],
+          buttons: [btn.cc("Let us know you're coming!", planVisit)],
           directionsLabel: 'Get directions',
         }),
         section('weeklyRhythmSection', { eyebrow: 'Every week', heading: 'The rhythm of our week' }),
@@ -437,10 +438,9 @@ function pages(): SanityDoc[] {
           body: [block(imnew.coming.body), block('Prefer to connect in person?', 'h3'), block(imnew.coming.desk)],
           photos: [photo(imnew.coming.image, imnew.coming.imageAlt)],
           photoSide: 'right',
-          buttons: [btn.cc("Let Us Know You're Coming!", planVisit)],
+          buttons: [btn.cc("Let us know you're coming!", planVisit)],
           background: 'tinted',
         }),
-        cta('Join us this Sunday', "The best way to get to know us is a Sunday morning. We'd love to meet you.", btn.url('Get directions', site.address.maps)),
       ],
       seo: seo("What to expect on a Sunday at Chelsea Community Church — services at 9:00 & 10:30 AM, the rhythm of our week, what to wear, where to go first, and how to let us know you're coming."),
     }),
@@ -731,6 +731,66 @@ function pages(): SanityDoc[] {
         cta('Serve with music or tech', 'Musicians, vocalists, and behind-the-scenes hands all help make Sunday distraction-free.', btn.email(worship.serveCta.label, 'worship')),
       ],
       seo: seo('Blended worship — traditional and contemporary — reflecting a congregation of all generations at Chelsea Community Church.'),
+    }),
+
+    // Kids & Students: a summary of Preschool, Kids and Students, each linking to its own page,
+    // with one list of their upcoming events.
+    page('/kids-students', 'Kids & Students', {
+      header: header({ eyebrow: 'Ministries', title: 'Kids & Students', intro: "From preschool through high school, there's a place for your kids every Sunday morning." }),
+      sections: [
+        section('textPhotoSection', {
+          eyebrow: 'Preschool',
+          heading: 'Preschool',
+          body: paras('Preschool Worship at 9:00 AM and Preschool Community Groups at 10:30 AM every Sunday. Our Preschool Check-In desk is through the entrance on the right side of the building, past the Worship Room.'),
+          photos: [photo(preschool.gallery[3], 'Two preschoolers painting at a table')],
+          photoSide: 'right',
+          buttons: [btn.cc('Pre-Register Your Family', planVisit), btn.page('More about Preschool', 'page-preschool')],
+          background: 'plain',
+        }),
+        section('textPhotoSection', {
+          eyebrow: 'Kids',
+          heading: 'Kids',
+          body: paras(kids.mission),
+          photos: [photo(preschool.gallery[4], 'Two children talking together at church')],
+          photoSide: 'left',
+          buttons: [btn.cc('Pre-Register Your Family', planVisit), btn.page('More about Kids', 'page-kids')],
+          background: 'tinted',
+        }),
+        section('textPhotoSection', {
+          eyebrow: 'C3SM',
+          heading: 'Students',
+          body: paras(students.intro),
+          photos: [photo(students.photo.src, students.photo.alt)],
+          photoSide: 'right',
+          buttons: [btn.page('More about C3SM', 'page-students')],
+          background: 'plain',
+        }),
+        upcoming('Preschool, Kids, K-5, Students, C3SM'),
+        cta(
+          'Questions about Kids & Students?',
+          'Ben Stephenson, our Family Pastor, and Drew Blake, our Pastor of Students & Worship, would love to connect.',
+          btn.email('Email Ben', 'kids'),
+          btn.email('Email Drew', 'students'),
+        ),
+      ],
+      seo: seo('Preschool, Kids and Students (C3SM) at Chelsea Community Church — something for every age on Sunday mornings, and what’s coming up.'),
+    }),
+
+    // Other Ministries: a card for each ministry not in the menu, with its deacons and a link to its page.
+    page('/other-ministries', 'Other Ministries', {
+      header: header({ eyebrow: 'Ministries', title: 'Other Ministries' }),
+      sections: [
+        section('cardsSection', {
+          columns: 3,
+          background: 'plain',
+          cards: [
+            { _type: 'card', _key: key(), title: 'Connections', text: connections.body[0], buttons: [btn.page('More about Connections', 'page-connections')], ministry: ref('ministry-connections') },
+            { _type: 'card', _key: key(), title: 'Prayer', text: 'At Chelsea Community Church we desire to be a church where prayer is central. We invite you to join us as we pray for our church, community, and world.', buttons: [btn.page('More about Prayer', 'page-prayer')], ministry: ref('ministry-prayer') },
+            { _type: 'card', _key: key(), title: 'Worship', text: worship.body[0], buttons: [btn.page('More about Worship', 'page-worship')], ministry: ref('ministry-worship') },
+          ],
+        }),
+      ],
+      seo: seo('More ministries at Chelsea Community Church: Connections, Prayer and Worship.'),
     }),
   ];
 }

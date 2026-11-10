@@ -2,9 +2,10 @@
 // Short items side by side. A card's small label can hold Bible references (tooltips).
 import Section from '../Section.astro';
 import Scripturize from '../Scripturize.astro';
+import DeaconNote from '../DeaconNote.astro';
 import { buttonLink, variantFor, type Button } from '../../lib/links';
 const { s } = Astro.props;
-type Card = { _key: string; label?: string; title?: string; text?: string; bullets?: string[]; buttons?: Button[] | null };
+type Card = { _key: string; label?: string; title?: string; text?: string; bullets?: string[]; buttons?: Button[] | null; ministry?: { deacons?: string[] } | null };
 const cards = ((s.cards ?? []) as Card[]).map((c) => ({
   ...c,
   links: (c.buttons ?? []).flatMap((b) => {
@@ -28,6 +29,7 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
             ))}
           </p>
         )}
+        {c.ministry?.deacons?.length ? <div class="deacon-slot"><DeaconNote deacons={c.ministry.deacons} /></div> : null}
       </div>
     ))}
   </div>
@@ -47,4 +49,8 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
     background: var(--gold);
   }
   .links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.6rem; font-size: 0.92rem; }
+  /* a card with a deacon badge keeps the badge at its foot, level across the row */
+  .card:has(.deacon-slot) { display: flex; flex-direction: column; }
+  .deacon-slot { margin-top: auto; padding-top: 1.1rem; }
+  .deacon-slot :global(.deacon) { width: 100%; }
 </style>

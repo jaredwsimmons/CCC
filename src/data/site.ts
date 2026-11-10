@@ -122,19 +122,16 @@ export const nav: Array<{
   {
     label: 'Ministries',
     href: '/serve',
-    // "Ministries" itself links to Serve; the dropdown lists the ministries
-    // (Serve removed from the list). alphabetical; Prayer lives in here.
+    // "Ministries" itself links to Serve. The dropdown is the church's chosen short list;
+    // Preschool, Kids and Students are summed up on Kids & Students, and Connections,
+    // Prayer and Worship on Other Ministries.
     children: [
       { label: 'Community Groups', href: '/groups' },
-      { label: 'Connections', href: '/connections' },
-      { label: 'Kids', href: '/kids' },
+      { label: 'Kids & Students', href: '/kids-students' },
       { label: 'Men', href: '/men' },
-      { label: 'Missions', href: '/missions' },
-      { label: 'Prayer', href: '/prayer' },
-      { label: 'Preschool', href: '/preschool' },
-      { label: 'Students', href: '/students' },
       { label: 'Women', href: '/women' },
-      { label: 'Worship', href: '/worship' },
+      { label: 'Missions', href: '/missions' },
+      { label: 'Other Ministries', href: '/other-ministries' },
     ],
   },
   { label: 'Calendar', href: '/calendar' },
