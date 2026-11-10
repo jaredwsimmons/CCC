@@ -64,6 +64,7 @@ export default defineType({
                 'latestMessageSection',
                 'calendarEventsSection',
                 'recentVideosSection',
+                'playlistSection',
                 'podcastSection',
                 'leadersSection',
                 'deaconsSection',

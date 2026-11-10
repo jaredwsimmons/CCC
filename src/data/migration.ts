@@ -206,6 +206,7 @@ function home(): SanityDoc {
       heading: 'Announcements',
       count: 3,
       link: one(btn.page('See all announcements', 'page-announcements')),
+      videoLink: one(btn.url("Watch this week's announcements", '/announcements#videos')),
     },
     currentSeries: {
       eyebrow: 'Current sermon series',
@@ -332,6 +333,7 @@ function fixedPages(): SanityDoc[] {
           eyebrow: 'Watch',
           heading: 'Recent services',
           count: 6,
+          excludePlaylists: [site.media.announcementsPlaylist, site.media.specialEventsPlaylist],
           emptyText: paras('Our worship services are streamed live on YouTube each Sunday morning, then uploaded to our channel.'),
           buttons: [btn.url('See all on YouTube', site.social.youtube)],
         }),
@@ -786,6 +788,7 @@ function pages(): SanityDoc[] {
     page('/announcements', 'Announcements', {
       header: header({ eyebrow: "What's happening", title: 'Announcements' }),
       sections: [
+        section('playlistSection', { eyebrow: 'Weekly announcements', heading: "This week's announcements", playlist: site.media.announcementsPlaylist, count: 3 }),
         section('announcementsSection', { emptyText: paras('There are no announcements right now. Check back soon!') }),
       ],
       seo: seo('The latest announcements from Chelsea Community Church — events, sign-ups and ways to get involved.'),

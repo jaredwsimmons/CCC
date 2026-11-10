@@ -63,9 +63,10 @@ export interface Video {
 /** How many items to keep from each feed, so every section shares one cached download. */
 export const FEED_ITEMS = 13;
 
-export async function getYouTubeVideos(limit = FEED_ITEMS): Promise<Video[]> {
-  const videos = await cached(`youtube:${limit}`, 15 * 60, async () => {
-    const xml = await fetchText(site.media.youtubeFeed);
+// One YouTube feed (the channel's, or a playlist's), cached under `key`.
+async function youtubeFeed(key: string, url: string, limit: number): Promise<Video[]> {
+  const videos = await cached(key, 15 * 60, async () => {
+    const xml = await fetchText(url);
     if (!xml) return null;
     try {
       const feed = parser.parse(xml)?.feed;
@@ -88,6 +89,21 @@ export async function getYouTubeVideos(limit = FEED_ITEMS): Promise<Video[]> {
     }
   });
   return (videos ?? []).map((v) => ({ ...v, date: v.date ? new Date(v.date) : null }));
+}
+
+/** The newest uploads from the church's channel. */
+export const getYouTubeVideos = (limit = FEED_ITEMS) => youtubeFeed(`youtube:${limit}`, site.media.youtubeFeed, limit);
+
+/** A playlist's ID from its YouTube link (…?list=PL…), or the ID itself; null if it's neither. */
+export function playlistIdFrom(link?: string | null): string | null {
+  const s = (link ?? '').trim();
+  return s.match(/[?&]list=([\w-]+)/)?.[1] ?? s.match(/^((?:PL|UU)[\w-]{10,})$/)?.[1] ?? null;
+}
+
+/** The videos in a playlist, newest first as YouTube lists them; [] for a bad link or no answer. */
+export async function getPlaylistVideos(link?: string | null, limit = FEED_ITEMS): Promise<Video[]> {
+  const id = playlistIdFrom(link);
+  return id ? youtubeFeed(`ytpl:${id}:${limit}`, `https://www.youtube.com/feeds/videos.xml?playlist_id=${id}`, limit) : [];
 }
 
 export interface Episode {

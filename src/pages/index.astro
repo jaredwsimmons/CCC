@@ -70,6 +70,7 @@ const events = onePerSeries(upcoming).slice(0, 4).map((e) => ({
 }));
 const calendarLink = linkFor(week.calendarLink);
 const newsLink = linkFor(news.link);
+const newsVideoLink = linkFor(news.videoLink);
 
 // Stroke icons for the quick links, chosen in Sanity by name.
 const ICONS: Record<string, string> = {
@@ -200,7 +201,10 @@ const ICONS: Record<string, string> = {
       <div class="wrap">
         <div class="news-head" data-reveal>
           <h2>{news.heading}</h2>
-          {newsLink && <a class="panel-link" {...newsLink.attrs}>{newsLink.label}</a>}
+          <div class="news-links">
+            {newsVideoLink && <a class="panel-link" {...newsVideoLink.attrs}>{newsVideoLink.label}</a>}
+            {newsLink && <a class="panel-link" {...newsLink.attrs}>{newsLink.label}</a>}
+          </div>
         </div>
         <div class="news-list"><AnnouncementList items={newsItems} layout="cards" /></div>
       </div>
@@ -339,6 +343,7 @@ const ICONS: Record<string, string> = {
 
   /* ---- announcements ---- */
   .news-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1.5rem; }
+  .news-links { display: flex; flex-wrap: wrap; gap: 0 1.5rem; }
   .news-list { margin-top: 2rem; }
 
 

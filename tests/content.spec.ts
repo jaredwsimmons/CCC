@@ -163,3 +163,20 @@ test('the old /serve address goes to the Ministry page', async ({ page }) => {
   expect(res?.status()).toBe(200);
   await expect(page.getByRole('heading', { level: 2, name: 'Find your place', exact: true })).toBeVisible();
 });
+
+test('recent services on Media leave out the weekly announcement videos', async ({ page }) => {
+  await page.goto('/media');
+  const titles = await page.locator('.vid h3').allTextContents();
+  if (titles.length === 0) test.skip(true, 'YouTube is unreachable right now');
+  expect(titles.filter((t) => /announcements/i.test(t))).toEqual([]);
+});
+
+test("this week's announcement video plays on the Announcements page", async ({ page }) => {
+  await page.goto('/announcements');
+  const poster = page.locator('#videos [data-video-id]');
+  if ((await poster.count()) === 0) test.skip(true, 'YouTube is unreachable right now');
+  await expect(poster).toHaveAttribute('href', /youtube\.com\/watch\?v=/);
+  await poster.click();
+  await expect(page.locator('#videos iframe')).toHaveAttribute('src', /^https:\/\/www\.youtube-nocookie\.com\/embed\//);
+  expect(new URL(page.url()).pathname).toBe('/announcements');
+});

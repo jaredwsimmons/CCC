@@ -33,7 +33,7 @@ export const homeQuery = /* groq */ `
     hero{ ..., ${BUTTONS} },
     quickLinks[]{ ..., "link": link${BUTTON} },
     week{ ..., "calendarLink": calendarLink${BUTTON} },
-    announcements{ ..., "link": link${BUTTON} },
+    announcements{ ..., "link": link${BUTTON}, "videoLink": videoLink${BUTTON} },
     currentSeries{ ..., ${BUTTONS} },
     app{ ..., ${BUTTONS} }
   }
