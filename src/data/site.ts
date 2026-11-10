@@ -121,8 +121,8 @@ export const nav: Array<{
   },
   {
     label: 'Ministries',
-    href: '/serve',
-    // "Ministries" itself links to Serve. The dropdown is the church's chosen short list;
+    href: '/ministry',
+    // "Ministries" itself links to the Ministry page (/ministry, once /serve). The dropdown is the church's chosen short list;
     // Preschool, Kids and Students are summed up on Kids & Students, and Connections,
     // Prayer and Worship on Other Ministries.
     children: [

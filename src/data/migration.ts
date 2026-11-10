@@ -75,6 +75,7 @@ const ROUTE_IDS: Record<string, string> = {
   '/media': 'fixed-media',
   '/give': 'fixed-give',
   '/leaders': 'fixed-leaders',
+  '/ministry': 'page-serve', // the Ministry page was /serve; its ID stayed
 };
 const idFor = (path: string) => ROUTE_IDS[path] ?? `page-${path.replace(/^\//, '')}`;
 
@@ -178,7 +179,6 @@ function siteSettings(): SanityDoc {
 
 function home(): SanityDoc {
   const h = c.home;
-  const tile = (link: object, text: string, extra: Record<string, unknown> = {}) => ({ _type: 'placeTile', _key: key(), link: one(link as { _key?: string }), text, ...extra });
   const quick = (icon: string, link: object, text: string) => ({ _type: 'quickLink', _key: key(), icon, link: one(link as { _key?: string }), text });
   return {
     _id: 'home',
@@ -188,7 +188,7 @@ function home(): SanityDoc {
       text: 'Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.',
       image: img(h.hero.image, h.hero.imageAlt),
       photos: [photo(c.students.photo.src, c.students.photo.alt), photo(c.women.photo.src, c.women.photo.alt)],
-      buttons: [btn.url('Find your place', '/#place'), btn.page("I'm New", 'page-imnew')],
+      buttons: [btn.page('Find your place', 'page-serve'), btn.page("I'm New", 'page-imnew')],
     },
     quickLinks: [
       quick('visit', btn.page("I'm New", 'page-imnew'), 'What to expect'),
@@ -207,30 +207,6 @@ function home(): SanityDoc {
       count: 3,
       link: one(btn.page('See all announcements', 'page-announcements')),
     },
-    places: {
-      heading: 'Find your place',
-      tiles: [
-        tile(btn.page('Kids & Preschool', 'page-kids'), "A safe and loving environment where kids explore their Bible and build strong, lasting relationships that mirror Christ's love.", {
-          image: img('/images/preschool-6.webp', 'A preschool teacher playing basketball outside with a child'),
-        }),
-        tile(btn.page('Students', 'page-students'), c.students.intro.split('. ')[1] ?? c.students.intro, { image: img(c.students.photo.src, c.students.photo.alt) }),
-        tile(btn.page('Community Groups', 'fixed-groups'), 'Life is better together. Groups meet during both Sunday services and throughout the week.', {
-          cta: 'Groups open to join',
-          highlight: true,
-        }),
-        tile(btn.page('Women', 'page-women'), 'Authentic friendships at every stage of life.', { image: img(c.women.photo.src, c.women.photo.alt) }),
-        tile(btn.page('Men', 'page-men'), 'Weekly Bible study, time to deepen friendships, and service alongside our mission partners.', { cta: "Men's ministry" }),
-      ],
-      moreLabel: 'More ways to be part of it',
-      moreLinks: [
-        btn.page('Missions', 'page-missions'),
-        btn.page('Prayer', 'page-prayer'),
-        btn.page('Worship', 'page-worship'),
-        btn.page('Connections', 'page-connections'),
-        btn.page('Serve', 'page-serve'),
-        btn.page('Preschool', 'page-preschool'),
-      ],
-    },
     currentSeries: {
       eyebrow: 'Current sermon series',
       title: h.series.title,
@@ -246,6 +222,35 @@ function home(): SanityDoc {
       buttons: [btn.url('App Store', site.app.ios), btn.url('Google Play', site.app.android), btn.url('Set up Church Center', cc.appSetup)],
     },
   };
+}
+
+// Find your place: ministry tiles and links to the rest (on the Ministry page, /ministry).
+function placesSection() {
+  const tile = (link: object, text: string, extra: Record<string, unknown> = {}) => ({ _type: 'placeTile', _key: key(), link: one(link as { _key?: string }), text, ...extra });
+  return section('placesSection', {
+    eyebrow: 'Our ministries',
+    heading: 'Find your place',
+    tiles: [
+      tile(btn.page('Kids & Preschool', 'page-kids'), "A safe and loving environment where kids explore their Bible and build strong, lasting relationships that mirror Christ's love.", {
+        image: img('/images/preschool-6.webp', 'A preschool teacher playing basketball outside with a child'),
+      }),
+      tile(btn.page('Students', 'page-students'), c.students.intro.split('. ')[1] ?? c.students.intro, { image: img(c.students.photo.src, c.students.photo.alt) }),
+      tile(btn.page('Community Groups', 'fixed-groups'), 'Life is better together. Groups meet during both Sunday services and throughout the week.', {
+        cta: 'Groups open to join',
+        highlight: true,
+      }),
+      tile(btn.page('Women', 'page-women'), 'Authentic friendships at every stage of life.', { image: img(c.women.photo.src, c.women.photo.alt) }),
+      tile(btn.page('Men', 'page-men'), 'Weekly Bible study, time to deepen friendships, and service alongside our mission partners.', { cta: "Men's ministry" }),
+    ],
+    moreLabel: 'More ways to be part of it',
+    moreLinks: [
+      btn.page('Missions', 'page-missions'),
+      btn.page('Prayer', 'page-prayer'),
+      btn.page('Worship', 'page-worship'),
+      btn.page('Connections', 'page-connections'),
+        btn.page('Preschool', 'page-preschool'),
+    ],
+  });
 }
 
 function fixedPages(): SanityDoc[] {
@@ -504,12 +509,15 @@ function pages(): SanityDoc[] {
       seo: seo(bylaws.hero.description),
     }),
 
-    page('/serve', 'Serve', {
+    // The Ministry page: its address changed from /serve (which redirects), its ID did not.
+    page('/ministry', 'Serve', {
+      _id: 'page-serve',
       header: header({ eyebrow: 'Ministries', title: 'Serve', intro: `${serve.verse.text} (${serve.verse.ref})` }),
       sections: [
+        placesSection(),
         section('textPhotoSection', {
           eyebrow: 'Teams Mobilizer',
-          heading: 'Find your place. Know your purpose.',
+          heading: 'Know your purpose',
           body: paras(...serve.intro),
           photos: [photo(serve.image.src, serve.image.alt)],
           photoSide: 'right',
@@ -523,12 +531,6 @@ function pages(): SanityDoc[] {
             { _type: 'card', _key: key(), title: 'It Is:', bullets: serve.itIs },
             { _type: 'card', _key: key(), title: 'It Is Not:', bullets: serve.itIsNot },
           ],
-        }),
-        section('stepsSection', {
-          eyebrow: 'Instructions',
-          heading: 'Three simple steps',
-          steps: serve.instructions.map((s) => ({ _type: 'step', _key: key(), title: s.title, text: s.body })),
-          closing: serve.closing,
         }),
         cta('Questions about serving?', 'Ben Stephenson, our Family Pastor, is the one to ask.', btn.email('Email Ben for more information!', 'missions')),
       ],

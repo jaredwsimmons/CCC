@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity';
 import { sectionMembers } from './sections';
 
 // Addresses owned by the fixed pages, the API and the old-URL redirects.
-const RESERVED = new Set(['calendar', 'groups', 'media', 'give', 'leaders', 'api', 'home', 'history', 'our-story', 'beliefs']);
+const RESERVED = new Set(['calendar', 'groups', 'media', 'give', 'leaders', 'api', 'home', 'history', 'our-story', 'beliefs', 'serve']);
 
 // A page staff build from sections. New pages can start from a template (templates.ts).
 export default defineType({
@@ -40,6 +40,7 @@ export default defineType({
                 'textSection',
                 'textPhotoSection',
                 'cardsSection',
+                'placesSection',
                 'scheduleSection',
                 'stepsSection',
                 'accordionSection',

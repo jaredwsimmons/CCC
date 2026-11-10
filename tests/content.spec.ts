@@ -156,3 +156,10 @@ test('announcements from Church Center show on their page and on the homepage', 
   expect(await home.count()).toBeLessThanOrEqual(6);
   await expect(page.getByRole('link', { name: 'See all announcements' })).toHaveAttribute('href', '/announcements');
 });
+
+test('the old /serve address goes to the Ministry page', async ({ page }) => {
+  const res = await page.goto('/serve');
+  expect(new URL(page.url()).pathname).toBe('/ministry');
+  expect(res?.status()).toBe(200);
+  await expect(page.getByRole('heading', { level: 2, name: 'Find your place', exact: true })).toBeVisible();
+});
