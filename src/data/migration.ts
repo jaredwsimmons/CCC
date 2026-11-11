@@ -787,7 +787,7 @@ function pages(): SanityDoc[] {
     page('/announcements', 'Announcements', {
       header: header({ eyebrow: "What's happening", title: 'Announcements' }),
       sections: [
-        section('playlistSection', { eyebrow: 'Weekly announcements', heading: "This week's announcements", playlist: site.media.announcementsPlaylist, count: 3 }),
+        section('playlistSection', { heading: "This week's video", playlist: site.media.announcementsPlaylist, count: 3 }),
         section('announcementsSection', { emptyText: paras('There are no announcements right now. Check back soon!') }),
       ],
       seo: seo('The latest announcements from Chelsea Community Church — events, sign-ups and ways to get involved.'),
