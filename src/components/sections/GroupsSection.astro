@@ -3,37 +3,55 @@
 import Section from '../Section.astro';
 import GroupCards from '../GroupCards.astro';
 import RichText from '../RichText.astro';
-import { getGroups, TYPES } from '../../lib/groups';
+import { getGroupsResult, TYPES } from '../../lib/groups';
 import { variantFor } from '../../lib/links';
+import { site } from '../../data/site';
 const { s } = Astro.props;
-const groups = (await getGroups()).filter((g) => !s.groupType || g.type === s.groupType);
+const result = await getGroupsResult();
+const groups = (result ?? []).filter((g) => !s.groupType || g.type === s.groupType);
 const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label: t.replace(' Groups', '') }))];
 ---
-{(groups.length > 0 || s.emptyText?.length > 0) && (
+{(result === null || groups.length > 0 || s.emptyText?.length > 0) && (
   <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading}>
-    {s.filters && (
-      <div class="viewtoggle" role="tablist" aria-label="Filter groups" data-reveal>
+    <div data-group-section>
+    {s.filters && groups.length > 0 && (
+      <div class="viewtoggle" role="group" aria-label="Filter groups" data-reveal>
         {tabs.map((t, i) => (
-          <button type="button" data-filter={t.key} class={i === 0 ? 'is-active' : ''} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>{t.label}</button>
+          <button type="button" data-filter={t.key} class={i === 0 ? 'is-active' : ''} aria-pressed={i === 0 ? 'true' : 'false'}>{t.label}</button>
         ))}
       </div>
     )}
-    {groups.length === 0 && <div class="note" data-reveal><RichText value={s.emptyText} /></div>}
+    {result === null ? (
+      <p class="note" role="status">{s.unavailableMessage || 'We could not load groups right now.'} <a href={`https://${site.churchCenter.subdomain}/groups`} target="_blank" rel="noopener noreferrer">Browse groups on Church Center</a></p>
+    ) : groups.length === 0 && <div class="note" data-reveal><RichText value={s.emptyText} /></div>}
     <GroupCards groups={groups} />
+    <p class="note" data-no-matches role="status" hidden>{s.noMatchesMessage || 'No groups match this filter. Choose All to see the other groups.'}</p>
     {s.note?.length > 0 && <div class="note" data-reveal><RichText value={s.note} /></div>}
+    </div>
   </Section>
 )}
 
 <script is:inline>
   (function () {
-    var btns = document.querySelectorAll('[data-filter]');
-    var cards = document.querySelectorAll('.gcard');
+    document.querySelectorAll('[data-group-section]').forEach(function (root) {
+    if (root.dataset.initialized) return;
+    root.dataset.initialized = 'true';
+    var btns = root.querySelectorAll('[data-filter]');
+    var cards = root.querySelectorAll('.gcard');
+    var empty = root.querySelector('[data-no-matches]');
     btns.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var f = btn.getAttribute('data-filter');
-        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
-        cards.forEach(function (c) { c.style.display = (f === 'all' || c.getAttribute('data-type') === f) ? '' : 'none'; });
+        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+        var visible = 0;
+        cards.forEach(function (c) {
+          var match = f === 'all' || c.getAttribute('data-type') === f;
+          c.style.display = match ? '' : 'none';
+          if (match) visible++;
+        });
+        if (empty) empty.hidden = visible > 0;
       });
+    });
     });
   })();
 </script>

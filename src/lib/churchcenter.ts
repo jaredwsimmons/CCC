@@ -14,19 +14,34 @@ const TOKEN_SECONDS = 5 * 60;
 export const TZ = 'America/Chicago';
 
 let token: { value: string; at: number } | null = null;
+let tokenRequest: Promise<string | null> | null = null;
 
 async function getToken(signal: AbortSignal): Promise<string | null> {
   if (token && Date.now() - token.at < TOKEN_SECONDS * 1000) return token.value;
-  const res = await fetch(`https://${ORG_SUB}/sessions/tokens`, {
-    signal,
-    method: 'POST',
-    headers: { 'User-Agent': UA, 'Content-Type': 'application/json' },
+  // Calendar and announcements load together. Share acquisition as well as the finished token.
+  tokenRequest ??= (async () => {
+    const res = await fetch(`https://${ORG_SUB}/sessions/tokens`, {
+      // A short-lived caller must not cancel acquisition for the other callers.
+      signal: AbortSignal.timeout(9000),
+      method: 'POST',
+      headers: { 'User-Agent': UA, 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) return null;
+    const value = (await res.json())?.data?.attributes?.token as string | undefined;
+    if (!value) return null;
+    token = { value, at: Date.now() };
+    return value;
+  })().finally(() => { tokenRequest = null; });
+  const pending = tokenRequest;
+  signal.throwIfAborted();
+  return new Promise((resolve, reject) => {
+    const abort = () => reject(signal.reason);
+    signal.addEventListener('abort', abort, { once: true });
+    pending.then(
+      (value) => { signal.removeEventListener('abort', abort); resolve(value); },
+      (error) => { signal.removeEventListener('abort', abort); reject(error); },
+    );
   });
-  if (!res.ok) return null;
-  const value = (await res.json())?.data?.attributes?.token as string | undefined;
-  if (!value) return null;
-  token = { value, at: Date.now() };
-  return value;
 }
 
 /** GET a Church Center API path (e.g. "/groups/v2/groups"): parsed JSON, or null on any failure. */
@@ -37,7 +52,7 @@ export async function ccGet(path: string, timeoutMs = 9000): Promise<any | null>
     const bearer = await getToken(ctrl.signal);
     if (!bearer) return null;
     const res = await fetch(API + path, { signal: ctrl.signal, headers: { 'User-Agent': UA, Authorization: `Bearer ${bearer}` } });
-    if (res.status === 401) token = null; // expired early; the next call gets a new one
+    if (res.status === 401 && token?.value === bearer) token = null; // don't clear a newer token
     return res.ok ? await res.json() : null;
   } catch {
     return null;

@@ -7,7 +7,7 @@
   - paragraph: Worship & Community Groups
   - list:
     - listitem: /\d+ Chelsea Park Dr\., Chelsea, AL \d+/
-    - listitem: Programming for kids and students at both hours
+    - listitem: Preschool and Kids at both hours; Students at 9:00 AM
   - link "Let us know you're coming!":
     - /url: https://chelseachurch.churchcenter.com/people/forms/869246?open-in-church-center-modal=true
   - link "Get directions":
@@ -18,12 +18,12 @@
   - heading "Sunday Worship" [level=3]
   - paragraph: /Sundays · 9:\d+ & \d+:\d+ AM/
   - paragraph: Worship Room
-  - paragraph: Two identical gatherings, with programming for kids and students at both hours.
+  - paragraph: Two identical worship gatherings, with Preschool and Kids programming at both hours. Student community groups meet at 9:00 AM.
   - text: Kids & Students
   - heading "Kids & Students" [level=3]
-  - paragraph: Both Sunday services
+  - paragraph: Sundays & Wednesdays
   - paragraph: Kids & Student Halls
-  - paragraph: Preschool through high school meet at both Sunday services; students also gather Wednesday nights at 6 PM.
+  - paragraph: Preschool and Kids meet at both Sunday services. Middle and high school students meet at 9:00 AM on Sundays and 6:00 PM on Wednesdays.
   - text: Community Groups
   - heading "Community Groups" [level=3]
   - paragraph: Everyday
@@ -35,7 +35,7 @@
   - heading "Family Worship" [level=3]
   - paragraph: 5th Sundays
   - paragraph: Worship Room
-  - paragraph: On months with a 5th Sunday, we cancel all age-graded ministries — Preschool through Students — and the whole church worships together.
+  - paragraph: On the fifth Sunday of the month only, Preschool through Students join the whole church for family worship instead of their usual age-graded programming.
   - heading "How to Dress" [level=3]
   - paragraph: Come dressed comfortably! Whether you’re in jeans and a t-shirt or coat and tie, you will fit in with us.
   - heading "Where to Go First" [level=3]

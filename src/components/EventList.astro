@@ -1,7 +1,7 @@
 ---
 // Upcoming Church Center events grouped by month (the Calendar list view and the
 // Featured events section).
-import { groupByMonth, dateParts, type ChurchEvent } from '../lib/calendar';
+import { groupByMonth, dateParts, fullDate, type ChurchEvent } from '../lib/calendar';
 import { inModal } from '../lib/links';
 
 interface Props { events: ChurchEvent[]; }
@@ -21,6 +21,7 @@ const months = groupByMonth(Astro.props.events);
               <span class="event__mo">{d.month}</span>
             </div>
             <div class="event__body">
+              <time class="sr-only" datetime={e.date}>{fullDate(e.date)}</time>
               <div class="event__head">
                 <h4>{e.title}</h4>
                 {e.recurrence && <span class="tag-cat">{e.recurrence}</span>}

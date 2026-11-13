@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { buildDocuments } from '../src/data/migration';
+import { contentCorrections } from '../scripts/reconcile-review-content';
 
 // The migrated documents must be valid for the Studio's schemas before they're imported:
 // what `sanity schema validate` can't check without a project.
@@ -107,4 +108,27 @@ test('page addresses are unique and not taken by the site', () => {
   const slugs = docs.filter((d) => d._type === 'page').map((d) => (d.slug as { current: string }).current);
   expect(new Set(slugs).size).toBe(slugs.length);
   expect(slugs.filter((s) => reserved.includes(s))).toEqual([]);
+});
+
+test('family pages agree about student service times and do not overlap Kids grades', () => {
+  const settings = JSON.stringify(docs.find((d) => d._id === 'weeklyRhythm'));
+  const visitor = JSON.stringify(docs.find((d) => d._id === 'page-imnew'));
+  expect(settings).not.toContain('students at both hours');
+  expect(settings).not.toContain('high school meet at both Sunday services');
+  expect(settings).toContain('9:00 AM');
+  expect(visitor).not.toContain('kids and students at both hours');
+  expect(JSON.stringify(docs.find((d) => d._id === 'page-kids-students'))).not.toContain('5th through 12th');
+});
+
+test('the homepage ministry action names its destination and Missions does not promise an unspecified monthly partner', () => {
+  const home = docs.find((d) => d._id === 'home') as any;
+  expect(home.hero.buttons[0].label).toBe('Explore Ministries');
+  expect(JSON.stringify(docs.find((d) => d._id === 'page-missions'))).not.toContain("This month's partner");
+});
+
+test('existing CMS corrections preserve staff edits and are idempotent on corrected documents', () => {
+  const old = { _id: 'home', hero: { buttons: [{ label: 'Find your place' }] }, currentSeries: { title: 'Staff current series' } };
+  expect(contentCorrections(old)).toEqual({ set: { 'hero.buttons[0].label': 'Explore Ministries' }, unset: [] });
+  expect(contentCorrections({ ...old, hero: { buttons: [{ label: 'Staff chosen wording' }] } })).toEqual({ set: {}, unset: [] });
+  for (const doc of docs) expect(contentCorrections(doc), doc._id).toEqual({ set: {}, unset: [] });
 });

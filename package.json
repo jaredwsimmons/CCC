@@ -11,9 +11,12 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "playwright test",
+    "test:unit": "playwright test --config=playwright.unit.config.ts",
+    "test:components": "playwright test --config=playwright.components.config.ts",
     "test:update": "playwright test --update-snapshots",
     "fields": "node scripts/pco-fields.mjs",
-    "export:sanity": "tsx scripts/export-sanity.ts"
+    "export:sanity": "tsx scripts/export-sanity.ts",
+    "reconcile:content": "node --env-file-if-exists=.env --import tsx scripts/reconcile-review-content.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.4",
@@ -30,8 +33,10 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@astrojs/compiler-rs": "^0.5.2",
     "@playwright/test": "1.61.1",
     "@types/node": "^24.19.2",
+    "esbuild": "^0.28.2",
     "playwright": "^1.61.1",
     "tsx": "^4.23.15",
     "typescript": "^5.6.3",

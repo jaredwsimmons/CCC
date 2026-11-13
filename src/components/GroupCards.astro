@@ -20,7 +20,7 @@ const { groups } = Astro.props;
         <h3>{g.name}</h3>
         {g.schedule && <p class="gcard__sched">{g.schedule}</p>}
         {g.description && <p class="gcard__desc">{g.description}</p>}
-        <a class="gcard__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer" data-group-popup>Request to join →</a>
+        <a class="gcard__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer" data-group-popup>View group →</a>
       </div>
       <dialog class="gpop" aria-label={g.name}>
         <div class="gpop__inner">
@@ -65,7 +65,7 @@ const { groups } = Astro.props;
   .gcard__img img { width: 100%; height: 100%; object-fit: cover; }
   .gcard__ph { width: 100%; height: 100%; display: grid; place-items: center; }
   .gcard__body { padding: 1.1rem 1.25rem 1.3rem; display: flex; flex-direction: column; flex: 1; }
-  .tag-cat { display: inline-block; align-self: flex-start; font-family: var(--display); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-deep); background: rgba(240,195,52,0.16); padding: 0.22rem 0.6rem; border-radius: 999px; margin-bottom: 0.55rem; }
+  .tag-cat { display: inline-block; align-self: flex-start; font-family: var(--display); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); background: rgba(240,195,52,0.16); padding: 0.22rem 0.6rem; border-radius: 999px; margin-bottom: 0.55rem; }
   .gcard h3 { font-size: 1.12rem; }
   .gcard__sched { font-family: var(--display); font-weight: 600; color: var(--blue); font-size: 0.9rem; margin-top: 0.25rem; }
   .gcard__desc {

@@ -87,3 +87,24 @@ test('without an edge cache, every call loads', async () => {
   expect(await cached('k', 600, load)).toEqual(['a']);
   expect(await cached('k', 600, load)).toEqual(['b']);
 });
+
+test('failed refreshes cannot renew the age of stale content, even after a Worker restart', async () => {
+  await cached('k', 600, async () => ['old']);
+  for (let day = 1; day <= 6; day++) {
+    now += 86_400_000;
+    expect(await cached('k', 600, async () => null)).toEqual(['old']);
+  }
+  clearMemoryCache();
+  now += 86_400_000;
+  expect(await cached('k', 600, async () => null)).toBeNull();
+});
+
+test('short-ttl failures still wait a full minute before retrying', async () => {
+  const load = loader(null, ['recovered']);
+  expect(await cached('k', 10, load)).toBeNull();
+  now += 30_000;
+  expect(await cached('k', 10, load)).toBeNull();
+  expect(load.calls).toBe(1);
+  now += 31_000;
+  expect(await cached('k', 10, load)).toEqual(['recovered']);
+});

@@ -11,7 +11,7 @@ export default defineType({
   fields: [
     defineField({ name: 'label', title: 'Small label', type: 'string', initialValue: 'This Sunday' }),
     defineField({ name: 'subline', title: 'Line under the times', type: 'string', description: 'e.g. “Worship & Community Groups”' }),
-    defineField({ name: 'note', title: 'Extra line', type: 'string', description: 'e.g. “Programming for kids and students at both hours”' }),
+    defineField({ name: 'note', title: 'Extra line', type: 'string', description: 'e.g. “Preschool and Kids at both hours; Students at 9:00 AM”' }),
     buttons(1),
     defineField({ name: 'directionsLabel', title: 'Directions link text', type: 'string', initialValue: 'Get directions', description: 'Leave blank to hide the directions link.' }),
   ],

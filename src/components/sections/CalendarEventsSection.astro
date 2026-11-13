@@ -4,26 +4,30 @@ import Section from '../Section.astro';
 import EventList from '../EventList.astro';
 import RichText from '../RichText.astro';
 import { inModal, variantFor } from '../../lib/links';
-import { getUpcomingEvents, buildMonthGrids, onePerSeries } from '../../lib/calendar';
+import { getUpcomingEventsResult, buildMonthGrids, onePerSeries, fullDate } from '../../lib/calendar';
+import { site } from '../../data/site';
 const { s } = Astro.props;
-const events = await getUpcomingEvents();
+const result = await getUpcomingEventsResult();
+const events = result ?? [];
 const monthGrids = buildMonthGrids(events);
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 ---
 <Section variant={variantFor(s.background)}>
+  <div data-calendar-section>
     <div class="ev-head" data-reveal>
       <div>
         {s.eyebrow && <p class="eyebrow">{s.eyebrow}</p>}
         {s.heading && <h2>{s.heading}</h2>}
       </div>
-      <div class="viewtoggle" role="tablist" aria-label="Calendar view">
-        <button type="button" data-view-btn="list" class="is-active" role="tab" aria-selected="true">List</button>
-        <button type="button" data-view-btn="month" role="tab" aria-selected="false">Month</button>
+      <div class="viewtoggle" role="group" aria-label="Calendar view">
+        <button type="button" data-view-btn="list" class="is-active" aria-pressed="true">List</button>
+        <button type="button" data-view-btn="month" aria-pressed="false">Month</button>
       </div>
     </div>
 
 
-    {events.length === 0 && <div class="note" data-reveal><RichText value={s.emptyText} /></div>}
+    {result === null ? <p class="note" role="status">{s.unavailableMessage || 'We could not load the calendar right now.'} <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Open the Church Center calendar</a></p>
+      : events.length === 0 && <div class="note" data-reveal><RichText value={s.emptyText} /></div>}
 
     <!-- LIST view -->
     <div data-view="list">
@@ -35,7 +39,7 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       {monthGrids.map((mg) => (
         <div class="month" data-reveal>
           <h3 class="month__label">{mg.label}</h3>
-          <div class="cal-scroll">
+          <div class="cal-scroll" tabindex="0" role="region" aria-label={`${mg.label} calendar, scroll horizontally for more days`}>
             <div class="cal-grid">
               {DOW.map((d) => <div class="cal-dow">{d}</div>)}
               {mg.weeks.flat().map((cell) => cell ? (
@@ -44,10 +48,16 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                   {cell.events.slice(0, 3).map((e) => {
                     const href = e.register ? inModal(e.register) : e.publicUrl;
                     return href
-                      ? <a class="cal-ev" href={href} target={e.register ? undefined : '_blank'} rel="noopener noreferrer" title={e.title}>{e.title}</a>
+                      ? <a class="cal-ev" href={href} target={e.register ? undefined : '_blank'} rel="noopener noreferrer" title={e.title} aria-label={`${e.title}, ${fullDate(e.date)}, ${e.timeLabel}`}>{e.title}</a>
                       : <span class="cal-ev" title={e.title}>{e.title}</span>;
                   })}
-                  {cell.events.length > 3 && <span class="cal-more">+{cell.events.length - 3} more</span>}
+                  {cell.events.length > 3 && <details class="cal-extra">
+                    <summary class="cal-more" aria-label={`${cell.events.length - 3} more events on ${fullDate(cell.date)}`}>+{cell.events.length - 3} more</summary>
+                    {cell.events.slice(3).map((e) => {
+                      const href = e.register ? inModal(e.register) : e.publicUrl;
+                      return href ? <a class="cal-ev" href={href} target={e.register ? undefined : '_blank'} rel="noopener noreferrer" aria-label={`${e.title}, ${fullDate(e.date)}, ${e.timeLabel}`}>{e.title}</a> : <span class="cal-ev">{e.title}</span>;
+                    })}
+                  </details>}
                 </div>
               ) : <div class="cal-cell cal-cell--empty"></div>)}
             </div>
@@ -57,18 +67,23 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     </div>
 
     {s.note?.length > 0 && <div class="note" data-reveal><RichText value={s.note} /></div>}
+  </div>
 </Section>
 
 <script is:inline>
   (function () {
-    var btns = document.querySelectorAll('[data-view-btn]');
-    var views = document.querySelectorAll('[data-view]');
+    document.querySelectorAll('[data-calendar-section]').forEach(function (root) {
+    if (root.dataset.initialized) return;
+    root.dataset.initialized = 'true';
+    var btns = root.querySelectorAll('[data-view-btn]');
+    var views = root.querySelectorAll('[data-view]');
     btns.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var v = btn.getAttribute('data-view-btn');
-        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
+        btns.forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
         views.forEach(function (x) { x.hidden = x.getAttribute('data-view') !== v; });
       });
+    });
     });
   })();
 </script>
@@ -101,6 +116,8 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   }
   a.cal-ev:hover { background: rgba(0,82,145,0.15); }
   .cal-more { font-size: 0.66rem; color: var(--mid); font-weight: 600; }
+  summary.cal-more { cursor: pointer; }
+  .cal-extra .cal-ev { display: block; margin-top: 0.2rem; }
 
   .note { margin-top: 1.75rem; font-size: 0.95rem; color: var(--mid); }
 </style>
