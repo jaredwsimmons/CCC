@@ -51,7 +51,8 @@ test('mobile menu contains focus, closes with Escape, and releases the page on d
     churchName: 'CCC', menu: [{ label: "I'm New", href: '/imnew' }, { label: 'Calendar', href: '/calendar' }],
   });
   await page.setContent(documentFor(`${header}<main><a href="/outside">Outside</a></main><footer>Footer</footer>`));
-  const toggle = page.getByRole('button', { name: 'Menu', exact: true });
+  const toggle = page.locator('[data-nav-toggle]');
+  await expect(toggle).toHaveAccessibleName('Menu');
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByRole('link', { name: "I'm New", exact: true })).toBeFocused();
@@ -67,6 +68,7 @@ test('mobile menu contains focus, closes with Escape, and releases the page on d
   await expect(page.locator('main')).toHaveJSProperty('inert', false);
   await toggle.click();
   await page.setViewportSize({ width: 1200, height: 900 });
+  await expect(toggle).toBeHidden();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(page.locator('main')).toHaveJSProperty('inert', false);
 });
