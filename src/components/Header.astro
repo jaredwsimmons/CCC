@@ -70,11 +70,10 @@ const isActiveItem = (item: NavItem) => isActive(item.href) || Boolean(item.chil
     if (!btn || !nav) return;
     var header = btn.closest('header');
     var mobile = window.matchMedia('(max-width: 980px)');
-    var background = document.querySelectorAll('main, footer, .skip');
     function setOpen(open, restoreFocus) {
       btn.setAttribute('aria-expanded', String(open));
       document.documentElement.classList.toggle('nav-open', open);
-      background.forEach(function (el) { el.inert = open; });
+      document.querySelectorAll('main, footer, .skip').forEach(function (el) { el.inert = open; });
       if (open) {
         var first = nav.querySelector('a');
         if (first) first.focus();
@@ -210,7 +209,7 @@ const isActiveItem = (item: NavItem) => isActive(item.href) || Boolean(item.chil
       overflow-y: auto;
       z-index: 55; /* below .site-header (60) so the bar + toggle stay on top */
     }
-    :global(html.nav-open) .nav { visibility: visible; opacity: 1; }
+    :global(html.nav-open) .nav { visibility: visible; opacity: 1; transition: opacity 0.18s ease; }
     .nav > ul { flex-direction: column; align-items: stretch; gap: 0; padding: 0.75rem 1.25rem 2rem; }
     .nav a:not(.btn) { font-size: 1.05rem; padding: 0.7rem 0.5rem; border-radius: 8px; }
     .nav a:not(.btn) svg { display: none; }
