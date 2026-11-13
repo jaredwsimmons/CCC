@@ -78,7 +78,9 @@ async function fetchLive(): Promise<Group[] | null> {
 }
 
 // Flat list, sorted Mon→Sun by day/time (groups with no schedule last).
-export async function getGroups(): Promise<Group[]> {
-  const groups = (await cached('groups', 30 * 60, fetchLive)) ?? [];
-  return groups.sort((a, b) => a.sortKey - b.sortKey || a.name.localeCompare(b.name));
+export async function getGroupsResult(): Promise<Group[] | null> {
+  const groups = await cached('groups', 30 * 60, fetchLive);
+  return groups ? [...groups].sort((a, b) => a.sortKey - b.sortKey || a.name.localeCompare(b.name)) : null;
 }
+
+export const getGroups = async (): Promise<Group[]> => (await getGroupsResult()) ?? [];

@@ -11,9 +11,9 @@ const { reg } = Astro.props;
   <div class="reg__body">
     <h3>{reg.name}</h3>
     {reg.when && <p class="reg__when">{reg.when}</p>}
-    <p class="reg__meta">{[reg.price, reg.full ? 'Full' : 'Open'].filter(Boolean).join(' · ')}</p>
+    <p class="reg__meta">{[reg.price, !reg.open ? 'Closed' : reg.full ? 'Full' : 'Open'].filter(Boolean).join(' · ')}</p>
     {reg.summary && <p>{reg.summary}</p>}
-    <a class="btn btn--blue mt-1" href={inModal(reg.url)}>{reg.full ? 'Join the waitlist' : 'Register'}</a>
+    <a class="btn btn--blue mt-1" href={inModal(reg.url)}>{reg.full || !reg.open ? 'View registration details' : 'Register'}</a>
   </div>
 </article>
 

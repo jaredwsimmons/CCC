@@ -11,18 +11,19 @@ import { cached } from './cache';
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
 
 async function fetchText(url: string, timeoutMs = 8000): Promise<string | null> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), timeoutMs);
     const res = await fetch(url, {
       signal: ctrl.signal,
       headers: { 'User-Agent': 'ChelseaCommunityChurch-site/1.0' },
     });
-    clearTimeout(t);
     if (!res.ok) return null;
     return await res.text();
   } catch {
     return null;
+  } finally {
+    clearTimeout(t);
   }
 }
 

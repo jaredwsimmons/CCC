@@ -168,7 +168,7 @@ function siteSettings(): SanityDoc {
       btn.url('Text updates', site.textSignup),
       btn.url('Church Center app', cc.appSetup),
     ],
-    deaconCardText: 'Serving and praying over this ministry — reach out anytime.',
+    deaconCardText: 'Serving and praying over this ministry.',
     notFound: {
       heading: "We couldn't find that page",
       text: "The link may be old or mistyped — but you're still welcome here. Let's get you back on track.",
@@ -188,7 +188,7 @@ function home(): SanityDoc {
       text: 'Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.',
       image: img(h.hero.image, h.hero.imageAlt),
       photos: [photo(c.students.photo.src, c.students.photo.alt), photo(c.women.photo.src, c.women.photo.alt)],
-      buttons: [btn.page('Find your place', 'page-serve'), btn.page("I'm New", 'page-imnew')],
+      buttons: [btn.page('Explore Ministries', 'page-serve'), btn.page("I'm New", 'page-imnew')],
     },
     quickLinks: [
       quick('visit', btn.page("I'm New", 'page-imnew'), 'What to expect'),
@@ -209,10 +209,14 @@ function home(): SanityDoc {
     },
     currentSeries: {
       eyebrow: 'Current sermon series',
+      latestLabel: 'Latest message',
+      browseLabel: 'Watch & Listen',
+      listenLabel: 'Listen to this message',
+      expiresOn: '2026-11-28',
       title: h.series.title,
       description: h.series.body,
       image: img(h.series.art, h.series.artAlt),
-      buttons: [btn.url('Watch Service', site.media.seriesPlaylist), btn.url('Listen on Spotify', site.social.spotify)],
+      buttons: [btn.page('Watch & Listen', 'fixed-media'), btn.url('Listen on Spotify', site.social.spotify)],
     },
     app: {
       eyebrow: h.app.eyebrow,
@@ -432,7 +436,7 @@ function pages(): SanityDoc[] {
         section('visitSection', {
           label: 'This Sunday',
           subline: c.home.hero.sub,
-          note: 'Programming for kids and students at both hours',
+          note: 'Preschool and Kids at both hours; Students at 9:00 AM',
           buttons: [btn.cc("Let us know you're coming!", planVisit)],
           directionsLabel: 'Get directions',
         }),
@@ -511,9 +515,9 @@ function pages(): SanityDoc[] {
     }),
 
     // The Ministry page: its address changed from /serve (which redirects), its ID did not.
-    page('/ministry', 'Serve', {
+    page('/ministry', 'Ministries', {
       _id: 'page-serve',
-      header: header({ eyebrow: 'Ministries', title: 'Serve', intro: `${serve.verse.text} (${serve.verse.ref})` }),
+      header: header({ eyebrow: 'Ministries', title: 'Ministries', intro: `${serve.verse.text} (${serve.verse.ref})` }),
       sections: [
         placesSection(),
         section('textPhotoSection', {
@@ -627,7 +631,7 @@ function pages(): SanityDoc[] {
       header: header({ eyebrow: 'Ministries', title: 'Missions', intro: `${missions.verse.text} (${missions.verse.ref})`, ministry: ref('ministry-missions') }),
       sections: [
         section('textPhotoSection', {
-          eyebrow: 'Monthly missions highlight',
+          eyebrow: 'Pray, give, and go',
           heading: missions.highlight.title,
           body: paras(missions.highlight.body),
           photoSide: 'right',
@@ -764,7 +768,7 @@ function pages(): SanityDoc[] {
           background: 'tinted',
         }),
         section('textPhotoSection', {
-          eyebrow: '5th through 12th grade',
+          eyebrow: 'Middle and high school',
           heading: 'Students',
           body: paras(students.intro),
           photos: [photo(students.photo.src, students.photo.alt)],

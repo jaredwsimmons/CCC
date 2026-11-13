@@ -67,7 +67,7 @@ async function fetchLive(): Promise<ChurchEvent[] | null> {
     let more = Boolean(first.meta?.next);
     for (let page = 1; page < EVENT_PAGES && more; page++) {
       const next = await ccGet(`${EVENTS_PATH}&offset=${page * 100}`);
-      if (!next) break; // what's already here is still right, just shorter
+      if (!next) return events; // keep the known events; this is not the intentional page limit
       events.push(...toEvents(next));
       more = Boolean(next.meta?.next);
     }
@@ -80,8 +80,9 @@ async function fetchLive(): Promise<ChurchEvent[] | null> {
   }
 }
 
-export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
-  const live = (await cached('calendar-events', 10 * 60, fetchLive)) ?? [];
+export async function getUpcomingEventsResult(): Promise<ChurchEvent[] | null> {
+  const live = await cached('calendar-events', 10 * 60, fetchLive);
+  if (live === null) return null;
   const today = localDate(new Date().toISOString());
   // The Sunday-morning service breakouts (Worship/Preschool/K-5, all "Every
   // Sunday") are covered by the weekly-rhythm cards — drop them so the upcoming
@@ -90,6 +91,8 @@ export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
   const events = live.filter((e) => e.date >= today && !/^every sunday$/i.test(e.recurrence || ''));
   return events.sort((a, b) => a.date.localeCompare(b.date));
 }
+
+export const getUpcomingEvents = async (): Promise<ChurchEvent[]> => (await getUpcomingEventsResult()) ?? [];
 
 /** A repeating event once, at its next date, for lists. Renamed occurrences stay. */
 export function onePerSeries(events: ChurchEvent[]): ChurchEvent[] {
@@ -113,14 +116,14 @@ export interface RhythmTile {
 }
 export const rhythm: RhythmTile[] = [
   { category: 'Worship', title: 'Sunday Worship', time: 'Sundays · 9:00 & 10:30 AM', location: 'Worship Room',
-    description: 'Two identical gatherings, with programming for kids and students at both hours.' },
-  { category: 'Kids & Students', title: 'Kids & Students', time: 'Both Sunday services', location: 'Kids & Student Halls',
-    description: 'Preschool through high school meet at both Sunday services; students also gather Wednesday nights at 6 PM.' },
+    description: 'Two identical worship gatherings, with Preschool and Kids programming at both hours. Student community groups meet at 9:00 AM.' },
+  { category: 'Kids & Students', title: 'Kids & Students', time: 'Sundays & Wednesdays', location: 'Kids & Student Halls',
+    description: 'Preschool and Kids meet at both Sunday services. Middle and high school students meet at 9:00 AM on Sundays and 6:00 PM on Wednesdays.' },
   { category: 'Community Groups', title: 'Community Groups', time: 'Everyday', location: 'On campus & in homes',
     description: 'Adults do life together in groups throughout the week.',
     link: { href: withBase('/groups'), label: 'See all community groups →' } },
   { category: '5th Sundays', title: 'Family Worship', time: '5th Sundays', location: 'Worship Room',
-    description: 'On months with a 5th Sunday, we cancel all age-graded ministries — Preschool through Students — and the whole church worships together.' },
+    description: 'On the fifth Sunday of the month only, Preschool through Students join the whole church for family worship instead of their usual age-graded programming.' },
 ];
 
 // Build a traditional month grid (Sun–Sat weeks) for the calendar's "Month" view.
@@ -171,3 +174,8 @@ export function dateParts(iso: string): { weekday: string; month: string; day: s
     day: String(d.getDate()),
   };
 }
+
+/** Complete event date for readable text, including assistive technology. */
+export const fullDate = (iso: string) => new Date(iso + 'T12:00:00').toLocaleDateString('en-US', {
+  weekday: 'long', month: 'short', day: 'numeric', year: 'numeric',
+});

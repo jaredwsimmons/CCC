@@ -15,4 +15,4 @@ if (s.source === 'video') {
   message = (await getPodcastEpisodes())[0];
 }
 ---
-{message && <LatestMessage message={message} eyebrow={s.eyebrow} watchLabel={s.watchLabel} watchUrl={s.watchUrl} listenLabel={s.listenLabel} fallbackImage={imageUrl(artwork, 900)} />}
+{message && <LatestMessage message={message} eyebrow={s.eyebrow} watchLabel={s.watchLabel} watchUrl={s.watchUrl} browseLabel={s.browseLabel} listenLabel={s.listenLabel} fallbackImage={imageUrl(artwork, 900)} />}

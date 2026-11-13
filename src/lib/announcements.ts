@@ -77,5 +77,8 @@ async function fetchLive(): Promise<Announcement[] | null> {
 
 /** Current announcements, featured first. [] when there are none or Church Center is unreachable. */
 export async function getAnnouncements(): Promise<Announcement[]> {
-  return (await cached('cc-announcements', 10 * 60, fetchLive)) ?? [];
+  return (await getAnnouncementsResult()) ?? [];
 }
+
+/** null distinguishes a source outage from an empty announcement list. */
+export const getAnnouncementsResult = () => cached('cc-announcements', 10 * 60, fetchLive);

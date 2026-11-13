@@ -12,9 +12,10 @@
 
 const KEEP_SECONDS = 7 * 24 * 60 * 60; // how long an entry survives without a successful refresh
 const RETRY_SECONDS = 60; // how long to wait after a failed refresh
-const KEY_BASE = 'https://chelseachurch.com/__edge-cache/';
+// Versioned because older entries did not record when their data was last refreshed.
+const KEY_BASE = 'https://chelseachurch.com/__edge-cache/v2/';
 
-type Entry<T> = { at: number; data: T | null };
+type Entry<T> = { at: number; goodAt: number; retryAt: number; data: T | null };
 
 const memory = new Map<string, Entry<unknown>>();
 
@@ -29,7 +30,8 @@ export async function cached<T>(
   const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default;
   if (!cache) return load();
 
-  const isFresh = (e: Entry<T> | null) => e !== null && Date.now() - e.at < ttl * 1000;
+  const usable = (e: Entry<T> | null) => e !== null && Date.now() - e.goodAt < KEEP_SECONDS * 1000;
+  const isFresh = (e: Entry<T> | null) => usable(e) && Date.now() < e!.retryAt;
   let last = (memory.get(key) as Entry<T> | undefined) ?? null;
   if (isFresh(last)) return last!.data;
 
@@ -49,16 +51,21 @@ export async function cached<T>(
   const fresh = await load();
   // On failure, keep the last good copy (or remember there is none) and look fresh
   // again for RETRY_SECONDS, so the next minute of visits doesn't wait on a dead upstream.
+  const now = Date.now();
+  const stale = usable(last) ? last : null;
   const entry: Entry<T> =
     fresh !== null
-      ? { at: Date.now(), data: fresh }
-      : { at: Date.now() - Math.max(ttl - RETRY_SECONDS, 0) * 1000, data: last?.data ?? null };
+      ? { at: now, goodAt: now, retryAt: now + ttl * 1000, data: fresh }
+      : { at: now, goodAt: stale?.goodAt ?? now, retryAt: now + RETRY_SECONDS * 1000, data: stale?.data ?? null };
   memory.set(key, entry);
   try {
     await cache.put(
       req,
       new Response(JSON.stringify(entry), {
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': `max-age=${KEEP_SECONDS}` },
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': `max-age=${entry.data === null ? RETRY_SECONDS : Math.max(1, Math.ceil((entry.goodAt + KEEP_SECONDS * 1000 - now) / 1000))}`,
+        },
       }),
     );
   } catch {

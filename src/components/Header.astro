@@ -68,17 +68,38 @@ const isActiveItem = (item: NavItem) => isActive(item.href) || Boolean(item.chil
     var btn = document.querySelector('[data-nav-toggle]');
     var nav = document.getElementById('site-nav');
     if (!btn || !nav) return;
+    var header = btn.closest('header');
+    var mobile = window.matchMedia('(max-width: 980px)');
+    function setOpen(open, restoreFocus) {
+      btn.setAttribute('aria-expanded', String(open));
+      document.documentElement.classList.toggle('nav-open', open);
+      document.querySelectorAll('main, footer, .skip').forEach(function (el) { el.inert = open; });
+      if (open) {
+        var first = nav.querySelector('a');
+        if (first) first.focus();
+      } else if (restoreFocus) btn.focus();
+    }
     btn.addEventListener('click', function () {
       var open = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!open));
-      document.documentElement.classList.toggle('nav-open', !open);
+      setOpen(!open, open);
     });
     // Close the drawer when a link inside it is chosen
     nav.addEventListener('click', function (e) {
       if (e.target.closest('a')) {
-        btn.setAttribute('aria-expanded', 'false');
-        document.documentElement.classList.remove('nav-open');
+        setOpen(false, false);
       }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (btn.getAttribute('aria-expanded') !== 'true') return;
+      if (e.key === 'Escape') { e.preventDefault(); setOpen(false, true); return; }
+      if (e.key !== 'Tab') return;
+      var focusable = Array.from(header.querySelectorAll('a, button')).filter(function (el) { return el.getClientRects().length > 0; });
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+    mobile.addEventListener('change', function () {
+      if (!mobile.matches && btn.getAttribute('aria-expanded') === 'true') setOpen(false, false);
     });
   })();
 </script>
@@ -188,7 +209,7 @@ const isActiveItem = (item: NavItem) => isActive(item.href) || Boolean(item.chil
       overflow-y: auto;
       z-index: 55; /* below .site-header (60) so the bar + toggle stay on top */
     }
-    :global(html.nav-open) .nav { visibility: visible; opacity: 1; }
+    :global(html.nav-open) .nav { visibility: visible; opacity: 1; transition: opacity 0.18s ease; }
     .nav > ul { flex-direction: column; align-items: stretch; gap: 0; padding: 0.75rem 1.25rem 2rem; }
     .nav a:not(.btn) { font-size: 1.05rem; padding: 0.7rem 0.5rem; border-radius: 8px; }
     .nav a:not(.btn) svg { display: none; }

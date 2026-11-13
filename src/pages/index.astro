@@ -10,7 +10,8 @@ import { sanityFetch } from '../lib/sanity';
 import { homeQuery, settingsQuery } from '../lib/queries';
 import { imagePosition, imageUrl, type SanityImage } from '../lib/image';
 import { buttonLink, inModal, type Button } from '../lib/links';
-import { dateParts, getUpcomingEvents, onePerSeries } from '../lib/calendar';
+import { dateParts, fullDate, getUpcomingEvents, onePerSeries } from '../lib/calendar';
+import { localDate } from '../lib/churchcenter';
 import { fmtDuration, getPodcastEpisodes } from '../lib/feeds';
 import { getAnnouncements } from '../lib/announcements';
 import AnnouncementList from '../components/AnnouncementList.astro';
@@ -38,6 +39,11 @@ const seriesImage = imageUrl(series?.image, 1000);
 // The series box shows the newest sermon from the podcast feed, as the Media page does; the
 // series words and art from Sanity stand in when the feed can't be reached.
 const latest = episodes[0];
+const seriesActive = !series?.expiresOn || series.expiresOn >= localDate(new Date().toISOString());
+const messageButtons: Button[] = [
+  { kind: 'page', label: series?.browseLabel || 'Watch & Listen', page: { _type: 'fixedPage', _id: 'fixed-media' } },
+  { kind: 'url', label: series?.listenLabel || 'Listen to this message', url: latest?.link || latest?.audioUrl },
+];
 const sermon = latest
   ? {
       title: latest.title,
@@ -46,7 +52,7 @@ const sermon = latest
       image: latest.image || seriesImage,
       alt: latest.image ? latest.title : series?.image?.alt ?? '',
     }
-  : series?.title
+  : seriesActive && series?.title
     ? { title: series.title, text: series.description, meta: '', image: seriesImage, alt: series.image?.alt ?? '' }
     : null;
 const appImage = imageUrl(app.image, 1000);
@@ -176,6 +182,7 @@ const ICONS: Record<string, string> = {
                     <>
                       <span class="date" aria-hidden="true"><span class="date__mo">{e.d.month}</span><span class="date__day">{e.d.day}</span></span>
                       <span>
+                        <time class="sr-only" datetime={e.date}>{fullDate(e.date)}</time>
                         <span class="event__title">{e.title}</span>
                         <span class="event__when">{e.d.weekday} · {e.timeLabel}</span>
                       </span>
@@ -219,11 +226,11 @@ const ICONS: Record<string, string> = {
           <div class="panel series live-data" data-reveal>
             {sermon.image && <img src={sermon.image} alt={sermon.alt} loading="lazy" />}
             <div>
-              {series?.eyebrow && <p class="eyebrow">{series.eyebrow}</p>}
+              {(latest ? series?.latestLabel || 'Latest message' : series?.eyebrow) && <p class="eyebrow">{latest ? series?.latestLabel || 'Latest message' : series.eyebrow}</p>}
               <h2>{sermon.title}</h2>
               {sermon.text && <p class="muted">{sermon.text}</p>}
               {sermon.meta && <p class="meta">{sermon.meta}</p>}
-              <Buttons list={series?.buttons} primary="blue" />
+              <Buttons list={latest ? messageButtons : series?.buttons} primary="blue" />
             </div>
           </div>
         )}

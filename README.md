@@ -27,6 +27,8 @@ The site runs immediately with **today's content** and **live Church Center** ca
 npm run build    # Workers bundle + static assets → ./dist
 npm run preview  # run the production build locally in the Workers runtime
 npm test         # Playwright tests (builds + previews the site)
+npm run test:unit        # deterministic data and rendered-component regressions; no server
+npm run test:components  # deterministic desktop/mobile interaction checks; needs Chromium
 ```
 
 `npm run dev` and `npm run preview` run Cloudflare's real Workers runtime locally — no Cloudflare account needed. Astro 7 keeps them running in the background: if one says it's "already running", stop it with `npx astro dev stop` / `npx astro preview stop`. Local secrets go in `.dev.vars` (see `.dev.vars.example`).
@@ -54,6 +56,26 @@ npm test         # Playwright tests (builds + previews the site)
    ```
    From then on content is edited **in the Studio only**: `src/data/migration.ts` and `src/data/content.ts` are used only while no project ID is set.
 5. Edit in the Studio. The website reads it **when each page is visited**, so a published change is live within seconds — no rebuild.
+
+### Apply the November 2026 review corrections to an existing dataset
+
+Code changes do not overwrite an existing Sanity dataset. For the reviewed copy corrections,
+run `npm run reconcile:content` with `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET`
+in `.env`. It defaults to a dry run and lists the exact document fields it would change.
+To apply them, supply an editor token as `SANITY_API_WRITE_TOKEN` in the local environment
+(never commit it) and run `npm run reconcile:content -- --apply`.
+
+The script replaces only exact old wording, preserves staff edits, checks document revisions,
+and handles both published documents and drafts. It corrects the student schedule, grade-range
+overlap, fifth-Sunday wording, ministry CTA, and unspecified monthly missions highlight.
+The old summer series is replaced with the published November Gratitude series and an expiry;
+its old artwork is removed. Staff can add the appropriate new artwork in Studio. Re-running
+the script is safe. It does not create people, submit forms, or change church operations.
+
+The **Verify website** GitHub workflow runs type checks, build, source/component regressions,
+and deterministic desktop/mobile interaction tests. The full `npm test` suite additionally
+exercises the Workers app, live feeds, and saved visual/content baselines. After an intended
+copy change, inspect the full-page screenshot differences before updating image baselines.
 
 ### Live Preview
 
