@@ -72,3 +72,20 @@ test('mobile menu contains focus, closes with Escape, and releases the page on d
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(page.locator('main')).toHaveJSProperty('inert', false);
 });
+
+test('weekly video headings stay simple and the newest video plays inline', async ({ page }) => {
+  globalThis.fetch = (async () => new Response(`<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015">${[1, 2, 3, 4].map((id) => `<entry><yt:videoId>weekly${id}</yt:videoId><title>Long upload title ${id}</title></entry>`).join('')}</feed>`)) as typeof fetch;
+  const html = await render('src/components/sections/PlaylistSection.astro', { s: {
+    heading: 'Video announcements', playlist: 'PLweeklybrowser1234', count: 2,
+    videoLabels: ['This week', 'Last week', 'Two weeks ago'],
+  } });
+  await page.route('https://www.youtube-nocookie.com/**', (route) => route.fulfill({ body: '<p>Video fixture</p>' }));
+  await page.setContent(documentFor(html));
+  await expect(page.getByRole('heading', { level: 2 })).toHaveText('Video announcements');
+  await expect(page.getByRole('heading', { level: 3 })).toHaveText(['This week', 'Last week', 'Two weeks ago']);
+  await expect(page.getByText(/Long upload title/)).toHaveCount(0);
+  await expect(page.locator('a')).toHaveCount(3);
+  await page.getByRole('link', { name: 'Play This week', exact: true }).click();
+  await expect(page.locator('iframe')).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/weekly1?autoplay=1&rel=0');
+  await expect(page.locator('iframe')).toHaveAttribute('title', 'Play This week');
+});

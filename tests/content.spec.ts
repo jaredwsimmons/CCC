@@ -173,8 +173,12 @@ test('recent services on Media leave out the weekly announcement videos', async 
 
 test("this week's announcement video plays on the Announcements page", async ({ page }) => {
   await page.goto('/announcements');
+  await expect(page.getByRole('heading', { level: 2, name: 'Latest announcements', exact: true })).toBeVisible();
   const poster = page.locator('#videos [data-video-id]');
   if ((await poster.count()) === 0) test.skip(true, 'YouTube is unreachable right now');
+  const headings = page.locator('#videos h3');
+  expect(await headings.count()).toBeLessThanOrEqual(3);
+  await expect(headings).toHaveText(['This week', 'Last week', 'Two weeks ago'].slice(0, await headings.count()));
   await expect(poster).toHaveAttribute('href', /youtube\.com\/watch\?v=/);
   await poster.click();
   await expect(page.locator('#videos iframe')).toHaveAttribute('src', /^https:\/\/www\.youtube-nocookie\.com\/embed\//);

@@ -70,3 +70,20 @@ test('group and calendar outages do not claim there are no items', async () => {
     expect(calendar).toContain('We could not load the calendar right now.');
   } finally { globalThis.fetch = realFetch; }
 });
+
+test('announcement videos use short H3 labels while other playlists retain their titles', async () => {
+  const realFetch = globalThis.fetch;
+  const entries = [1, 2, 3, 4].map((id) => `<entry><yt:videoId>fixture${id}</yt:videoId><title>Convoluted upload title ${id}</title><published>2026-11-12T12:00:00Z</published></entry>`).join('');
+  globalThis.fetch = (async () => new Response(`<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015">${entries}</feed>`)) as typeof fetch;
+  try {
+    const props = { heading: 'Video announcements', playlist: 'PLheadingfixture12345', count: 2 };
+    const html = await render('src/components/sections/PlaylistSection.astro', { s: { ...props, videoLabels: ['This week', 'Last week', 'Two weeks ago'] } });
+    for (const label of ['This week', 'Last week', 'Two weeks ago']) expect(html).toMatch(new RegExp(`<h3\\b[^>]*>${label}</h3>`));
+    expect(html).not.toContain('Convoluted upload title');
+    expect(html).not.toContain('fixture4');
+    expect(html).toContain('Play This week');
+    const normal = await render('src/components/sections/PlaylistSection.astro', { s: props });
+    expect(normal).toContain('Convoluted upload title 1');
+    expect(normal).toContain('Convoluted upload title 2');
+  } finally { globalThis.fetch = realFetch; }
+});

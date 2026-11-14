@@ -132,3 +132,31 @@ test('existing CMS corrections preserve staff edits and are idempotent on correc
   expect(contentCorrections({ ...old, hero: { buttons: [{ label: 'Staff chosen wording' }] } })).toEqual({ set: {}, unset: [] });
   for (const doc of docs) expect(contentCorrections(doc), doc._id).toEqual({ set: {}, unset: [] });
 });
+
+test('sections with item subheadings have their own heading, including announcements', () => {
+  for (const doc of docs) for (const section of (doc.sections ?? []) as any[]) {
+    const hasItems = ['cardsSection', 'announcementsSection', 'playlistSection'].includes(section._type)
+      || ((section.body ?? []).some((block: any) => block.style === 'h3') && !(section.body ?? []).some((block: any) => block.style === 'h2'));
+    if (hasItems) expect(section.heading, `${doc._id}: ${section._type}`).toBeTruthy();
+  }
+  const announcements = (docs.find((doc) => doc._id === 'page-announcements')!.sections as any[]);
+  expect(announcements[0]).toMatchObject({ heading: 'Video announcements', videoLabels: ['This week', 'Last week', 'Two weeks ago'], count: 2 });
+  expect(announcements[1].heading).toBe('Latest announcements');
+});
+
+test('heading corrections fill missing CMS headings and preserve staff wording', () => {
+  const old = { _id: 'page-announcements', sections: [
+    { _type: 'playlistSection', heading: "This week's video" },
+    { _type: 'announcementsSection' },
+  ] };
+  expect(contentCorrections(old).set).toMatchObject({
+    'sections[0].heading': 'Video announcements',
+    'sections[0].videoLabels': ['This week', 'Last week', 'Two weeks ago'],
+    'sections[1].heading': 'Latest announcements',
+  });
+  const custom = { _id: 'page-announcements', sections: [
+    { _type: 'playlistSection', heading: 'Staff heading', videoLabels: ['Staff label'] },
+    { _type: 'announcementsSection', heading: 'Staff news' },
+  ] };
+  expect(contentCorrections(custom)).toEqual({ set: {}, unset: [] });
+});

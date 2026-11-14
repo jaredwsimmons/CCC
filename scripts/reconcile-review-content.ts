@@ -5,7 +5,16 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 type Document = { _id: string; _rev?: string; [key: string]: unknown };
-const ids = ['home', 'weeklyRhythm', 'siteSettings', 'page-imnew', 'page-missions', 'page-kids-students', 'page-serve'];
+const sectionHeadings: Record<string, Record<string, string>> = {
+  'page-imnew': { cardsSection: 'Planning your first visit' },
+  'page-serve': { cardsSection: 'Understanding your gifts' },
+  'page-men': { cardsSection: 'Friendship and service' },
+  'page-prayer': { cardsSection: 'Sharing prayer requests' },
+  'page-students': { textPhotoSection: 'When we meet' },
+  'page-other-ministries': { cardsSection: 'Ways to connect and serve' },
+  'page-announcements': { playlistSection: 'Video announcements', announcementsSection: 'Latest announcements' },
+};
+const ids = ['home', 'weeklyRhythm', 'siteSettings', 'page-missions', 'page-kids-students', ...Object.keys(sectionHeadings)];
 const copy: Record<string, string> = {
   'Two identical gatherings, with programming for kids and students at both hours.': 'Two identical worship gatherings, with Preschool and Kids programming at both hours. Student community groups meet at 9:00 AM.',
   'Preschool through high school meet at both Sunday services; students also gather Wednesday nights at 6 PM.': 'Preschool and Kids meet at both Sunday services. Middle and high school students meet at 9:00 AM on Sundays and 6:00 PM on Wednesdays.',
@@ -34,6 +43,16 @@ export function contentCorrections(doc: Document): { set: Record<string, unknown
     }
   }
   walk(doc, '');
+  const sections = doc.sections as { _type: string; heading?: string; videoLabels?: string[]; count?: number }[] | undefined;
+  sections?.forEach((section, i) => {
+    const heading = sectionHeadings[id]?.[section._type];
+    const oldVideoHeading = id === 'page-announcements' && section._type === 'playlistSection' && section.heading === "This week's video";
+    if (heading && (!section.heading || oldVideoHeading)) set[`sections[${i}].heading`] = heading;
+    if (id === 'page-announcements' && section._type === 'playlistSection' && !section.videoLabels?.length) {
+      set[`sections[${i}].videoLabels`] = ['This week', 'Last week', 'Two weeks ago'];
+      if (section.count == null || (oldVideoHeading && section.count === 3)) set[`sections[${i}].count`] = 2;
+    }
+  });
   if (id === 'weeklyRhythm') {
     const tiles = doc.tiles as { title?: string; time?: string; description?: string }[] | undefined;
     tiles?.forEach((tile, i) => {

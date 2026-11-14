@@ -47,6 +47,19 @@ for (const route of pages) {
             return rect.width > 2 && (rect.right > innerWidth + 1 || rect.left < -1);
           }).slice(0, 20).map((element) => ({ tag: element.tagName, class: element.className, text: element.textContent?.trim().slice(0, 80), ...box(element) })),
           activeNav: all('header [aria-current="page"]').map((element) => element.textContent?.trim()),
+          headingIssues: (() => {
+            const issues: string[] = [];
+            let previous = 0;
+            for (const heading of all('main h1, main h2, main h3, main h4, main h5, main h6')) {
+              const level = Number(heading.tagName.slice(1));
+              if (level > previous + 1) issues.push(`${heading.tagName} skips a level: ${heading.textContent?.trim()}`);
+              previous = level;
+            }
+            for (const section of all('main .section')) {
+              if (Array.from(section.querySelectorAll('h3')).some(visible) && !section.querySelector('h2')) issues.push(`Section needs H2: ${section.querySelector('h3')?.textContent?.trim()}`);
+            }
+            return issues;
+          })(),
           doubledSectionGaps: all('main .section:not(.section--white)').filter((element) => {
             let previous = element.previousElementSibling;
             while (previous?.matches('script, style, template')) previous = previous.previousElementSibling;
@@ -57,6 +70,7 @@ for (const route of pages) {
       results.push(metrics);
       expect.soft(metrics.overflow, `${route.path} at ${width}px`).toBeLessThanOrEqual(1);
       expect.soft(metrics.doubledSectionGaps, `${route.path} at ${width}px has one shared gap between sections`).toEqual([]);
+      expect.soft(metrics.headingIssues, `${route.path} at ${width}px has a complete heading hierarchy`).toEqual([]);
     }
     await writeFile(`layout-review/metrics/${route.name}.json`, JSON.stringify({ route, errors, results }, null, 2));
     await expect.soft(page.locator('main h1')).toHaveCount(1);

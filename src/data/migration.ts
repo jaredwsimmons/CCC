@@ -442,6 +442,7 @@ function pages(): SanityDoc[] {
         }),
         section('weeklyRhythmSection', { eyebrow: 'Every week', heading: 'The rhythm of our week' }),
         section('cardsSection', {
+          heading: 'Planning your first visit',
           columns: 2,
           background: 'plain',
           cards: [imnew.dress, imnew.whereToGo].map((x) => ({ _type: 'card', _key: key(), title: x.title, text: x.body })),
@@ -530,6 +531,7 @@ function pages(): SanityDoc[] {
           background: 'plain',
         }),
         section('cardsSection', {
+          heading: 'Understanding your gifts',
           columns: 2,
           background: 'tinted',
           cards: [
@@ -617,6 +619,7 @@ function pages(): SanityDoc[] {
           background: 'navy',
         }),
         section('cardsSection', {
+          heading: 'Friendship and service',
           columns: 2,
           background: 'plain',
           cards: [men.relationships, men.service].map((x) => ({ _type: 'card', _key: key(), title: x.title, text: x.body })),
@@ -661,7 +664,7 @@ function pages(): SanityDoc[] {
           heading: 'How to get involved',
           steps: prayer.joinSteps.map((s) => ({ _type: 'step', _key: key(), text: s })),
         }),
-        section('cardsSection', { columns: 2, background: 'plain', cards: [{ _type: 'card', _key: key(), title: 'A note on privacy', text: prayer.note }] }),
+        section('cardsSection', { heading: 'Sharing prayer requests', columns: 2, background: 'plain', cards: [{ _type: 'card', _key: key(), title: 'A note on privacy', text: prayer.note }] }),
         upcoming('Prayer'),
         cta('How can we pray with you?', "Whatever you're carrying — a burden or a blessing — we'd be honored to pray with you. Share as much or as little as you'd like.", btn.cc('Share a prayer request', cc.forms.prayer)),
       ],
@@ -700,6 +703,7 @@ function pages(): SanityDoc[] {
       header: header({ eyebrow: 'Ministries', title: students.title, intro: students.intro, ministry: ref('ministry-students') }),
       sections: [
         section('textPhotoSection', {
+          heading: 'When we meet',
           body: students.schedule.flatMap((s) => [block(s.when, 'h3'), block(s.what)]),
           photos: [photo(students.photo.src, students.photo.alt)],
           photoSide: 'left',
@@ -791,8 +795,8 @@ function pages(): SanityDoc[] {
     page('/announcements', 'Announcements', {
       header: header({ eyebrow: "What's happening", title: 'Announcements' }),
       sections: [
-        section('playlistSection', { heading: "This week's video", playlist: site.media.announcementsPlaylist, count: 2 }),
-        section('announcementsSection', { emptyText: paras('There are no announcements right now. Check back soon!') }),
+        section('playlistSection', { heading: 'Video announcements', playlist: site.media.announcementsPlaylist, count: 2, videoLabels: ['This week', 'Last week', 'Two weeks ago'] }),
+        section('announcementsSection', { heading: 'Latest announcements', emptyText: paras('There are no announcements right now. Check back soon!') }),
       ],
       seo: seo('The latest announcements from Chelsea Community Church — events, sign-ups and ways to get involved.'),
     }),
@@ -802,6 +806,7 @@ function pages(): SanityDoc[] {
       header: header({ eyebrow: 'Ministries', title: "But wait, there's more!" }),
       sections: [
         section('cardsSection', {
+          heading: 'Ways to connect and serve',
           columns: 3,
           background: 'plain',
           cards: [
