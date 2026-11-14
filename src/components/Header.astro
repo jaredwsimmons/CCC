@@ -1,9 +1,10 @@
 ---
 import { withBase } from '../data/site';
 import { buttonLink, type Button } from '../lib/links';
+import { imageUrl, type SanityImage } from '../lib/image';
 type NavItem = { label: string; href: string; children?: { label: string; href: string }[] };
-interface Props { menu: NavItem[]; give?: Button | null; churchName?: string; } // from Site Settings (Base.astro)
-const { menu: nav, give, churchName } = Astro.props;
+interface Props { menu: NavItem[]; give?: Button | null; churchName?: string; branding?: { headerLogo?: SanityImage }; } // from Site Settings (Base.astro)
+const { menu: nav, give, churchName, branding } = Astro.props;
 const giveLink = buttonLink(give);
 // Strip any deploy base (e.g. "/CCC") so comparisons work against the raw nav hrefs.
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -18,7 +19,7 @@ const isActiveItem = (item: NavItem) => isActive(item.href) || Boolean(item.chil
 <header class="site-header">
   <div class="wrap bar">
     <a class="brand" href={withBase('/')}>
-      <img src={withBase('/images/logo-full-blue.png')} alt={`${churchName} — home`} width="232" height="72" />
+      <img src={imageUrl(branding?.headerLogo, 500) || withBase('/images/logo-full-blue.png')} alt={`${churchName} — home`} width="232" height="72" />
     </a>
 
     <button

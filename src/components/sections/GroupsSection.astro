@@ -5,9 +5,9 @@ import GroupCards from '../GroupCards.astro';
 import RichText from '../RichText.astro';
 import { getGroupsResult, TYPES } from '../../lib/groups';
 import { variantFor } from '../../lib/links';
-import { site } from '../../data/site';
-const { s } = Astro.props;
-const result = await getGroupsResult();
+import { churchCenterHost } from '../../lib/integrations';
+const { s, settings } = Astro.props;
+const result = await getGroupsResult(settings?.integrations?.churchCenterHost);
 const groups = (result ?? []).filter((g) => !s.groupType || g.type === s.groupType);
 const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label: t.replace(' Groups', '') }))];
 ---
@@ -22,9 +22,9 @@ const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label
       </div>
     )}
     {result === null ? (
-      <p class="note" role="status">{s.unavailableMessage || 'We could not load groups right now.'} <a href={`https://${site.churchCenter.subdomain}/groups`} target="_blank" rel="noopener noreferrer">Browse groups on Church Center</a></p>
+      <p class="note" role="status">{s.unavailableMessage || 'We could not load groups right now.'} <a href={`https://${churchCenterHost(settings?.integrations?.churchCenterHost)}/groups`} target="_blank" rel="noopener noreferrer">Browse groups on Church Center</a></p>
     ) : groups.length === 0 && <div class="note" data-reveal><RichText value={s.emptyText} /></div>}
-    <GroupCards groups={groups} />
+    <GroupCards groups={groups} settings={settings} />
     <p class="note" data-no-matches role="status" hidden>{s.noMatchesMessage || 'No groups match this filter. Choose All to see the other groups.'}</p>
     {s.note?.length > 0 && <div class="note" data-reveal><RichText value={s.note} /></div>}
     </div>

@@ -1,7 +1,7 @@
 ---
 // Long documents: a table of contents built from the text's Headings, beside the text.
 import RichText from '../RichText.astro';
-const { s } = Astro.props;
+const { s, settings } = Astro.props;
 type Block = { _type: string; _key: string; style?: string; children?: { text?: string }[] };
 const slug = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const textOf = (b: Block) => (b.children ?? []).map((c) => c.text ?? '').join('');
@@ -18,7 +18,7 @@ for (const b of blocks) {
 <div class="wrap longtext">
   {toc.length > 0 && (
     <aside class="toc" aria-label="Table of contents">
-      <p class="toc-title">Contents</p>
+      <p class="toc-title">{settings?.wording?.contentsLabel || 'Contents'}</p>
       <ol class="toc-list">{toc.map((t) => <li><a href={`#${t.id}`}>{t.text}</a></li>)}</ol>
     </aside>
   )}

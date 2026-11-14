@@ -6,8 +6,8 @@ import Buttons from '../Buttons.astro';
 import RichText from '../RichText.astro';
 import { getPlaylistVideos, getYouTubeVideos } from '../../lib/feeds';
 import { variantFor } from '../../lib/links';
-const { s } = Astro.props;
-const [all, ...excluded] = await Promise.all([getYouTubeVideos(), ...((s.excludePlaylists ?? []) as string[]).map((p) => getPlaylistVideos(p))]);
+const { s, settings } = Astro.props;
+const [all, ...excluded] = await Promise.all([getYouTubeVideos(undefined, settings?.integrations?.youtubeChannelId), ...((s.excludePlaylists ?? []) as string[]).map((p) => getPlaylistVideos(p))]);
 const skip = new Set(excluded.flat().map((v) => v.id));
 const videos = all.filter((v) => !skip.has(v.id)).slice(0, s.count ?? 6);
 const fmtDate = (d: Date | null) =>

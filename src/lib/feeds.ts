@@ -6,6 +6,7 @@
 // Cached copies are JSON, so dates are kept as strings until they're handed out.
 import { XMLParser } from 'fast-xml-parser';
 import { site } from '../data/site';
+import { podcastFeedUrl, youtubeChannelId } from './integrations';
 import { cached } from './cache';
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
@@ -93,7 +94,10 @@ async function youtubeFeed(key: string, url: string, limit: number): Promise<Vid
 }
 
 /** The newest uploads from the church's channel. */
-export const getYouTubeVideos = (limit = FEED_ITEMS) => youtubeFeed(`youtube:${limit}`, site.media.youtubeFeed, limit);
+export const getYouTubeVideos = (limit = FEED_ITEMS, channelId?: string) => {
+  const id = youtubeChannelId(channelId);
+  return youtubeFeed(`youtube:${id}:${limit}`, `https://www.youtube.com/feeds/videos.xml?channel_id=${id}`, limit);
+};
 
 /** A playlist's ID from its YouTube link (…?list=PL…), or the ID itself; null if it's neither. */
 export function playlistIdFrom(link?: string | null): string | null {
@@ -130,9 +134,10 @@ function firstItems(xml: string, n: number): string {
   return xml.slice(0, end) + '</channel></rss>';
 }
 
-export async function getPodcastEpisodes(limit = FEED_ITEMS): Promise<Episode[]> {
-  const episodes = await cached(`podcast:${limit}`, 15 * 60, async () => {
-    const xml = await fetchText(site.media.podcastFeed);
+export async function getPodcastEpisodes(limit = FEED_ITEMS, source?: string): Promise<Episode[]> {
+  const feed = podcastFeedUrl(source) || site.media.podcastFeed;
+  const episodes = await cached(`podcast:${feed}:${limit}`, 15 * 60, async () => {
+    const xml = await fetchText(feed);
     if (!xml) return null;
     try {
       const channel = parser.parse(firstItems(xml, limit))?.rss?.channel;

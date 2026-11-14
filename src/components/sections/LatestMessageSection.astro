@@ -5,14 +5,14 @@ import { getPodcastEpisodes, getYouTubeVideos } from '../../lib/feeds';
 import { imageUrl } from '../../lib/image';
 import { sanityFetch } from '../../lib/sanity';
 import { seriesArtQuery } from '../../lib/queries';
-const { s } = Astro.props;
+const { s, settings } = Astro.props;
 const artwork = await sanityFetch<any>(seriesArtQuery, {}, Astro.cookies);
 let message: Message | undefined;
 if (s.source === 'video') {
-  const v = (await getYouTubeVideos())[0];
+  const v = (await getYouTubeVideos(undefined, settings?.integrations?.youtubeChannelId))[0];
   if (v) message = { title: v.title, date: v.date, image: v.thumbnail, videoUrl: v.url };
 } else {
-  message = (await getPodcastEpisodes())[0];
+  message = (await getPodcastEpisodes(undefined, settings?.integrations?.podcastFeed))[0];
 }
 ---
 {message && <LatestMessage message={message} eyebrow={s.eyebrow} watchLabel={s.watchLabel} watchUrl={s.watchUrl} browseLabel={s.browseLabel} listenLabel={s.listenLabel} fallbackImage={imageUrl(artwork, 900)} />}

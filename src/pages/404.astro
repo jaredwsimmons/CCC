@@ -5,6 +5,7 @@ import Buttons from '../components/Buttons.astro';
 import { withBase } from '../data/site';
 import { sanityFetch } from '../lib/sanity';
 import { settingsQuery } from '../lib/queries';
+import { imageUrl } from '../lib/image';
 
 const settings = await sanityFetch<any>(settingsQuery, {}, Astro.cookies);
 const notFound = settings?.notFound;
@@ -12,7 +13,7 @@ const notFound = settings?.notFound;
 <Base title={notFound?.heading} description={notFound?.text}>
   <section class="nf">
     <div class="wrap inner">
-      <img src={withBase('/images/icon-gold.png')} alt="" width="72" height="72" />
+      <img src={imageUrl(settings?.branding?.accentMark, 144) || withBase('/images/icon-gold.png')} alt="" width="72" height="72" />
       <p class="eyebrow on-dark">404</p>
       {notFound?.heading && <h1>{notFound.heading}</h1>}
       {notFound?.text && <p class="lead">{notFound.text}</p>}

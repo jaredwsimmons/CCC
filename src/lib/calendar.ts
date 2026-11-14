@@ -1,3 +1,4 @@
+import { churchCenterHost } from './integrations';
 // Calendar data layer — LIVE from Church Center's PUBLIC calendar API (src/lib/churchcenter.ts),
 // the exact data the church's own calendar embed shows.
 // Fetched when the page is visited and cached at the edge for 10 minutes. If a
@@ -59,14 +60,14 @@ function toEvents(body: any): ChurchEvent[] {
 }
 
 // null = the fetch failed (as opposed to [] = no upcoming events).
-async function fetchLive(): Promise<ChurchEvent[] | null> {
+async function fetchLive(host: string): Promise<ChurchEvent[] | null> {
   try {
-    const first = await ccGet(EVENTS_PATH);
+    const first = await ccGet(EVENTS_PATH, 9000, host);
     if (!first) return null;
     const events = toEvents(first);
     let more = Boolean(first.meta?.next);
     for (let page = 1; page < EVENT_PAGES && more; page++) {
-      const next = await ccGet(`${EVENTS_PATH}&offset=${page * 100}`);
+      const next = await ccGet(`${EVENTS_PATH}&offset=${page * 100}`, 9000, host);
       if (!next) return events; // keep the known events; this is not the intentional page limit
       events.push(...toEvents(next));
       more = Boolean(next.meta?.next);
@@ -80,8 +81,9 @@ async function fetchLive(): Promise<ChurchEvent[] | null> {
   }
 }
 
-export async function getUpcomingEventsResult(): Promise<ChurchEvent[] | null> {
-  const live = await cached('calendar-events', 10 * 60, fetchLive);
+export async function getUpcomingEventsResult(organization?: string): Promise<ChurchEvent[] | null> {
+  const host = churchCenterHost(organization);
+  const live = await cached(`calendar-events:${host}`, 10 * 60, () => fetchLive(host));
   if (live === null) return null;
   const today = localDate(new Date().toISOString());
   // The Sunday-morning service breakouts (Worship/Preschool/K-5, all "Every
@@ -92,7 +94,7 @@ export async function getUpcomingEventsResult(): Promise<ChurchEvent[] | null> {
   return events.sort((a, b) => a.date.localeCompare(b.date));
 }
 
-export const getUpcomingEvents = async (): Promise<ChurchEvent[]> => (await getUpcomingEventsResult()) ?? [];
+export const getUpcomingEvents = async (organization?: string): Promise<ChurchEvent[]> => (await getUpcomingEventsResult(organization)) ?? [];
 
 /** A repeating event once, at its next date, for lists. Renamed occurrences stay. */
 export function onePerSeries(events: ChurchEvent[]): ChurchEvent[] {

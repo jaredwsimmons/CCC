@@ -1,7 +1,8 @@
 ---
 // A page's sections from Sanity, each drawn by its component. An unknown type is
-// skipped, so a new section type in the Studio can't break a page before its
-// component exists.
+// reported in preview so staff never mistake unsupported content for a working section.
+import HomeSection from '../HomeSection.astro';
+import { isPreview } from '../../lib/sanity';
 import TextSection from './TextSection.astro';
 import TextPhotoSection from './TextPhotoSection.astro';
 import CardsSection from './CardsSection.astro';
@@ -54,13 +55,21 @@ const COMPONENTS: Record<string, any> = {
   podcastSection: PodcastSection,
   leadersSection: LeadersSection,
   deaconsSection: DeaconsSection,
+  homeWeekSection: HomeSection,
+  homeAnnouncementsSection: HomeSection,
+  homeHighlightsSection: HomeSection,
 };
 
-interface Props { list?: { _type: string; _key: string }[] | null; settings?: unknown; }
-const { list, settings } = Astro.props;
-const sections = (list ?? []).filter((s) => COMPONENTS[s._type]);
+interface Props { list?: { _type: string; _key: string; hidden?: boolean }[] | null; settings?: unknown; home?: unknown; }
+const { list, settings, home } = Astro.props;
+const visible = (list ?? []).filter((s) => s.hidden !== true);
+const unknown = visible.filter((s) => !COMPONENTS[s._type]);
+if (unknown.length) console.warn('[sections] Unsupported types:', unknown.map((s) => s._type).join(', '));
+const preview = unknown.length > 0 && await isPreview(Astro.cookies);
+const sections = visible.filter((s) => COMPONENTS[s._type]);
 ---
+{preview && <p class="wrap" role="alert">This page has a section the website cannot display. Ask the site administrator to review it before publishing.</p>}
 {sections.map((s) => {
   const Component = COMPONENTS[s._type];
-  return <Component s={s} settings={settings} />;
+  return <Component s={s} settings={settings} home={home} />;
 })}

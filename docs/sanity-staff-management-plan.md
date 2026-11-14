@@ -1,6 +1,8 @@
 # Staff-managed Sanity website: implementation plan
 
-Status: planned, not implemented. Prepared November 14, 2026, against the website review branch at `4b6a2f1` in PR #9.
+Status: implementation in review; connected handoff pending. Prepared November 14, 2026, against the website review branch at `4b6a2f1` in PR #9.
+
+Implementation update: the review branch now includes the editing controls, homepage builder, validation, source settings, guarded upgrade/preflight scripts and staff/admin guides described in the [coverage inventory](sanity-content-coverage.md). Connected staging, account permissions and the staff acceptance exercise remain pending Sanity configuration. The phases below remain the release checklist; code completion alone does not complete the handoff.
 
 ## Goal and completion standard
 

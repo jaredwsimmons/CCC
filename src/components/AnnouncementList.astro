@@ -4,20 +4,20 @@
 // Summaries are cleaned to bare paragraphs, line breaks and bold/italic before they get here.
 import type { Announcement } from '../lib/announcements';
 
-interface Props { items: Announcement[]; layout?: 'cards' | 'list'; }
-const { items, layout = 'list' } = Astro.props;
+interface Props { items: Announcement[]; layout?: 'cards' | 'list'; settings?: any; }
+const { items, layout = 'list', settings } = Astro.props;
 ---
 <ul class:list={['ann', `ann--${layout}`]}>
   {items.map((a) => (
     <li class="ann__item" data-reveal>
       {a.image && <img class="ann__img" src={a.image} alt="" loading="lazy" />}
       <div class="ann__body">
-        {a.featured && <span class="ann__flag">Featured</span>}
+        {a.featured && <span class="ann__flag">{settings?.wording?.featuredLabel || 'Featured'}</span>}
         <h3>{a.title}</h3>
         {a.summary && <div class="ann__summary" set:html={a.summary} />}
         {a.link && (
           <a class="ann__link" href={a.link.href} target={a.link.external ? '_blank' : undefined} rel={a.link.external ? 'noopener noreferrer' : undefined}>
-            Learn more <span aria-hidden="true">→</span>
+            {settings?.wording?.learnMoreLabel || 'Learn more'} <span aria-hidden="true">→</span>
           </a>
         )}
       </div>

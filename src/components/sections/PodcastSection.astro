@@ -9,9 +9,9 @@ import { imageUrl } from '../../lib/image';
 import { variantFor } from '../../lib/links';
 import { sanityFetch } from '../../lib/sanity';
 import { seriesArtQuery } from '../../lib/queries';
-const { s } = Astro.props;
+const { s, settings } = Astro.props;
 const skip = s.skipNewest ? 1 : 0;
-const [episodes, artwork] = await Promise.all([getPodcastEpisodes(), sanityFetch<any>(seriesArtQuery, {}, Astro.cookies)]);
+const [episodes, artwork] = await Promise.all([getPodcastEpisodes(undefined, settings?.integrations?.podcastFeed), sanityFetch<any>(seriesArtQuery, {}, Astro.cookies)]);
 const rest = episodes.slice(skip, skip + (s.count ?? 6));
 // Episodes without their own art show the current series art.
 const seriesArt = imageUrl(artwork, 800);

@@ -1,3 +1,4 @@
+import { churchCenterHost } from './integrations';
 // Registrations data layer — LIVE from Church Center's PUBLIC registrations API
 // (src/lib/churchcenter.ts), cached at the edge for 15 minutes with the last good copy
 // as a fallback (src/lib/cache.ts). Feeds the Registration card and Open registrations
@@ -26,8 +27,8 @@ function whenLabel(startsAt?: string): string | undefined {
 }
 
 // null = the fetch failed (as opposed to [] = no registrations).
-async function fetchLive(): Promise<Registration[] | null> {
-  const body = await ccGet('/registrations/v2/events?per_page=100');
+async function fetchLive(host: string): Promise<Registration[] | null> {
+  const body = await ccGet('/registrations/v2/events?per_page=100', 9000, host);
   if (!body) return null;
   return (body.data ?? [])
     .filter((e: any) => !e.attributes?.archived)
@@ -49,18 +50,19 @@ async function fetchLive(): Promise<Registration[] | null> {
 }
 
 /** Every registration Church Center lists publicly (not archived), soonest first. */
-export async function getRegistrations(): Promise<Registration[]> {
-  return (await cached('registrations', 15 * 60, fetchLive)) ?? [];
+export async function getRegistrations(organization?: string): Promise<Registration[]> {
+  const host = churchCenterHost(organization);
+  return (await cached(`registrations:${host}`, 15 * 60, () => fetchLive(host))) ?? [];
 }
 
 /** Open registrations, optionally only those whose name matches (see nameMatches). */
-export async function getOpenRegistrations(match?: string): Promise<Registration[]> {
-  return (await getRegistrations()).filter((r) => r.open && nameMatches(r.name, match));
+export async function getOpenRegistrations(match?: string, organization?: string): Promise<Registration[]> {
+  return (await getRegistrations(organization)).filter((r) => r.open && nameMatches(r.name, match));
 }
 
 /** The registration a Church Center link points to, if it's still open. */
-export async function getRegistrationByUrl(url?: string): Promise<Registration | null> {
+export async function getRegistrationByUrl(url?: string, organization?: string): Promise<Registration | null> {
   const id = url?.match(/\/registrations\/events\/(\d+)/)?.[1];
   if (!id) return null;
-  return (await getRegistrations()).find((r) => r.id === id && r.open) ?? null;
+  return (await getRegistrations(organization)).find((r) => r.id === id && r.open) ?? null;
 }

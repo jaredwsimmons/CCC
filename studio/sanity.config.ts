@@ -83,14 +83,14 @@ export default defineConfig({
           .title('Content')
           .items([
             S.listItem()
-              .title('Site Settings')
+              .title('Navigation, branding & shared settings')
               .id('siteSettings')
               .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
             S.listItem().title('Home page').id('home').child(S.document().schemaType('home').documentId('home')),
             S.divider(),
             S.documentTypeListItem('page').title('Pages'),
             S.listItem()
-              .title('Fixed pages')
+              .title('Calendar, Groups, Media, Give & Leaders pages')
               .id('fixedPages')
               .child(
                 S.list()

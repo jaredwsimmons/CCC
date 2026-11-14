@@ -55,16 +55,9 @@ export default defineType({
       name: 'fund',
       title: 'Fund',
       type: 'string',
-      options: {
-        list: [
-          { title: 'General', value: 'general' },
-          { title: 'Missions', value: 'missions' },
-          { title: 'Designated Fund', value: 'designated-fund' },
-          { title: 'Benevolence', value: 'benevolence' },
-        ],
-      },
+      description: 'Copy the fund slug from its Church Center giving link: the part after /to/, e.g. general or missions. Create and manage the fund in Planning Center first.',
       hidden: ({ parent }) => parent?.kind !== 'give',
-      validation: (Rule) => Rule.custom(requiredFor('give', 'Pick a fund.')),
+      validation: (Rule) => Rule.custom(requiredFor('give', 'Enter a fund slug.')).custom((value) => !value || /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value) || 'Use the fund slug: lowercase letters, numbers and dashes.'),
     }),
     defineField({
       name: 'amount',

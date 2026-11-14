@@ -20,6 +20,8 @@ const people = leaders.filter((p) => (s.group === 'elder' ? p.group === 'elder' 
           </div>
           <h3>{p.name}</h3>
           <p>{p.role}</p>
+          {p.bio && <p class="person__bio">{p.bio}</p>}
+          {p.email && <a class="person__email" href={`mailto:${p.email}`}>Email {p.name}</a>}
         </div>
       ))}
     </div>
@@ -41,4 +43,6 @@ const people = leaders.filter((p) => (s.group === 'elder' ? p.group === 'elder' 
   .person__photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
   .person h3 { font-size: 1.08rem; }
   .person p { font-size: 0.88rem; color: var(--mid); }
+  .person__bio { margin-top: 0.65rem; white-space: pre-line; }
+  .person__email { display: inline-block; margin-top: 0.6rem; overflow-wrap: anywhere; }
 </style>

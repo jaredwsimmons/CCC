@@ -16,7 +16,9 @@
     "test:update": "playwright test --update-snapshots",
     "fields": "node scripts/pco-fields.mjs",
     "export:sanity": "tsx scripts/export-sanity.ts",
-    "reconcile:content": "node --env-file-if-exists=.env --import tsx scripts/reconcile-review-content.ts"
+    "reconcile:content": "node --env-file-if-exists=.env --import tsx scripts/reconcile-review-content.ts",
+    "cms:upgrade": "node --env-file-if-exists=.env --import tsx scripts/upgrade-staff-cms.ts",
+    "cms:check": "node --env-file-if-exists=.env --env-file-if-exists=.dev.vars --env-file-if-exists=studio/.env --import tsx scripts/check-cms.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.4",

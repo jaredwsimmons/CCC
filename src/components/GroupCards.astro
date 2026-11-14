@@ -4,34 +4,35 @@
 // group pages refuse to load inside another site, so its join step opens in a small window.
 // Without JavaScript the card's link simply goes to Church Center.
 import { withBase } from '../data/site';
+import { imageUrl } from '../lib/image';
 import type { Group } from '../lib/groups';
 
-interface Props { groups: Group[]; }
-const { groups } = Astro.props;
+interface Props { groups: Group[]; settings?: any; }
+const { groups, settings } = Astro.props;
 ---
 <div class="grid cols-3 gcards">
   {groups.map((g) => (
     <article class="gcard" data-type={g.type} data-reveal>
       <div class="gcard__img">
-        {g.image ? <img src={g.image} alt="" loading="lazy" /> : <div class="gcard__ph" aria-hidden="true"><img src={withBase('/images/icon-gold.png')} alt="" width="34" height="34" /></div>}
+        {g.image ? <img src={g.image} alt="" loading="lazy" /> : <div class="gcard__ph" aria-hidden="true"><img src={imageUrl(settings?.branding?.accentMark, 80) || withBase('/images/icon-gold.png')} alt="" width="34" height="34" /></div>}
       </div>
       <div class="gcard__body">
-        <span class="tag-cat">{g.type.replace(' Groups', '')} · Open</span>
+        <span class="tag-cat">{g.type.replace(' Groups', '')} · {settings?.wording?.groupOpenLabel || 'Open'}</span>
         <h3>{g.name}</h3>
         {g.schedule && <p class="gcard__sched">{g.schedule}</p>}
         {g.description && <p class="gcard__desc">{g.description}</p>}
-        <a class="gcard__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer" data-group-popup>View group →</a>
+        <a class="gcard__join" href={g.joinUrl} target="_blank" rel="noopener noreferrer" data-group-popup>{settings?.wording?.viewGroupLabel || 'View group →'}</a>
       </div>
       <dialog class="gpop" aria-label={g.name}>
         <div class="gpop__inner">
           <button type="button" class="gpop__close" aria-label="Close" data-group-close>×</button>
           {g.image && <img class="gpop__img" src={g.image} alt="" loading="lazy" />}
           <div class="gpop__body">
-            <span class="tag-cat">{g.type.replace(' Groups', '')} · Open</span>
+            <span class="tag-cat">{g.type.replace(' Groups', '')} · {settings?.wording?.groupOpenLabel || 'Open'}</span>
             <h3>{g.name}</h3>
             {g.schedule && <p class="gcard__sched">{g.schedule}</p>}
             {g.description && <p class="gpop__desc">{g.description}</p>}
-            <a class="btn btn--blue mt-1" href={g.joinUrl} target="_blank" rel="noopener noreferrer" data-small-window>Request to join →</a>
+            <a class="btn btn--blue mt-1" href={g.joinUrl} target="_blank" rel="noopener noreferrer" data-small-window>{settings?.wording?.joinGroupLabel || 'Request to join →'}</a>
           </div>
         </div>
       </dialog>

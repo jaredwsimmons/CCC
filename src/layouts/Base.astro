@@ -11,6 +11,7 @@ import { isPreview, sanityFetch } from '../lib/sanity';
 import { settingsQuery } from '../lib/queries';
 import { pathFor, type LinkTarget } from '../lib/links';
 import { hasEsvKey } from '../lib/esv';
+import { imageUrl } from '../lib/image';
 
 interface Props {
   title?: string;
@@ -23,11 +24,15 @@ const preview = await isPreview(Astro.cookies);
 // The menu and the footer's church details come from Site Settings in Sanity.
 type MenuEntry = { label: string; page?: LinkTarget; children?: MenuEntry[] | null };
 const settings = await sanityFetch<any>(settingsQuery, {}, Astro.cookies);
-const menu = ((settings?.menu ?? []) as MenuEntry[]).map((m) => ({
-  label: m.label,
-  href: pathFor(m.page) ?? '/',
-  children: m.children?.length ? m.children.map((c) => ({ label: c.label, href: pathFor(c.page) ?? '/' })) : undefined,
-}));
+const menu = ((settings?.menu ?? []) as MenuEntry[]).flatMap((m) => {
+  const href = pathFor(m.page);
+  if (!href) return [];
+  const children = (m.children ?? []).flatMap((c) => {
+    const href = pathFor(c.page);
+    return href ? [{ label: c.label, href }] : [];
+  });
+  return [{ label: m.label, href, children: children.length ? children : undefined }];
+});
 const churchName = settings?.churchName ?? '';
 const fullTitle = title ? `${title} · ${churchName}` : `${churchName} — ${settings?.tagline ?? ''}`;
 const metaDescription = description ?? settings?.description ?? '';
@@ -56,8 +61,8 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" href={withBase('/favicon-32.png')} type="image/png" />
-    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="icon" href={imageUrl(settings?.branding?.favicon, 64) || withBase('/favicon-32.png')} />
+    <link rel="apple-touch-icon" href={imageUrl(settings?.branding?.touchIcon, 180) || withBase('/apple-touch-icon.png')} />
 
     <!-- Progressive-enhancement flag: set BEFORE paint so reveal styles apply without FOUC. -->
     <script is:inline>document.documentElement.classList.add('js');</script>
@@ -66,7 +71,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
   </head>
   <body>
     <a href="#main" class="skip">Skip to content</a>
-    <Header menu={menu} give={settings?.giveButton} churchName={churchName} />
+    <Header menu={menu} give={settings?.giveButton} churchName={churchName} branding={settings?.branding} />
     <main id="main">
       <slot />
     </main>

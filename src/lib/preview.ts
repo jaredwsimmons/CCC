@@ -34,7 +34,11 @@ const CLICK_TO_EDIT = new Set([
   'announcement', 'bio', 'cardTitle', 'category', 'closing', 'deaconCardText', 'description', 'directionsLabel', 'eyebrow',
   'footerConnectHeading', 'footerEmailText', 'footerTouchHeading', 'heading', 'intro', 'label', 'listenLabel',
   'location', 'name', 'place', 'reference', 'role', 'subline', 'sundayLabel', 'text', 'time', 'title', 'watchLabel', 'what',
+  'latestLabel', 'browseLabel', 'everyWeekLabel', 'comingUpLabel', 'addressLabel', 'phoneLabel', 'emailLabel',
+  'prayerLabel', 'sundaysLabel', 'deaconLabel', 'deaconsLabel', 'viewGroupLabel', 'joinGroupLabel', 'groupOpenLabel',
+  'contentsLabel', 'registerLabel', 'registrationDetailsLabel', 'eventRegisterLabel', 'eventDetailsLabel',
+  'featuredLabel', 'learnMoreLabel', 'listLabel', 'monthLabel',
 ]);
 
 export const clickToEdit = ({ sourcePath }: { sourcePath: readonly unknown[] }): boolean =>
-  CLICK_TO_EDIT.has(String(sourcePath.at(-1)));
+  CLICK_TO_EDIT.has(String(sourcePath.at(-1))) || (sourcePath.at(-2) === 'videoLabels' && typeof sourcePath.at(-1) === 'number');

@@ -32,6 +32,7 @@ test('every section is a type the Studio defines', () => {
   const defined = readdirSync(dir)
     .filter((f) => f.endsWith('Section.ts'))
     .map((f) => readFileSync(`${dir}/${f}`, 'utf8').match(/name: '(\w+Section)'/)?.[1]);
+  defined.push(...[...readFileSync('studio/schemaTypes/homeSections.ts', 'utf8').matchAll(/'(home\w+Section)'/g)].map((m) => m[1]));
   const used = docs.flatMap((d) => ((d.sections as { _type: string }[]) ?? []).map((s) => s._type));
   expect(used.filter((t) => !defined.includes(t))).toEqual([]);
 });

@@ -1,7 +1,9 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { buttons, eyebrow, imageWithAlt, imageMember } from './fields';
+import { sectionMembers, sectionMenu } from './sections';
+import { defaultHomeSections, homeSectionTypes } from './homeSections';
 
-// The homepage keeps its hand-tuned layout; staff edit its words, buttons and photos.
+// The hero keeps its approved design; the sections below it can be built and reordered.
 // It's about the life of the church; the visitor details (service times, address,
 // directions) live on I'm New. The weekly schedule comes from Weekly rhythm cards and the
 // "Coming up" events live from Church Center.
@@ -10,6 +12,21 @@ export default defineType({
   title: 'Home page',
   type: 'document',
   fields: [
+    defineField({
+      name: 'sections', title: 'Page sections', type: 'array',
+      description: 'Drag to reorder. Add approved sections, or hide a section without deleting its content. Existing pages keep their current order until you save this list.',
+      of: [...homeSectionTypes.map((t) => defineArrayMember({ type: t.name })), ...sectionMembers],
+      initialValue: defaultHomeSections,
+      options: { insertMenu: { groups: [
+        { name: 'home', title: 'Home layouts', of: homeSectionTypes.map((t) => t.name) },
+        ...sectionMenu.insertMenu.groups,
+      ] } },
+      validation: (Rule) => Rule.custom((items) => {
+        const types = ((items ?? []) as { _type?: string }[]).map((item) => item._type ?? '').filter((type) => type.startsWith('home'));
+        return new Set(types).size === types.length || 'Use each Home layout once. Its content is shared with the fields below.';
+      }),
+    }),
+    defineField({ name: 'hideQuickLinks', title: 'Hide quick links', type: 'boolean', initialValue: false }),
     defineField({
       name: 'announcement',
       title: 'Announcement bar',
@@ -32,6 +49,11 @@ export default defineType({
         }),
         defineField({ name: 'text', title: 'Text under the title', type: 'text', rows: 3 }),
         imageWithAlt('image', 'Main photo', 'Shown in the large frame, and instead of the video on slow connections.'),
+        defineField({ name: 'showVideo', title: 'Play background video', type: 'boolean', initialValue: true,
+          description: 'Turn off to show only the main photo. Reduced-motion visitors always see the photo.' }),
+        defineField({ name: 'video', title: 'Background video', type: 'file', options: { accept: 'video/mp4' },
+          description: 'Upload a short, compressed MP4 without sound. Leave empty to retain the existing church video. Set a main photo as its poster.',
+          validation: (Rule) => Rule.custom((value, context) => value && !(context.parent as { image?: unknown })?.image ? 'Add a main photo for visitors who cannot play the video.' : true) }),
         defineField({
           name: 'photos',
           title: 'Smaller photos',

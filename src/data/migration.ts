@@ -12,6 +12,7 @@ import { site, nav } from './site';
 import * as c from './content';
 import { bylaws } from './bylaws';
 import { rhythm } from '../lib/calendar';
+import { defaultHomeSections } from '../lib/home';
 
 export type SanityDoc = { _id: string; _type: string; [field: string]: unknown };
 
@@ -142,6 +143,14 @@ function siteSettings(): SanityDoc {
     churchName: site.name,
     tagline: site.tagline,
     description: site.description,
+    branding: {
+      headerLogo: img('/images/logo-full-blue.png', 'Chelsea Community Church logo'),
+      footerMark: img('/images/icon-white.png', 'Chelsea Community Church mark'),
+      accentMark: img('/images/icon-gold.png', 'Chelsea Community Church mark'),
+      favicon: img('/favicon-32.png', 'Chelsea Community Church icon'),
+      touchIcon: img('/apple-touch-icon.png', 'Chelsea Community Church icon'),
+    },
+    integrations: { churchCenterHost: cc.subdomain, calendarPage: cc.calendarPage, givingBase: cc.giving, podcastFeed: site.media.podcastFeed, youtubeChannelId: site.media.youtubeChannelId },
     giveButton: one(btn.cc('Give', cc.giving)),
     menu: nav.map((item) => ({
       _type: 'menuItem',
@@ -183,7 +192,9 @@ function home(): SanityDoc {
   return {
     _id: 'home',
     _type: 'home',
+    sections: defaultHomeSections.map((s) => ({ ...s })),
     hero: {
+      showVideo: true,
       title: 'Pursuing God.\nPursuing others.',
       text: 'Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.',
       image: img(h.hero.image, h.hero.imageAlt),

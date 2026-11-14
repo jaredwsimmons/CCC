@@ -5,9 +5,10 @@ import EventList from '../EventList.astro';
 import RichText from '../RichText.astro';
 import { inModal, variantFor } from '../../lib/links';
 import { getUpcomingEventsResult, buildMonthGrids, onePerSeries, fullDate } from '../../lib/calendar';
+import { churchCenterUrl } from '../../lib/integrations';
 import { site } from '../../data/site';
-const { s } = Astro.props;
-const result = await getUpcomingEventsResult();
+const { s, settings } = Astro.props;
+const result = await getUpcomingEventsResult(settings?.integrations?.churchCenterHost);
 const events = result ?? [];
 const monthGrids = buildMonthGrids(events);
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -20,18 +21,18 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         {s.heading && <h2>{s.heading}</h2>}
       </div>
       <div class="viewtoggle" role="group" aria-label="Calendar view">
-        <button type="button" data-view-btn="list" class="is-active" aria-pressed="true">List</button>
-        <button type="button" data-view-btn="month" aria-pressed="false">Month</button>
+        <button type="button" data-view-btn="list" class="is-active" aria-pressed="true">{settings?.wording?.listLabel || 'List'}</button>
+        <button type="button" data-view-btn="month" aria-pressed="false">{settings?.wording?.monthLabel || 'Month'}</button>
       </div>
     </div>
 
 
-    {result === null ? <p class="note" role="status">{s.unavailableMessage || 'We could not load the calendar right now.'} <a href={site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Open the Church Center calendar</a></p>
+    {result === null ? <p class="note" role="status">{s.unavailableMessage || 'We could not load the calendar right now.'} <a href={churchCenterUrl(settings?.integrations?.calendarPage) || site.churchCenter.calendarPage} target="_blank" rel="noopener noreferrer">Open the Church Center calendar</a></p>
       : events.length === 0 && <div class="note" data-reveal><RichText value={s.emptyText} /></div>}
 
     <!-- LIST view -->
     <div data-view="list">
-      <EventList events={onePerSeries(events)} />
+      <EventList events={onePerSeries(events)} settings={settings} />
     </div>
 
     <!-- MONTH view -->

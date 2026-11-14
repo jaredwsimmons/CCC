@@ -1,0 +1,190 @@
+---
+// The three original homepage layouts share their existing content fields. Staff can
+// reorder or hide them and insert other approved sections without migrating their copy.
+import Buttons from './Buttons.astro';
+import AnnouncementList from './AnnouncementList.astro';
+import { imagePosition, imageUrl } from '../lib/image';
+import { buttonLink, inModal, type Button } from '../lib/links';
+import { dateParts, fullDate, getUpcomingEvents, onePerSeries } from '../lib/calendar';
+import { localDate } from '../lib/churchcenter';
+import { fmtDuration, getPodcastEpisodes } from '../lib/feeds';
+import { getAnnouncements } from '../lib/announcements';
+const { s, home, settings } = Astro.props;
+const [upcoming, episodes, announcements] = await Promise.all([
+  s._type === 'homeWeekSection' ? getUpcomingEvents(settings?.integrations?.churchCenterHost) : [],
+  s._type === 'homeHighlightsSection' ? getPodcastEpisodes(undefined, settings?.integrations?.podcastFeed) : [],
+  s._type === 'homeAnnouncementsSection' ? getAnnouncements(settings?.integrations?.churchCenterHost) : [],
+]);
+const week = home?.week ?? {};
+const news = home?.announcements ?? {};
+const newsItems = announcements.slice(0, news.count ?? 3);
+const series = home?.currentSeries;
+const app = home?.app ?? {};
+const seriesImage = imageUrl(series?.image, 1000);
+const latest = episodes[0];
+const seriesActive = !series?.expiresOn || series.expiresOn >= localDate(new Date().toISOString());
+const messageButtons: Button[] = [
+  { kind: 'page', label: series?.browseLabel || 'Watch & Listen', page: { _type: 'fixedPage', _id: 'fixed-media' } },
+  { kind: 'url', label: series?.listenLabel || 'Listen to this message', url: latest?.link || latest?.audioUrl },
+];
+const sermon = latest
+  ? { title: latest.title, text: latest.subtitle,
+      meta: [latest.date?.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), fmtDuration(latest.duration)].filter(Boolean).join(' · '),
+      image: latest.image || seriesImage, alt: latest.image ? latest.title : series?.image?.alt ?? '' }
+  : seriesActive && series?.title
+    ? { title: series.title, text: series.description, meta: '', image: seriesImage, alt: series.image?.alt ?? '' }
+    : null;
+const appImage = imageUrl(app.image, 1000);
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
+const linkFor = (b?: Button | null) => {
+  const link = buttonLink(b);
+  return link && b?.label ? { label: b.label, attrs: { href: link.href, ...(link.newTab ? ext : {}) } } : null;
+};
+const rhythm = (settings?.weeklyRhythm ?? []) as { title?: string; time?: string; description?: string }[];
+const events = onePerSeries(upcoming).slice(0, 4).map((e) => ({
+  ...e, d: dateParts(e.date), href: e.register ? inModal(e.register) : e.publicUrl,
+  external: !e.register && Boolean(e.publicUrl),
+}));
+const calendarLink = linkFor(week.calendarLink);
+const newsLink = linkFor(news.link);
+const newsVideoLink = linkFor(news.videoLink);
+---
+  <!-- This week: the weekly schedule beside upcoming events -->
+  {s._type === 'homeWeekSection' && (rhythm.length > 0 || events.length > 0) && (
+    <section class="section">
+      <div class="wrap">
+        {week.heading && <h2 data-reveal>{week.heading}</h2>}
+        <div class="week">
+          {rhythm.length > 0 && (
+            <div class="panel panel--navy" data-reveal>
+              {week.everyWeekLabel && <p class="panel-label">{week.everyWeekLabel}</p>}
+              <ul class="rhythm">
+                {rhythm.map((r) => (
+                  <li>
+                    {r.time && <p class="rhythm__when">{r.time}</p>}
+                    <div>
+                      <h3>{r.title}</h3>
+                      {r.description && <p>{r.description}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {events.length > 0 && (
+            <div class="panel live-data" data-reveal>
+              <div class="panel-head">
+                {week.comingUpLabel && <p class="panel-label">{week.comingUpLabel}</p>}
+                {calendarLink && <a class="panel-link" {...calendarLink.attrs}>{calendarLink.label}</a>}
+              </div>
+              <ul class="events">
+                {events.map((e) => {
+                  const body = (
+                    <>
+                      <span class="date" aria-hidden="true"><span class="date__mo">{e.d.month}</span><span class="date__day">{e.d.day}</span></span>
+                      <span>
+                        <time class="sr-only" datetime={e.date}>{fullDate(e.date)}</time>
+                        <span class="event__title">{e.title}</span>
+                        <span class="event__when">{e.d.weekday} · {e.timeLabel}</span>
+                      </span>
+                    </>
+                  );
+                  return (
+                    <li>
+                      {e.href ? <a class="event" href={e.href} {...(e.external ? ext : {})}>{body}</a> : <div class="event">{body}</div>}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Announcements from Church Center; hidden when there are none or Church Center is down -->
+  {s._type === 'homeAnnouncementsSection' && news.heading && newsItems.length > 0 && (
+    <section class="section live-data">
+      <div class="wrap">
+        <div class="news-head" data-reveal>
+          <h2>{news.heading}</h2>
+          <div class="news-links">
+            {newsVideoLink && <a class="panel-link" {...newsVideoLink.attrs}>{newsVideoLink.label}</a>}
+            {newsLink && <a class="panel-link" {...newsLink.attrs}>{newsLink.label}</a>}
+          </div>
+        </div>
+        <div class="news-list"><AnnouncementList items={newsItems} layout="cards" settings={settings} /></div>
+      </div>
+    </section>
+  )}
+
+  <!-- The current series beside the app -->
+  {s._type === 'homeHighlightsSection' && (sermon || app.heading) && (
+    <section class="section last">
+      <div class="wrap pair">
+        {sermon && (
+          <div class="panel series live-data" data-reveal>
+            {sermon.image && <img src={sermon.image} alt={sermon.alt} style={latest?.image ? undefined : imagePosition(series?.image)} loading="lazy" />}
+            <div>
+              {(latest ? series?.latestLabel || 'Latest message' : series?.eyebrow) && <p class="eyebrow">{latest ? series?.latestLabel || 'Latest message' : series.eyebrow}</p>}
+              <h2>{sermon.title}</h2>
+              {sermon.text && <p class="muted">{sermon.text}</p>}
+              {sermon.meta && <p class="meta">{sermon.meta}</p>}
+              <Buttons list={latest ? messageButtons : series?.buttons} primary="blue" />
+            </div>
+          </div>
+        )}
+        {app.heading && (
+          <div class="panel app" data-reveal>
+            {appImage && <img src={appImage} alt={app.image?.alt ?? ''} style={imagePosition(app.image)} loading="lazy" />}
+            {app.eyebrow && <p class="eyebrow">{app.eyebrow}</p>}
+            <h2>{app.heading}</h2>
+            {app.text && <p class="muted">{app.text}</p>}
+            <Buttons list={app.buttons} solid={0} />
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+<style>
+  /* ---- this week ---- */
+  .week { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 1.5rem; margin-top: 2rem; align-items: start; }
+  .panel-label { font-family: var(--display); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); }
+  .panel--navy .panel-label { color: var(--gold); }
+  .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .panel-link { font-family: var(--display); font-weight: 600; font-size: 0.95rem; padding-block: 0.6rem; }
+  .rhythm { list-style: none; margin-top: 0.5rem; }
+  .rhythm li { display: flex; gap: 1.25rem; padding: 1.1rem 0; border-top: 1px solid rgba(251, 249, 244, 0.16); }
+  .rhythm li:first-child { border-top: 0; }
+  .rhythm__when { flex: none; width: 7.5rem; font-family: var(--display); font-weight: 600; font-size: 0.92rem; line-height: 1.4; color: var(--gold); padding-top: 0.15rem; }
+  .rhythm h3 { font-size: 1.2rem; }
+  .rhythm p { font-size: 1rem; margin-top: 0.2rem; }
+  @media (max-width: 480px) { .rhythm li { flex-direction: column; gap: 0.2rem; } .rhythm__when { width: auto; } }
+  .events { list-style: none; margin-top: 0.4rem; }
+  .events li + li { border-top: 1px solid var(--hair); }
+  .event { display: flex; gap: 1.1rem; align-items: center; padding: 0.9rem 0; text-decoration: none; color: var(--navy); }
+  a.event:hover .event__title { color: var(--blue); }
+  .date { flex: none; width: 60px; padding: 0.45rem 0; border-radius: 14px; background: var(--tint); text-align: center; font-family: var(--display); }
+  .date__mo { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); }
+  .date__day { display: block; font-size: 1.45rem; font-weight: 600; line-height: 1.1; }
+  .event__title { display: block; font-family: var(--display); font-weight: 600; font-size: 1.12rem; line-height: 1.25; }
+  .event__when { display: block; font-size: 0.95rem; color: var(--mid); }
+
+  /* ---- announcements ---- */
+  .news-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1.5rem; }
+  .news-links { display: flex; flex-wrap: wrap; gap: 0 1.5rem; }
+  .news-list { margin-top: 2rem; }
+
+
+  /* ---- series + app ---- */
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; align-items: stretch; }
+  @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
+  /* photo on top, words below */
+  .series, .app { display: flex; flex-direction: column; }
+  .series img, .app img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 16px; margin-bottom: 1.4rem; }
+  .meta { font-size: 0.9rem; color: var(--mid); margin-top: 0.3rem; }
+  .series h2, .app h2 { font-size: clamp(1.6rem, 2.6vw, 1.9rem); }
+  .muted { color: var(--mid); margin-top: 0.6rem; font-size: 1rem; }
+</style>

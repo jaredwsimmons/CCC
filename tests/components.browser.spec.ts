@@ -112,3 +112,25 @@ test('section titles, labels, and introductions share the content edge in plain 
     expect(offsets.endDash).toBe('none');
   }
 });
+
+test('a staff-built page keeps section order, image focal points and mobile layout', async ({ page }) => {
+  const header = await render('src/components/PageHeader.astro', { title: 'A new ministry page' });
+  const body = await render('src/components/sections/Sections.astro', { list: [
+    { _type: 'textSection', _key: 'first', heading: 'Welcome to the ministry' },
+    { _type: 'textSection', _key: 'hidden', heading: 'An unpublished section', hidden: true },
+    { _type: 'textPhotoSection', _key: 'second', heading: 'When we gather', photos: [
+      { _key: 'photo', _sanityAsset: 'image@file://./public/images/fixture.jpg', alt: 'People gathering', hotspot: { x: 0.2, y: 0.3 } },
+    ] },
+    { _type: 'ctaBandSection', _key: 'contact', heading: 'Get in touch', buttons: [
+      { kind: 'url', label: 'Ask about the ministry', url: 'mailto:fixture@example.com' },
+    ] },
+  ] });
+  await page.route('**/images/fixture.jpg', (route) => route.fulfill({ status: 200, contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#005291"/></svg>' }));
+  await page.setContent(documentFor(header + body));
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('A new ministry page');
+  await expect(page.getByRole('heading', { level: 2 })).toHaveText(['Welcome to the ministry', 'When we gather', 'Get in touch']);
+  await expect(page.getByText('An unpublished section')).toHaveCount(0);
+  await expect(page.getByAltText('People gathering')).toHaveCSS('object-position', '20% 30%');
+  await expect(page.getByRole('link', { name: 'Ask about the ministry' })).toHaveAttribute('href', 'mailto:fixture@example.com');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+});
