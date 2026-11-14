@@ -47,10 +47,16 @@ for (const route of pages) {
             return rect.width > 2 && (rect.right > innerWidth + 1 || rect.left < -1);
           }).slice(0, 20).map((element) => ({ tag: element.tagName, class: element.className, text: element.textContent?.trim().slice(0, 80), ...box(element) })),
           activeNav: all('header [aria-current="page"]').map((element) => element.textContent?.trim()),
+          doubledSectionGaps: all('main .section:not(.section--white)').filter((element) => {
+            let previous = element.previousElementSibling;
+            while (previous?.matches('script, style, template')) previous = previous.previousElementSibling;
+            return previous?.matches('.section:not(.section--white)') && parseFloat(getComputedStyle(element).paddingTop) > 0;
+          }).map((element) => ({ title: element.querySelector('h2')?.textContent?.trim(), paddingTop: getComputedStyle(element).paddingTop })),
         };
       });
       results.push(metrics);
       expect.soft(metrics.overflow, `${route.path} at ${width}px`).toBeLessThanOrEqual(1);
+      expect.soft(metrics.doubledSectionGaps, `${route.path} at ${width}px has one shared gap between sections`).toEqual([]);
     }
     await writeFile(`layout-review/metrics/${route.name}.json`, JSON.stringify({ route, errors, results }, null, 2));
     await expect.soft(page.locator('main h1')).toHaveCount(1);
