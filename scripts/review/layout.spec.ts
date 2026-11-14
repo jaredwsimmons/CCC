@@ -30,7 +30,7 @@ for (const route of pages) {
         };
         const style = (element: Element) => {
           const s = getComputedStyle(element);
-          return { font: s.fontFamily, size: s.fontSize, weight: s.fontWeight, lineHeight: s.lineHeight, color: s.color, background: s.backgroundColor, radius: s.borderRadius, padding: s.padding };
+          return { font: s.fontFamily, size: s.fontSize, weight: s.fontWeight, lineHeight: s.lineHeight, color: s.color, background: s.backgroundColor, radius: s.borderRadius, padding: s.padding, align: s.textAlign };
         };
         const all = (selector: string) => Array.from(document.querySelectorAll(selector)).filter(visible);
         return {
@@ -60,6 +60,23 @@ for (const route of pages) {
             }
             return issues;
           })(),
+          headingAlignmentIssues: (() => {
+            const issues: string[] = [];
+            for (const heading of all('main h1, main h2')) {
+              if (!['left', 'start'].includes(getComputedStyle(heading).textAlign)) issues.push(`Heading is not left aligned: ${heading.textContent?.trim()}`);
+            }
+            for (const header of all('main .section-head')) {
+              const parent = header.parentElement!;
+              const edge = parent.getBoundingClientRect().left + parseFloat(getComputedStyle(parent).paddingLeft);
+              const left = header.getBoundingClientRect().left;
+              if (Math.abs(left - edge) > 1) issues.push(`Heading block is inset from its content: ${header.textContent?.trim()}`);
+              const lead = header.querySelector('.lead');
+              if (lead && Math.abs(lead.getBoundingClientRect().left - left) > 1) issues.push(`Intro is inset from its heading: ${lead.textContent?.trim()}`);
+              const label = header.querySelector('.eyebrow');
+              if (label && getComputedStyle(label).justifyContent === 'center') issues.push(`Small label is centered: ${label.textContent?.trim()}`);
+            }
+            return issues;
+          })(),
           doubledSectionGaps: all('main .section:not(.section--white)').filter((element) => {
             let previous = element.previousElementSibling;
             while (previous?.matches('script, style, template')) previous = previous.previousElementSibling;
@@ -71,6 +88,7 @@ for (const route of pages) {
       expect.soft(metrics.overflow, `${route.path} at ${width}px`).toBeLessThanOrEqual(1);
       expect.soft(metrics.doubledSectionGaps, `${route.path} at ${width}px has one shared gap between sections`).toEqual([]);
       expect.soft(metrics.headingIssues, `${route.path} at ${width}px has a complete heading hierarchy`).toEqual([]);
+      expect.soft(metrics.headingAlignmentIssues, `${route.path} at ${width}px keeps headings aligned to the content edge`).toEqual([]);
     }
     await writeFile(`layout-review/metrics/${route.name}.json`, JSON.stringify({ route, errors, results }, null, 2));
     await expect.soft(page.locator('main h1')).toHaveCount(1);

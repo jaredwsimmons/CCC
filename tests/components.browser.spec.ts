@@ -89,3 +89,26 @@ test('weekly video headings stay simple and the newest video plays inline', asyn
   await expect(page.locator('iframe')).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/weekly1?autoplay=1&rel=0');
   await expect(page.locator('iframe')).toHaveAttribute('title', 'Play This week');
 });
+
+test('section titles, labels, and introductions share the content edge in plain and tinted sections', async ({ page }) => {
+  const props = { center: true, title: 'Our ministries', eyebrow: 'Get involved', lead: 'A short introduction to the ways you can connect and serve.' };
+  const plain = await render('src/components/Section.astro', props);
+  const tinted = await render('src/components/Section.astro', { ...props, variant: 'alt' });
+  await page.setContent(documentFor(plain + tinted));
+  for (const header of await page.locator('.section-head').all()) {
+    await expect(header.getByRole('heading', { level: 2 })).toHaveCSS('text-align', 'left');
+    await expect(header.locator('.eyebrow')).toHaveCSS('justify-content', 'flex-start');
+    const offsets = await header.evaluate((element) => {
+      const parent = element.parentElement!;
+      const left = element.getBoundingClientRect().left;
+      return {
+        title: left - parent.getBoundingClientRect().left - parseFloat(getComputedStyle(parent).paddingLeft),
+        lead: element.querySelector('.lead')!.getBoundingClientRect().left - left,
+        endDash: getComputedStyle(element.querySelector('.eyebrow')!, '::after').content,
+      };
+    });
+    expect(Math.abs(offsets.title)).toBeLessThanOrEqual(1);
+    expect(Math.abs(offsets.lead)).toBeLessThanOrEqual(1);
+    expect(offsets.endDash).toBe('none');
+  }
+});
