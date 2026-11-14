@@ -1,3 +1,4 @@
+import { churchCenterHost } from './integrations';
 // Groups data layer — LIVE from Church Center's PUBLIC groups API (src/lib/churchcenter.ts),
 // the same feed the church publishes for people to browse/join. Fetched when
 // the page is visited and cached at the edge for 30 minutes, falling back to
@@ -52,9 +53,9 @@ function sortKey(schedule?: string): number {
 }
 
 // null = the fetch failed (as opposed to [] = no open groups).
-async function fetchLive(): Promise<Group[] | null> {
+async function fetchLive(host: string): Promise<Group[] | null> {
   try {
-    const body = await ccGet('/groups/v2/groups?per_page=100');
+    const body = await ccGet('/groups/v2/groups?per_page=100', 9000, host);
     if (!body) return null;
 
     return (body.data ?? [])
@@ -78,7 +79,10 @@ async function fetchLive(): Promise<Group[] | null> {
 }
 
 // Flat list, sorted Mon→Sun by day/time (groups with no schedule last).
-export async function getGroups(): Promise<Group[]> {
-  const groups = (await cached('groups', 30 * 60, fetchLive)) ?? [];
-  return groups.sort((a, b) => a.sortKey - b.sortKey || a.name.localeCompare(b.name));
+export async function getGroupsResult(organization?: string): Promise<Group[] | null> {
+  const host = churchCenterHost(organization);
+  const groups = await cached(`groups:${host}`, 30 * 60, () => fetchLive(host));
+  return groups ? [...groups].sort((a, b) => a.sortKey - b.sortKey || a.name.localeCompare(b.name)) : null;
 }
+
+export const getGroups = async (): Promise<Group[]> => (await getGroupsResult()) ?? [];

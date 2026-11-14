@@ -6,11 +6,13 @@ import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Sections from '../components/sections/Sections.astro';
 import { sanityFetch } from '../lib/sanity';
+import { withBase } from '../data/site';
 import { pageQuery, settingsQuery } from '../lib/queries';
 
 const slug = Astro.params.slug;
 const page = slug ? await sanityFetch<any>(pageQuery, { slug }, Astro.cookies) : null;
 if (!page) return Astro.rewrite('/404');
+if (page.slug && page.slug !== slug) return Astro.redirect(withBase(`/${page.slug}`) + Astro.url.search, 301);
 const settings = await sanityFetch<any>(settingsQuery, {}, Astro.cookies);
 ---
 <Base title={page.title} description={page.seo?.description}>

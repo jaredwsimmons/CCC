@@ -5,6 +5,7 @@ import { withBase } from '../data/site';
 import { hasEsvKey } from '../lib/esv';
 import { shortTimes, telHref } from '../lib/format';
 import { buttonLink, type Button } from '../lib/links';
+import { imageUrl } from '../lib/image';
 interface Props { settings: any; } // Site Settings, from Base.astro
 const { settings } = Astro.props;
 const year = new Date().getFullYear();
@@ -30,10 +31,10 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
 <footer class="site-footer">
   <div class="wrap top">
     <div class="id">
-      <img src={withBase('/images/icon-white.png')} alt="" width="64" height="64" loading="lazy" />
+      <img src={imageUrl(settings?.branding?.footerMark, 128) || withBase('/images/icon-white.png')} alt="" width="64" height="64" loading="lazy" />
       <p class="name">{settings?.churchName}</p>
       <p class="tagline">{tagline.join(' ')} {taglineEnd && <b>{taglineEnd}</b>}</p>
-      {times && <p class="times">Sundays · {times}</p>}
+      {times && <p class="times">{settings?.wording?.sundaysLabel || 'Sundays'} · {times}</p>}
     </div>
 
     <div class="col" aria-labelledby="ftr-touch">
@@ -41,25 +42,25 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
       <ul>
         {address && (
           <li>
-            <span class="label">Address</span>
+            <span class="label">{settings?.wording?.addressLabel || 'Address'}</span>
             {a.mapsUrl ? <a href={a.mapsUrl} {...ext}>{address}</a> : address}
           </li>
         )}
         {settings?.phone && (
           <li>
-            <span class="label">Phone</span>
+            <span class="label">{settings?.wording?.phoneLabel || 'Phone'}</span>
             <a href={telHref(settings.phone)}>{settings.phone}</a>
           </li>
         )}
         {settings?.email && (
           <li>
-            <span class="label">Email us</span>
+            <span class="label">{settings?.wording?.emailLabel || 'Email us'}</span>
             <a href={`mailto:${settings.email}`}>{settings?.footerEmailText}</a>
           </li>
         )}
         {prayer && (
           <li>
-            <span class="label">Prayer</span>
+            <span class="label">{settings?.wording?.prayerLabel || 'Prayer'}</span>
             <a {...prayer.attrs}>{prayer.label}</a>
           </li>
         )}

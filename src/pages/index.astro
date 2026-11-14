@@ -1,77 +1,31 @@
 ---
-// The homepage: the life of the church. Its words, buttons and photos come from the Home
-// page document in Sanity; the weekly schedule from Weekly rhythm cards (Site Settings);
-// "Coming up" live from Church Center (cached, src/lib/calendar.ts). Visitor details —
-// service times, address, directions — live on I'm New.
+// Home content is owned by Sanity, including the order of the approved sections.
 import Base from '../layouts/Base.astro';
 import Buttons from '../components/Buttons.astro';
+import Sections from '../components/sections/Sections.astro';
+import { defaultHomeSections } from '../lib/home';
 import { withBase } from '../data/site';
 import { sanityFetch } from '../lib/sanity';
 import { homeQuery, settingsQuery } from '../lib/queries';
 import { imagePosition, imageUrl, type SanityImage } from '../lib/image';
-import { buttonLink, inModal, type Button } from '../lib/links';
-import { dateParts, getUpcomingEvents, onePerSeries } from '../lib/calendar';
-import { fmtDuration, getPodcastEpisodes } from '../lib/feeds';
-import { getAnnouncements } from '../lib/announcements';
-import AnnouncementList from '../components/AnnouncementList.astro';
-
-const [home, settings, upcoming, episodes, announcements] = await Promise.all([
+import { buttonLink, type Button } from '../lib/links';
+const [home, settings] = await Promise.all([
   sanityFetch<any>(homeQuery, {}, Astro.cookies),
   sanityFetch<any>(settingsQuery, {}, Astro.cookies),
-  getUpcomingEvents(),
-  getPodcastEpisodes(),
-  getAnnouncements(),
 ]);
 const hero = home?.hero ?? {};
-const week = home?.week ?? {};
-const news = home?.announcements ?? {};
-const newsItems = announcements.slice(0, news.count ?? 3);
-const series = home?.currentSeries;
-const app = home?.app ?? {};
 const titleLines: string[] = (hero.title ?? '').split('\n').filter(Boolean);
 const heroImage = imageUrl(hero.image, 1400);
 const sidePhotos = ((hero.photos ?? []) as NonNullable<SanityImage>[])
   .map((p) => ({ src: imageUrl(p, 700), alt: p.alt ?? '', style: imagePosition(p) }))
-  .filter((p) => p.src)
-  .slice(0, 2);
-const seriesImage = imageUrl(series?.image, 1000);
-// The series box shows the newest sermon from the podcast feed, as the Media page does; the
-// series words and art from Sanity stand in when the feed can't be reached.
-const latest = episodes[0];
-const sermon = latest
-  ? {
-      title: latest.title,
-      text: latest.subtitle,
-      meta: [latest.date?.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), fmtDuration(latest.duration)].filter(Boolean).join(' · '),
-      image: latest.image || seriesImage,
-      alt: latest.image ? latest.title : series?.image?.alt ?? '',
-    }
-  : series?.title
-    ? { title: series.title, text: series.description, meta: '', image: seriesImage, alt: series.image?.alt ?? '' }
-    : null;
-const appImage = imageUrl(app.image, 1000);
+  .filter((p) => p.src).slice(0, 2);
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
-
-/** A Sanity button as link attributes, or null if it isn't filled in. */
 const linkFor = (b?: Button | null) => {
   const link = buttonLink(b);
   return link && b?.label ? { label: b.label, attrs: { href: link.href, ...(link.newTab ? ext : {}) } } : null;
 };
-
 const quickLinks = ((home?.quickLinks ?? []) as { _key: string; icon?: string; text?: string; link?: Button }[])
-  .map((q) => ({ ...q, to: linkFor(q.link) }))
-  .filter((q) => q.to);
-const rhythm = (settings?.weeklyRhythm ?? []) as { title?: string; time?: string; description?: string }[];
-const events = onePerSeries(upcoming).slice(0, 4).map((e) => ({
-  ...e,
-  d: dateParts(e.date),
-  href: e.register ? inModal(e.register) : e.publicUrl,
-  external: !e.register && Boolean(e.publicUrl),
-}));
-const calendarLink = linkFor(week.calendarLink);
-const newsLink = linkFor(news.link);
-const newsVideoLink = linkFor(news.videoLink);
-
+  .map((q) => ({ ...q, to: linkFor(q.link) })).filter((q) => q.to);
 // Stroke icons for the quick links, chosen in Sanity by name.
 const ICONS: Record<string, string> = {
   visit: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
@@ -103,14 +57,16 @@ const ICONS: Record<string, string> = {
         <div class="hero-media">
           <div class="frame frame--main">
             <img src={heroImage} alt={hero.image?.alt ?? ''} style={imagePosition(hero.image)} loading="eager" fetchpriority="high" />
-            <video class="hero__video" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
-              <source src={withBase('/videos/hero.mp4')} type="video/mp4" />
+            {hero.showVideo !== false && (<>
+            <video class="hero__video" style={hero.videoUrl ? "transform: none" : undefined} poster={heroImage} autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
+              <source src={hero.videoUrl || withBase('/videos/hero.mp4')} type="video/mp4" />
             </video>
             <button class="video-toggle" type="button" aria-pressed="false" data-video-toggle>
               <span class="sr-only">Pause background video</span>
               <svg class="i-pause" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
               <svg class="i-play" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
             </button>
+            </>)}
           </div>
           {sidePhotos.length > 0 && (
             <div class="side">
@@ -122,7 +78,7 @@ const ICONS: Record<string, string> = {
     </div>
   </section>
 
-  {quickLinks.length > 0 && (
+  {!home?.hideQuickLinks && quickLinks.length > 0 && (
     <nav class="lift quick" aria-label="Quick links">
       <ul class="wrap quick__list">
         {quickLinks.map((q) => (
@@ -142,103 +98,7 @@ const ICONS: Record<string, string> = {
     </nav>
   )}
 
-  <!-- This week: the weekly schedule beside upcoming events -->
-  {(rhythm.length > 0 || events.length > 0) && (
-    <section class="section">
-      <div class="wrap">
-        {week.heading && <h2 data-reveal>{week.heading}</h2>}
-        <div class="week">
-          {rhythm.length > 0 && (
-            <div class="panel panel--navy" data-reveal>
-              {week.everyWeekLabel && <p class="panel-label">{week.everyWeekLabel}</p>}
-              <ul class="rhythm">
-                {rhythm.map((r) => (
-                  <li>
-                    {r.time && <p class="rhythm__when">{r.time}</p>}
-                    <div>
-                      <h3>{r.title}</h3>
-                      {r.description && <p>{r.description}</p>}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {events.length > 0 && (
-            <div class="panel live-data" data-reveal>
-              <div class="panel-head">
-                {week.comingUpLabel && <p class="panel-label">{week.comingUpLabel}</p>}
-                {calendarLink && <a class="panel-link" {...calendarLink.attrs}>{calendarLink.label}</a>}
-              </div>
-              <ul class="events">
-                {events.map((e) => {
-                  const body = (
-                    <>
-                      <span class="date" aria-hidden="true"><span class="date__mo">{e.d.month}</span><span class="date__day">{e.d.day}</span></span>
-                      <span>
-                        <span class="event__title">{e.title}</span>
-                        <span class="event__when">{e.d.weekday} · {e.timeLabel}</span>
-                      </span>
-                    </>
-                  );
-                  return (
-                    <li>
-                      {e.href ? <a class="event" href={e.href} {...(e.external ? ext : {})}>{body}</a> : <div class="event">{body}</div>}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  )}
-
-  <!-- Announcements from Church Center; hidden when there are none or Church Center is down -->
-  {news.heading && newsItems.length > 0 && (
-    <section class="section live-data">
-      <div class="wrap">
-        <div class="news-head" data-reveal>
-          <h2>{news.heading}</h2>
-          <div class="news-links">
-            {newsVideoLink && <a class="panel-link" {...newsVideoLink.attrs}>{newsVideoLink.label}</a>}
-            {newsLink && <a class="panel-link" {...newsLink.attrs}>{newsLink.label}</a>}
-          </div>
-        </div>
-        <div class="news-list"><AnnouncementList items={newsItems} layout="cards" /></div>
-      </div>
-    </section>
-  )}
-
-  <!-- The current series beside the app -->
-  {(sermon || app.heading) && (
-    <section class="section last">
-      <div class="wrap pair">
-        {sermon && (
-          <div class="panel series live-data" data-reveal>
-            {sermon.image && <img src={sermon.image} alt={sermon.alt} loading="lazy" />}
-            <div>
-              {series?.eyebrow && <p class="eyebrow">{series.eyebrow}</p>}
-              <h2>{sermon.title}</h2>
-              {sermon.text && <p class="muted">{sermon.text}</p>}
-              {sermon.meta && <p class="meta">{sermon.meta}</p>}
-              <Buttons list={series?.buttons} primary="blue" />
-            </div>
-          </div>
-        )}
-        {app.heading && (
-          <div class="panel app" data-reveal>
-            {appImage && <img src={appImage} alt={app.image?.alt ?? ''} loading="lazy" />}
-            {app.eyebrow && <p class="eyebrow">{app.eyebrow}</p>}
-            <h2>{app.heading}</h2>
-            {app.text && <p class="muted">{app.text}</p>}
-            <Buttons list={app.buttons} solid={0} />
-          </div>
-        )}
-      </div>
-    </section>
-  )}
+  <Sections list={home?.sections ?? defaultHomeSections} settings={settings} home={home} />
 </Base>
 
 <script is:inline>
@@ -248,6 +108,7 @@ const ICONS: Record<string, string> = {
     var video = document.querySelector('.hero__video');
     if (!btn || !video) return;
     var label = btn.querySelector('.sr-only');
+    video.addEventListener('error', function () { video.hidden = true; btn.hidden = true; }, true);
     btn.addEventListener('click', function () {
       var pause = !video.paused;
       if (pause) video.pause(); else video.play();
@@ -318,42 +179,4 @@ const ICONS: Record<string, string> = {
     .quick__icon { width: 44px; height: 44px; }
   }
 
-  /* ---- this week ---- */
-  .week { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 1.5rem; margin-top: 2rem; align-items: start; }
-  .panel-label { font-family: var(--display); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); }
-  .panel--navy .panel-label { color: var(--gold); }
-  .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
-  .panel-link { font-family: var(--display); font-weight: 600; font-size: 0.95rem; padding-block: 0.6rem; }
-  .rhythm { list-style: none; margin-top: 0.5rem; }
-  .rhythm li { display: flex; gap: 1.25rem; padding: 1.1rem 0; border-top: 1px solid rgba(251, 249, 244, 0.16); }
-  .rhythm li:first-child { border-top: 0; }
-  .rhythm__when { flex: none; width: 7.5rem; font-family: var(--display); font-weight: 600; font-size: 0.92rem; line-height: 1.4; color: var(--gold); padding-top: 0.15rem; }
-  .rhythm h3 { font-size: 1.2rem; }
-  .rhythm p { font-size: 1rem; margin-top: 0.2rem; }
-  @media (max-width: 480px) { .rhythm li { flex-direction: column; gap: 0.2rem; } .rhythm__when { width: auto; } }
-  .events { list-style: none; margin-top: 0.4rem; }
-  .events li + li { border-top: 1px solid var(--hair); }
-  .event { display: flex; gap: 1.1rem; align-items: center; padding: 0.9rem 0; text-decoration: none; color: var(--navy); }
-  a.event:hover .event__title { color: var(--blue); }
-  .date { flex: none; width: 60px; padding: 0.45rem 0; border-radius: 14px; background: var(--tint); text-align: center; font-family: var(--display); }
-  .date__mo { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); }
-  .date__day { display: block; font-size: 1.45rem; font-weight: 600; line-height: 1.1; }
-  .event__title { display: block; font-family: var(--display); font-weight: 600; font-size: 1.12rem; line-height: 1.25; }
-  .event__when { display: block; font-size: 0.95rem; color: var(--mid); }
-
-  /* ---- announcements ---- */
-  .news-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1.5rem; }
-  .news-links { display: flex; flex-wrap: wrap; gap: 0 1.5rem; }
-  .news-list { margin-top: 2rem; }
-
-
-  /* ---- series + app ---- */
-  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; align-items: stretch; }
-  @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
-  /* photo on top, words below */
-  .series, .app { display: flex; flex-direction: column; }
-  .series img, .app img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 16px; margin-bottom: 1.4rem; }
-  .meta { font-size: 0.9rem; color: var(--mid); margin-top: 0.3rem; }
-  .series h2, .app h2 { font-size: clamp(1.6rem, 2.6vw, 1.9rem); }
-  .muted { color: var(--mid); margin-top: 0.6rem; font-size: 1rem; }
 </style>

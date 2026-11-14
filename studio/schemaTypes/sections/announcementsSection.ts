@@ -10,6 +10,7 @@ export default defineType({
   fields: [
     eyebrow,
     heading,
+    defineField({ name: 'unavailableMessage', title: 'When announcements cannot load', type: 'string', initialValue: 'We could not load announcements right now.' }),
     defineField({ name: 'emptyText', title: 'When there are no announcements', type: 'blockContent', description: 'Shown instead of the list when Church Center has none.' }),
   ],
   preview: sectionPreview('Announcements'),

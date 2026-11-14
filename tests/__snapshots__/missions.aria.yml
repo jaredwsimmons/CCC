@@ -4,10 +4,10 @@
   - paragraph: /"Go therefore and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, teaching them to observe all that I have commanded you\." \(Matthew \d+:\d+–20a\)/
   - paragraph: Deacon
   - paragraph: Jared Simmons
-  - paragraph: Serving and praying over this ministry — reach out anytime.
-  - paragraph: Monthly missions highlight
-  - heading "This month's partner" [level=2]
-  - paragraph: Each month, our Men's and Women's ministries sponsor one of our mission partners directly. Visit their pages to see who they're supporting this month and how you can be part of it.
+  - paragraph: Serving and praying over this ministry.
+  - paragraph: Pray, give, and go
+  - heading "Support our mission partners" [level=2]
+  - paragraph: Our church partners with local and global ministries through prayer, giving, and service. Explore our partners below, or contact Pastor Ben for current opportunities to get involved.
   - link "Men's Ministry":
     - /url: /men
   - link "Women's Ministry":

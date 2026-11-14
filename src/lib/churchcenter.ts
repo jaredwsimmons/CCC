@@ -6,38 +6,55 @@
 // treat null as "unavailable". The token is reused for 5 minutes: Church Center's firewall
 // starts refusing (HTTP 403) when it's asked for a fresh token on every request.
 
-const ORG_SUB = 'chelseachurch.churchcenter.com';
+import { churchCenterHost } from './integrations';
 const API = 'https://api.churchcenter.com';
 const UA = 'ChelseaCommunityChurch-site/1.0';
 const TOKEN_SECONDS = 5 * 60;
 
 export const TZ = 'America/Chicago';
 
-let token: { value: string; at: number } | null = null;
+const organizations = new Map<string, { token: { value: string; at: number } | null; request: Promise<string | null> | null }>();
 
-async function getToken(signal: AbortSignal): Promise<string | null> {
-  if (token && Date.now() - token.at < TOKEN_SECONDS * 1000) return token.value;
-  const res = await fetch(`https://${ORG_SUB}/sessions/tokens`, {
-    signal,
-    method: 'POST',
-    headers: { 'User-Agent': UA, 'Content-Type': 'application/json' },
+async function getToken(signal: AbortSignal, host: string): Promise<string | null> {
+  if (!organizations.has(host)) organizations.set(host, { token: null, request: null });
+  const state = organizations.get(host)!;
+  if (state.token && Date.now() - state.token.at < TOKEN_SECONDS * 1000) return state.token.value;
+  // Calendar and announcements load together. Share acquisition as well as the finished token.
+  state.request ??= (async () => {
+    const res = await fetch(`https://${host}/sessions/tokens`, {
+      // A short-lived caller must not cancel acquisition for the other callers.
+      signal: AbortSignal.timeout(9000),
+      method: 'POST',
+      headers: { 'User-Agent': UA, 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) return null;
+    const value = (await res.json())?.data?.attributes?.token as string | undefined;
+    if (!value) return null;
+    state.token = { value, at: Date.now() };
+    return value;
+  })().finally(() => { state.request = null; });
+  const pending = state.request;
+  signal.throwIfAborted();
+  return new Promise((resolve, reject) => {
+    const abort = () => reject(signal.reason);
+    signal.addEventListener('abort', abort, { once: true });
+    pending.then(
+      (value) => { signal.removeEventListener('abort', abort); resolve(value); },
+      (error) => { signal.removeEventListener('abort', abort); reject(error); },
+    );
   });
-  if (!res.ok) return null;
-  const value = (await res.json())?.data?.attributes?.token as string | undefined;
-  if (!value) return null;
-  token = { value, at: Date.now() };
-  return value;
 }
 
 /** GET a Church Center API path (e.g. "/groups/v2/groups"): parsed JSON, or null on any failure. */
-export async function ccGet(path: string, timeoutMs = 9000): Promise<any | null> {
+export async function ccGet(path: string, timeoutMs = 9000, organization?: string): Promise<any | null> {
+  const host = churchCenterHost(organization);
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    const bearer = await getToken(ctrl.signal);
+    const bearer = await getToken(ctrl.signal, host);
     if (!bearer) return null;
     const res = await fetch(API + path, { signal: ctrl.signal, headers: { 'User-Agent': UA, Authorization: `Bearer ${bearer}` } });
-    if (res.status === 401) token = null; // expired early; the next call gets a new one
+    if (res.status === 401 && organizations.get(host)?.token?.value === bearer) organizations.get(host)!.token = null; // don't clear a newer token
     return res.ok ? await res.json() : null;
   } catch {
     return null;

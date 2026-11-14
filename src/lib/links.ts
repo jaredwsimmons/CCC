@@ -1,4 +1,5 @@
 import { site, withBase } from '../data/site';
+import { churchCenterUrl } from './integrations';
 
 // Turns Sanity buttons and menu items into links. Every kind of button is handled here,
 // so the rules (Church Center pop-ups, giving funds, ministry email) live in one place.
@@ -13,6 +14,7 @@ export type Button = {
   fund?: string;
   amount?: number;
   recurring?: boolean;
+  givingBase?: string;
   ministry?: { email?: string } | null;
   url?: string;
 };
@@ -51,8 +53,8 @@ export function buttonLink(b: Button | null | undefined): { href: string; newTab
     case 'churchCenter':
       return safe(b.churchCenterUrl) ? { href: inModal(b.churchCenterUrl), newTab: false } : null;
     case 'give': {
-      if (!b.fund) return null;
-      const url = new URL(`${site.churchCenter.giving}/to/${b.fund}`);
+      if (!b.fund || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(b.fund)) return null;
+      const url = new URL(`${churchCenterUrl(b.givingBase) || site.churchCenter.giving}/to/${b.fund}`);
       if (b.amount) url.searchParams.set('default_amount', String(b.amount));
       if (b.recurring) url.searchParams.set('recurring', 'true');
       return { href: inModal(url.toString()), newTab: false };

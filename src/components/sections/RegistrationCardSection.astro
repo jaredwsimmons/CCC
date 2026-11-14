@@ -3,12 +3,12 @@
 import Section from '../Section.astro';
 import RegistrationCard from '../RegistrationCard.astro';
 import { getRegistrationByUrl } from '../../lib/registrations';
-const { s } = Astro.props;
-const reg = await getRegistrationByUrl(s.url);
+const { s, settings } = Astro.props;
+const reg = await getRegistrationByUrl(s.url, settings?.integrations?.churchCenterHost);
 ---
 {reg && (
   <Section tight>
-    <div class="one"><RegistrationCard reg={reg} /></div>
+    <div class="one"><RegistrationCard reg={reg} settings={settings} /></div>
   </Section>
 )}
 

@@ -1,3 +1,4 @@
+import { churchCenterHost } from './integrations';
 // Announcements data layer — LIVE from Church Center's PUBLIC publishing API
 // (src/lib/churchcenter.ts): the same announcements as chelseachurch.churchcenter.com/announcements.
 // Cached at the edge for 10 minutes with the last good copy as a fallback (src/lib/cache.ts).
@@ -7,7 +8,6 @@ import { cached } from './cache';
 import { ccGet } from './churchcenter';
 import { inModal } from './links';
 
-const ORG = 'https://chelseachurch.churchcenter.com';
 
 export interface Announcement {
   id: string;
@@ -47,8 +47,9 @@ export function cleanSummary(html: string): string {
     .trim();
 }
 
-function linkFor(raw: unknown): Announcement['link'] {
+function linkFor(raw: unknown, host: string): Announcement['link'] {
   if (typeof raw !== 'string' || !raw.trim()) return undefined;
+  const ORG = `https://${host}`;
   const href = raw.startsWith('/') ? ORG + raw : raw;
   if (!/^https?:\/\//.test(href)) return undefined;
   // Church Center pages open in its pop-up, like every other Church Center link on the site.
@@ -56,8 +57,8 @@ function linkFor(raw: unknown): Announcement['link'] {
 }
 
 // null = the fetch failed (as opposed to [] = no announcements).
-async function fetchLive(): Promise<Announcement[] | null> {
-  const body = await ccGet('/publishing/v2/announcements?order=-featured&per_page=25');
+async function fetchLive(host: string): Promise<Announcement[] | null> {
+  const body = await ccGet('/publishing/v2/announcements?order=-featured&per_page=25', 9000, host);
   if (!body) return null;
   return (body.data ?? [])
     .map((a: any): Announcement => {
@@ -69,13 +70,19 @@ async function fetchLive(): Promise<Announcement[] | null> {
         summary: cleanSummary(at.summary ?? ''),
         image: v.original_ratio_small || v.medium || v.small || undefined,
         featured: Boolean(at.featured),
-        link: linkFor(at.link),
+        link: linkFor(at.link, host),
       };
     })
     .filter((a: Announcement) => a.title);
 }
 
 /** Current announcements, featured first. [] when there are none or Church Center is unreachable. */
-export async function getAnnouncements(): Promise<Announcement[]> {
-  return (await cached('cc-announcements', 10 * 60, fetchLive)) ?? [];
+export async function getAnnouncements(organization?: string): Promise<Announcement[]> {
+  return (await getAnnouncementsResult(organization)) ?? [];
 }
+
+/** null distinguishes a source outage from an empty announcement list. */
+export const getAnnouncementsResult = (organization?: string) => {
+  const host = churchCenterHost(organization);
+  return cached(`cc-announcements:${host}`, 10 * 60, () => fetchLive(host));
+};

@@ -1,4 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
+import { imageWithAlt } from './fields';
+import { churchCenterUrl, podcastFeedUrl } from '../../shared/public-sources';
 
 const pageRef = defineField({
   name: 'page',
@@ -19,8 +21,47 @@ export default defineType({
     { name: 'church', title: 'Church info' },
     { name: 'footer', title: 'Footer' },
     { name: 'other', title: 'Other wording' },
+    { name: 'branding', title: 'Branding' },
+    { name: 'integrations', title: 'Administrative settings' },
   ],
   fields: [
+    defineField({
+      name: 'integrations', title: 'Public source connections', type: 'object', group: 'integrations',
+      description: 'Administrator setup. Public addresses only: never paste API keys or passwords. Planning Center and the media platform remain the source of the records. Empty fields retain the existing church connections.',
+      readOnly: ({ currentUser }) => !currentUser?.roles.some((role) => role.name === 'administrator'),
+      fields: [
+        defineField({ name: 'churchCenterHost', title: 'Church Center hostname', type: 'string', description: 'The hostname only, e.g. chelseachurch.churchcenter.com.', validation: (Rule) => Rule.custom((value) => !value || /^[a-z0-9-]+\.churchcenter\.com$/.test(value) || 'Use a Church Center hostname without https:// or a path.') }),
+        defineField({ name: 'calendarPage', title: 'Public Church Center calendar', type: 'url', validation: (Rule) => Rule.custom((value) => !value || Boolean(churchCenterUrl(value)) || 'Use an HTTPS Church Center address.') }),
+        defineField({ name: 'givingBase', title: 'Church Center giving address', type: 'url', validation: (Rule) => Rule.custom((value) => !value || Boolean(churchCenterUrl(value)) || 'Use an HTTPS Church Center address.') }),
+        defineField({ name: 'podcastFeed', title: 'Podcast RSS feed', type: 'url', description: 'Supports Anchor/Spotify (anchor.fm), Buzzsprout, Simplecast, Megaphone and Podbean feed hosts. Ask the administrator to review other providers.', validation: (Rule) => Rule.custom((value) => !value || Boolean(podcastFeedUrl(value)) || 'Use an HTTPS RSS address from a supported podcast provider.') }),
+        defineField({ name: 'youtubeChannelId', title: 'YouTube channel ID', type: 'string', description: 'The UC… channel ID, not a channel handle or video address.', validation: (Rule) => Rule.custom((value) => !value || /^UC[\w-]{22}$/.test(value) || 'Use a YouTube channel ID beginning UC followed by 22 letters, numbers, underscores or dashes.') }),
+      ],
+    }),
+    defineField({
+      name: 'branding', title: 'Branding assets', type: 'object', group: 'branding',
+      description: 'Replace shared artwork here. Leave a field empty to use the existing church artwork. Colors, fonts and spacing follow the approved design.',
+      fields: [
+        imageWithAlt('headerLogo', 'Header logo', 'A horizontal logo for a light background.'),
+        imageWithAlt('footerMark', 'Footer mark', 'A mark that reads clearly on navy.'),
+        imageWithAlt('accentMark', 'Accent mark', 'Used on deacon badges, group placeholders and the not-found page.'),
+        imageWithAlt('favicon', 'Browser icon', 'A square image, at least 32 × 32 pixels.'),
+        imageWithAlt('touchIcon', 'Phone home-screen icon', 'A square image, at least 180 × 180 pixels.'),
+      ],
+    }),
+    defineField({
+      name: 'wording', title: 'Shared labels', type: 'object', group: 'other',
+      description: 'Common public labels. Empty fields retain their current wording.',
+      fields: [
+        ['addressLabel', 'Address label'], ['phoneLabel', 'Phone label'], ['emailLabel', 'Email label'],
+        ['prayerLabel', 'Prayer label'], ['sundaysLabel', 'Sunday services label'], ['deaconLabel', 'One deacon'],
+        ['deaconsLabel', 'Several deacons'], ['viewGroupLabel', 'View group button'], ['joinGroupLabel', 'Join group button'],
+        ['groupOpenLabel', 'Open group badge'], ['contentsLabel', 'Document contents heading'],
+        ['registerLabel', 'Registration button'], ['registrationDetailsLabel', 'Full/closed registration button'],
+        ['eventRegisterLabel', 'Calendar registration link'], ['eventDetailsLabel', 'Calendar details link'],
+        ['featuredLabel', 'Featured announcement badge'], ['learnMoreLabel', 'Announcement link'],
+        ['listLabel', 'Calendar list view'], ['monthLabel', 'Calendar month view'],
+      ].map(([name, title]) => defineField({ name, title, type: 'string' })),
+    }),
     defineField({ name: 'giveButton', title: 'Give button', type: 'button', group: 'menu', description: 'The gold button at the end of the menu.' }),
     defineField({
       name: 'menu',

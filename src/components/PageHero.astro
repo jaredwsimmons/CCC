@@ -8,8 +8,9 @@ interface Props {
   lead?: string;
   image?: string;
   imageAlt?: string;
+  imageStyle?: string;
 }
-const { eyebrow, title, lead, image, imageAlt = '' } = Astro.props;
+const { eyebrow, title, lead, image, imageAlt = '', imageStyle } = Astro.props;
 ---
 {image ? (
   <section class="hero phero--feature">
@@ -21,7 +22,7 @@ const { eyebrow, title, lead, image, imageAlt = '' } = Astro.props;
         <div class="actions"><slot /></div>
       </div>
       <div class="phero__photo">
-        <img src={image} alt={imageAlt} loading="eager" fetchpriority="high" />
+        <img src={image} alt={imageAlt} style={imageStyle} loading="eager" fetchpriority="high" />
       </div>
     </div>
   </section>
@@ -41,6 +42,7 @@ const { eyebrow, title, lead, image, imageAlt = '' } = Astro.props;
 
 <style>
   h1 { font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.04; letter-spacing: -0.03em; }
+  @media (max-width: 360px) { h1 { font-size: 2rem; } }
   .chip { margin-bottom: 1rem; }
   .lead { margin-top: 1rem; }
 

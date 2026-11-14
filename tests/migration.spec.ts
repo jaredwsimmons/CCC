@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { buildDocuments } from '../src/data/migration';
+import { contentCorrections } from '../scripts/reconcile-review-content';
 
 // The migrated documents must be valid for the Studio's schemas before they're imported:
 // what `sanity schema validate` can't check without a project.
@@ -31,6 +32,7 @@ test('every section is a type the Studio defines', () => {
   const defined = readdirSync(dir)
     .filter((f) => f.endsWith('Section.ts'))
     .map((f) => readFileSync(`${dir}/${f}`, 'utf8').match(/name: '(\w+Section)'/)?.[1]);
+  defined.push(...[...readFileSync('studio/schemaTypes/homeSections.ts', 'utf8').matchAll(/'(home\w+Section)'/g)].map((m) => m[1]));
   const used = docs.flatMap((d) => ((d.sections as { _type: string }[]) ?? []).map((s) => s._type));
   expect(used.filter((t) => !defined.includes(t))).toEqual([]);
 });
@@ -107,4 +109,55 @@ test('page addresses are unique and not taken by the site', () => {
   const slugs = docs.filter((d) => d._type === 'page').map((d) => (d.slug as { current: string }).current);
   expect(new Set(slugs).size).toBe(slugs.length);
   expect(slugs.filter((s) => reserved.includes(s))).toEqual([]);
+});
+
+test('family pages agree about student service times and do not overlap Kids grades', () => {
+  const settings = JSON.stringify(docs.find((d) => d._id === 'weeklyRhythm'));
+  const visitor = JSON.stringify(docs.find((d) => d._id === 'page-imnew'));
+  expect(settings).not.toContain('students at both hours');
+  expect(settings).not.toContain('high school meet at both Sunday services');
+  expect(settings).toContain('9:00 AM');
+  expect(visitor).not.toContain('kids and students at both hours');
+  expect(JSON.stringify(docs.find((d) => d._id === 'page-kids-students'))).not.toContain('5th through 12th');
+});
+
+test('the homepage ministry action names its destination and Missions does not promise an unspecified monthly partner', () => {
+  const home = docs.find((d) => d._id === 'home') as any;
+  expect(home.hero.buttons[0].label).toBe('Explore Ministries');
+  expect(JSON.stringify(docs.find((d) => d._id === 'page-missions'))).not.toContain("This month's partner");
+});
+
+test('existing CMS corrections preserve staff edits and are idempotent on corrected documents', () => {
+  const old = { _id: 'home', hero: { buttons: [{ label: 'Find your place' }] }, currentSeries: { title: 'Staff current series' } };
+  expect(contentCorrections(old)).toEqual({ set: { 'hero.buttons[0].label': 'Explore Ministries' }, unset: [] });
+  expect(contentCorrections({ ...old, hero: { buttons: [{ label: 'Staff chosen wording' }] } })).toEqual({ set: {}, unset: [] });
+  for (const doc of docs) expect(contentCorrections(doc), doc._id).toEqual({ set: {}, unset: [] });
+});
+
+test('sections with item subheadings have their own heading, including announcements', () => {
+  for (const doc of docs) for (const section of (doc.sections ?? []) as any[]) {
+    const hasItems = ['cardsSection', 'announcementsSection', 'playlistSection'].includes(section._type)
+      || ((section.body ?? []).some((block: any) => block.style === 'h3') && !(section.body ?? []).some((block: any) => block.style === 'h2'));
+    if (hasItems) expect(section.heading, `${doc._id}: ${section._type}`).toBeTruthy();
+  }
+  const announcements = (docs.find((doc) => doc._id === 'page-announcements')!.sections as any[]);
+  expect(announcements[0]).toMatchObject({ heading: 'Video announcements', videoLabels: ['This week', 'Last week', 'Two weeks ago'], count: 2 });
+  expect(announcements[1].heading).toBe('Latest announcements');
+});
+
+test('heading corrections fill missing CMS headings and preserve staff wording', () => {
+  const old = { _id: 'page-announcements', sections: [
+    { _type: 'playlistSection', heading: "This week's video" },
+    { _type: 'announcementsSection' },
+  ] };
+  expect(contentCorrections(old).set).toMatchObject({
+    'sections[0].heading': 'Video announcements',
+    'sections[0].videoLabels': ['This week', 'Last week', 'Two weeks ago'],
+    'sections[1].heading': 'Latest announcements',
+  });
+  const custom = { _id: 'page-announcements', sections: [
+    { _type: 'playlistSection', heading: 'Staff heading', videoLabels: ['Staff label'] },
+    { _type: 'announcementsSection', heading: 'Staff news' },
+  ] };
+  expect(contentCorrections(custom)).toEqual({ set: {}, unset: [] });
 });

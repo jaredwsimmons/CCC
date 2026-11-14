@@ -12,10 +12,10 @@ export const pageTemplates: Template[] = [
     value: {
       header: { _type: 'pageHeader', eyebrow: 'Ministries' },
       sections: [
-        { _type: 'textPhotoSection', _key: 'intro', photoSide: 'right', background: 'plain' },
+        { _type: 'textPhotoSection', _key: 'intro', heading: 'About this ministry', photoSide: 'right', background: 'plain' },
         { _type: 'scheduleSection', _key: 'schedule', heading: 'When we meet' },
         { _type: 'openRegistrationsSection', _key: 'events', eyebrow: 'Upcoming events', heading: 'Join us' },
-        { _type: 'ctaBandSection', _key: 'cta' },
+        { _type: 'ctaBandSection', _key: 'cta', heading: 'Get in touch' },
       ],
     },
   },
@@ -26,9 +26,9 @@ export const pageTemplates: Template[] = [
     value: {
       header: { _type: 'pageHeader', eyebrow: 'About' },
       sections: [
-        { _type: 'textSection', _key: 'text', background: 'plain' },
-        { _type: 'cardsSection', _key: 'cards', columns: 3, background: 'tinted' },
-        { _type: 'ctaBandSection', _key: 'cta' },
+        { _type: 'textSection', _key: 'text', heading: 'What to know', background: 'plain' },
+        { _type: 'cardsSection', _key: 'cards', heading: 'Explore more', columns: 3, background: 'tinted' },
+        { _type: 'ctaBandSection', _key: 'cta', heading: 'Get in touch' },
       ],
     },
   },
@@ -39,9 +39,9 @@ export const pageTemplates: Template[] = [
     value: {
       header: { _type: 'pageHeader' },
       sections: [
-        { _type: 'textPhotoSection', _key: 'about', photoSide: 'right', background: 'plain' },
+        { _type: 'textPhotoSection', _key: 'about', heading: 'About the event', photoSide: 'right', background: 'plain' },
         { _type: 'registrationCardSection', _key: 'register' },
-        { _type: 'ctaBandSection', _key: 'cta' },
+        { _type: 'ctaBandSection', _key: 'cta', heading: 'Get in touch' },
       ],
     },
   },

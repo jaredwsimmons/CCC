@@ -3,12 +3,15 @@
 import Section from '../Section.astro';
 import AnnouncementList from '../AnnouncementList.astro';
 import RichText from '../RichText.astro';
-import { getAnnouncements } from '../../lib/announcements';
-const { s } = Astro.props;
-const items = await getAnnouncements();
+import { getAnnouncementsResult } from '../../lib/announcements';
+import { churchCenterHost } from '../../lib/integrations';
+const { s, settings } = Astro.props;
+const result = await getAnnouncementsResult(settings?.integrations?.churchCenterHost);
+const items = result ?? [];
 ---
-{(items.length > 0 || s.emptyText?.length > 0) && (
+{(result === null || items.length > 0 || s.emptyText?.length > 0) && (
   <Section eyebrow={s.eyebrow} title={s.heading} class="live-data">
-    {items.length > 0 ? <AnnouncementList items={items} layout="list" /> : <div data-reveal><RichText value={s.emptyText} /></div>}
+    {result === null ? <p role="status">{s.unavailableMessage || 'We could not load announcements right now.'} <a href={`https://${churchCenterHost(settings?.integrations?.churchCenterHost)}/announcements`} target="_blank" rel="noopener noreferrer">See announcements on Church Center</a></p>
+      : items.length > 0 ? <AnnouncementList items={items} layout="list" settings={settings} /> : <div data-reveal><RichText value={s.emptyText} /></div>}
   </Section>
 )}

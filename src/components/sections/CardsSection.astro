@@ -5,7 +5,7 @@ import Scripturize from '../Scripturize.astro';
 import DeaconNote from '../DeaconNote.astro';
 import { imageUrl, type SanityImage } from '../../lib/image';
 import { buttonLink, variantFor, type Button } from '../../lib/links';
-const { s } = Astro.props;
+const { s, settings } = Astro.props;
 type Card = { _key: string; label?: string; title?: string; text?: string; bullets?: string[]; buttons?: Button[] | null; ministry?: { deacons?: string[] } | null; logo?: SanityImage; logoOnDark?: boolean };
 const cards = ((s.cards ?? []) as Card[]).map((c) => ({
   ...c,
@@ -37,7 +37,7 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
             ))}
           </p>
         )}
-        {c.ministry?.deacons?.length ? <div class="deacon-slot"><DeaconNote deacons={c.ministry.deacons} /></div> : null}
+        {c.ministry?.deacons?.length ? <div class="deacon-slot"><DeaconNote deacons={c.ministry.deacons} mark={settings?.branding?.accentMark} wording={settings?.wording} /></div> : null}
         </div>
       </div>
     ))}

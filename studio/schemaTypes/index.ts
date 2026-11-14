@@ -9,6 +9,7 @@ import blockContent from './blockContent';
 import button from './objects/button';
 import pageHeader from './objects/pageHeader';
 import { sectionTypes } from './sections';
+import { homeSectionTypes } from './homeSections';
 
 export const schemaTypes = [
   siteSettings,
@@ -22,4 +23,5 @@ export const schemaTypes = [
   button,
   pageHeader,
   ...sectionTypes,
+  ...homeSectionTypes,
 ];

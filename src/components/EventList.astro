@@ -1,10 +1,11 @@
 ---
 // Upcoming Church Center events grouped by month (the Calendar list view and the
 // Featured events section).
-import { groupByMonth, dateParts, type ChurchEvent } from '../lib/calendar';
+import { groupByMonth, dateParts, fullDate, type ChurchEvent } from '../lib/calendar';
 import { inModal } from '../lib/links';
 
-interface Props { events: ChurchEvent[]; }
+interface Props { events: ChurchEvent[]; settings?: any; }
+const { settings } = Astro.props;
 const months = groupByMonth(Astro.props.events);
 ---
 {months.map((m) => (
@@ -21,6 +22,7 @@ const months = groupByMonth(Astro.props.events);
               <span class="event__mo">{d.month}</span>
             </div>
             <div class="event__body">
+              <time class="sr-only" datetime={e.date}>{fullDate(e.date)}</time>
               <div class="event__head">
                 <h4>{e.title}</h4>
                 {e.recurrence && <span class="tag-cat">{e.recurrence}</span>}
@@ -28,9 +30,9 @@ const months = groupByMonth(Astro.props.events);
               <p class="event__meta">{e.timeLabel}{e.location && ` · ${e.location}`}</p>
               {e.description && <p class="event__desc">{e.description}</p>}
               {e.register ? (
-                <a class="event__rsvp" href={inModal(e.register)}>Register →</a>
+                <a class="event__rsvp" href={inModal(e.register)}>{settings?.wording?.eventRegisterLabel || 'Register →'}</a>
               ) : e.publicUrl ? (
-                <a class="event__rsvp" href={e.publicUrl} target="_blank" rel="noopener noreferrer">Details →</a>
+                <a class="event__rsvp" href={e.publicUrl} target="_blank" rel="noopener noreferrer">{settings?.wording?.eventDetailsLabel || 'Details →'}</a>
               ) : null}
             </div>
           </li>

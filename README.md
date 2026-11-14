@@ -27,6 +27,8 @@ The site runs immediately with **today's content** and **live Church Center** ca
 npm run build    # Workers bundle + static assets → ./dist
 npm run preview  # run the production build locally in the Workers runtime
 npm test         # Playwright tests (builds + previews the site)
+npm run test:unit        # deterministic data and rendered-component regressions; no server
+npm run test:components  # deterministic desktop/mobile interaction checks; needs Chromium
 ```
 
 `npm run dev` and `npm run preview` run Cloudflare's real Workers runtime locally — no Cloudflare account needed. Astro 7 keeps them running in the background: if one says it's "already running", stop it with `npx astro dev stop` / `npx astro preview stop`. Local secrets go in `.dev.vars` (see `.dev.vars.example`).
@@ -53,7 +55,27 @@ npm test         # Playwright tests (builds + previews the site)
    cd studio && npx sanity dataset import ../migration/dataset.ndjson production
    ```
    From then on content is edited **in the Studio only**: `src/data/migration.ts` and `src/data/content.ts` are used only while no project ID is set.
-5. Edit in the Studio. The website reads it **when each page is visited**, so a published change is live within seconds — no rebuild.
+5. Edit in the Studio. The website reads published content on request without a rebuild. The application cache lasts 10 seconds; Sanity's CDN can add delay, and outages can serve older content. Verify actual timing on the connected staging site before staff handoff.
+
+### Apply the November 2026 review corrections to an existing dataset
+
+Code changes do not overwrite an existing Sanity dataset. For the reviewed copy corrections,
+run `npm run reconcile:content` with `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET`
+in `.env`. It defaults to a dry run and lists the exact document fields it would change.
+To apply them, supply an editor token as `SANITY_API_WRITE_TOKEN` in the local environment
+(never commit it) and run `npm run reconcile:content -- --apply`.
+
+The script replaces only exact old wording, preserves staff edits, checks document revisions,
+and handles both published documents and drafts. It corrects the student schedule, grade-range
+overlap, fifth-Sunday wording, ministry CTA, and unspecified monthly missions highlight.
+The old summer series is replaced with the published November Gratitude series and an expiry;
+its old artwork is removed. Staff can add the appropriate new artwork in Studio. Re-running
+the script is safe. It does not create people, submit forms, or change church operations.
+
+The **Verify website** GitHub workflow runs type checks, build, source/component regressions,
+and deterministic desktop/mobile interaction tests. The full `npm test` suite additionally
+exercises the Workers app, live feeds, and saved visual/content baselines. After an intended
+copy change, inspect the full-page screenshot differences before updating image baselines.
 
 ### Live Preview
 
@@ -70,7 +92,7 @@ Only a cookie signed by the server unlocks drafts (`src/lib/preview.ts`), and dr
 - The modal runtime loads once in `<head>` (`src/components/ChurchCenterScript.astro`).
 - Any link ending in `?open-in-church-center-modal=true` opens giving/forms/registration in an overlay on desktop (phones open it in a new tab). **Requires HTTPS.**
 - The calendar, groups and sermon feeds are fetched from Church Center / the podcast and YouTube feeds when a page is visited, and cached at the edge (`src/lib/cache.ts`): 10–30 minutes fresh, with the last good copy shown if a source is down.
-- Church Center org/URLs are configured in `src/data/site.ts`.
+- Public Church Center/media connections are editable in **Site Settings → Administrative settings**. Existing connections in `src/data/site.ts` remain fallbacks; keys and tokens stay in hosting configuration.
 
 ## Deploy to Cloudflare Workers
 
@@ -102,7 +124,13 @@ Only a cookie signed by the server unlocks drafts (`src/lib/preview.ts`), and dr
 
 ## Editing content (for staff)
 
-Everything is edited in the **Studio** (`<name>.sanity.studio`) — no code. Pick a page, fill in the labeled fields, add an image (drag the focal point), press **Publish**. You can't break the layout, and the change is live within seconds. Full walkthrough in the vault stack note.
+Routine website content is managed in **Studio**: pages, approved sections, homepage order/visibility, photos, branding, labels, buttons and navigation. New component types and design-system changes require development. Events, groups, registrations, giving and operational forms stay in Planning Center / Church Center; videos and episodes stay on their media platforms.
+
+Use the [staff editing guide](docs/sanity-staff-guide.md), [administrator runbook](docs/sanity-admin-runbook.md), and [coverage inventory](docs/sanity-content-coverage.md). The [implementation plan](docs/sanity-staff-management-plan.md) defines the handoff acceptance exercise.
+
+For an **existing dataset**, export a backup, run `npm run cms:upgrade` to review its dry run, then use `npm run cms:upgrade -- --apply` with `SANITY_API_WRITE_TOKEN` in the environment. This initializes the homepage section list and video switch only where absent; it preserves existing sections, words, photos and staff choices. Do not reimport the seed dataset over staff content. New projects can use the initial import described above.
+
+Run `npm run cms:check` after configuration. It verifies project/dataset agreement, required published documents and authenticated reading; browser preview, permissions and staff acceptance still need a connected staging test. This workspace does not have those project credentials configured, so the live Sanity handoff remains pending.
 
 ---
 

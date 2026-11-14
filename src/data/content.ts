@@ -21,10 +21,10 @@ export const home = {
   },
   series: {
     eyebrow: 'Current sermon series',
-    title: 'Jesus Storyteller',
-    body: 'This summer, join us for Jesus Storyteller: Learning from the Parables of Jesus — a journey through the unforgettable stories Jesus used to reveal truth, challenge hearts, and invite people into the Kingdom of God. From lost sons and good Samaritans to persistent widows and mustard seeds, these timeless parables still speak powerfully today. Come discover how the stories Jesus told can transform the way we live, love, and follow Him. Join us Sunday at 9:00 or 10:30 AM!',
-    art: withBase('/images/series-jesus-storyteller.webp'),
-    artAlt: 'Jesus Storyteller — Learning from the Parables of Jesus, current sermon series art',
+    title: 'Gratitude',
+    body: 'Join us for Gratitude, a four-week series beginning November 1, 2026, exploring how thankfulness shapes the way we see God and live each day. Worship with us Sunday at 9:00 or 10:30 AM.',
+    art: withBase('/images/worship-service.webp'),
+    artAlt: 'The Chelsea Community Church family worshiping together on Sunday',
   },
   app: {
     eyebrow: 'Spotlight',
@@ -351,8 +351,8 @@ export const missions = {
     ref: 'Matthew 28:19–20a',
   },
   highlight: {
-    title: "This month's partner",
-    body: "Each month, our Men's and Women's ministries sponsor one of our mission partners directly. Visit their pages to see who they're supporting this month and how you can be part of it.",
+    title: 'Support our mission partners',
+    body: 'Our church partners with local and global ministries through prayer, giving, and service. Explore our partners below, or contact Pastor Ben for current opportunities to get involved.',
   },
   local: [
     { name: 'Blanket Fort Hope', focus: 'Child trafficking survivors', url: 'https://blanketforthope.org/', newsletter: 'https://blanketforthope.org/around-the-fort-blog/' },

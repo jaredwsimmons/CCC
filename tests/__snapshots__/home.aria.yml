@@ -1,7 +1,7 @@
 - main:
   - heading "Pursuing God. Pursuing others." [level=1]
-  - paragraph: Our heart is to live life together by worshiping God, growing in faith, and sharing in fellowship and ministry with each other.
-  - link "Find your place":
+  - paragraph: Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.
+  - link "Explore Ministries":
     - /url: /ministry
   - link "I'm New":
     - /url: /imnew
@@ -28,11 +28,11 @@
     - listitem:
       - paragraph: /Sundays · 9:\d+ & \d+:\d+ AM/
       - heading "Sunday Worship" [level=3]
-      - paragraph: Two identical gatherings, with programming for kids and students at both hours.
+      - paragraph: Two identical worship gatherings, with Preschool and Kids programming at both hours. Student community groups meet at 9:00 AM.
     - listitem:
-      - paragraph: Both Sunday services
+      - paragraph: Sundays & Wednesdays
       - heading "Kids & Students" [level=3]
-      - paragraph: Preschool through high school meet at both Sunday services; students also gather Wednesday nights at 6 PM.
+      - paragraph: Preschool and Kids meet at both Sunday services. Middle and high school students meet at 9:00 AM on Sundays and 6:00 PM on Wednesdays.
     - listitem:
       - paragraph: Everyday
       - heading "Community Groups" [level=3]
@@ -40,7 +40,7 @@
     - listitem:
       - paragraph: 5th Sundays
       - heading "Family Worship" [level=3]
-      - paragraph: On months with a 5th Sunday, we cancel all age-graded ministries — Preschool through Students — and the whole church worships together.
+      - paragraph: On the fifth Sunday of the month only, Preschool through Students join the whole church for family worship instead of their usual age-graded programming.
   - img "The Church Center app for Chelsea Community Church on a phone, with App Store and Google Play badges"
   - paragraph: Spotlight
   - heading "New church app" [level=2]

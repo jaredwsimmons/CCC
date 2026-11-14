@@ -76,3 +76,12 @@ test('the regular Sunday programs stay out, since the weekly tiles cover them', 
   churchCenter({ data: [event(1, 'Worship Service', 7, day(4), 'Every Sunday'), event(2, 'Graduates Club', 8, day(4), 'The first Sunday of every month')] });
   expect((await getUpcomingEvents()).map((e) => e.title)).toEqual(['Graduates Club']);
 });
+
+test('a failed second page preserves events already fetched in the first month', async () => {
+  churchCenter({ data: study, more: true });
+  const fetchPage = globalThis.fetch;
+  globalThis.fetch = (async (input, init) => String(input).includes('offset=100')
+    ? new Response('Unavailable', { status: 503 })
+    : fetchPage(input, init)) as typeof fetch;
+  expect((await getUpcomingEvents()).map((e) => e.title)).toEqual(study.map(() => "Men's Bible Study"));
+});

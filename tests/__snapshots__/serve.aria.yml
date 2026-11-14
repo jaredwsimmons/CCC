@@ -1,6 +1,6 @@
 - main:
   - paragraph: Ministries
-  - heading "Serve" [level=1]
+  - heading "Ministries" [level=1]
   - paragraph: /“But be doers of the word, and not hearers only, deceiving yourselves\.” \(James 1:\d+\)/
   - paragraph: Our ministries
   - heading "Find your place" [level=2]
@@ -50,6 +50,7 @@
   - link "Click here to take the survey":
     - /url: https://volunteeraccelerator.ministryarchitects.com/DOCC/survey.php
   - img "Teams Mobilizer — find your place, know your purpose, be people of pursuit"
+  - heading "Understanding your gifts" [level=2]
   - heading "It Is:" [level=3]
   - list:
     - listitem: A way to match people to ministry positions within the local church.

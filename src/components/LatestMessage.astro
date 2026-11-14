@@ -15,9 +15,10 @@ export type Message = {
   link?: string;
   videoUrl?: string;
 };
-interface Props { message: Message; eyebrow?: string; watchLabel?: string; watchUrl?: string; listenLabel?: string; fallbackImage?: string | null; }
-const { message: m, eyebrow, watchLabel, watchUrl, listenLabel, fallbackImage } = Astro.props;
+interface Props { message: Message; eyebrow?: string; watchLabel?: string; watchUrl?: string; browseLabel?: string; listenLabel?: string; fallbackImage?: string | null; }
+const { message: m, eyebrow, watchLabel, watchUrl, browseLabel = 'Browse videos', listenLabel, fallbackImage } = Astro.props;
 const watch = m.videoUrl ?? watchUrl;
+const videoLabel = m.videoUrl ? watchLabel : browseLabel;
 const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
 const art = m.image || fallbackImage;
 ---
@@ -35,7 +36,7 @@ const art = m.image || fallbackImage;
       <p class="latest__meta">{fmtDate(m.date)}{m.duration && ` · ${fmtDuration(m.duration)}`}</p>
       {m.audioUrl && <audio class="latest__audio" controls preload="none" src={m.audioUrl}></audio>}
       <div class="latest__cta">
-        {watch && watchLabel && <a class="btn btn--gold" href={watch} target="_blank" rel="noopener noreferrer">{watchLabel}</a>}
+        {watch && videoLabel && <a class="btn btn--gold" href={watch} target="_blank" rel="noopener noreferrer">{videoLabel}</a>}
         {m.link && listenLabel && <a class="btn btn--outline-light" href={m.link} target="_blank" rel="noopener noreferrer">{listenLabel}</a>}
       </div>
     </div>

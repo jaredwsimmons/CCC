@@ -7,7 +7,11 @@ import Buttons from '../Buttons.astro';
 import { getPlaylistVideos } from '../../lib/feeds';
 import { variantFor } from '../../lib/links';
 const { s } = Astro.props;
-const videos = await getPlaylistVideos(s.playlist);
+const videos = (await getPlaylistVideos(s.playlist)).map((video, index) => ({
+  ...video,
+  label: s.videoLabels?.[index] || video.title,
+  shortLabel: Boolean(s.videoLabels?.[index]),
+}));
 const [newest, ...rest] = videos;
 const earlier = rest.slice(0, s.count ?? 3);
 const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
@@ -15,30 +19,27 @@ const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 
 {newest && (
   <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading} id="videos" class="live-data">
     <div class="player" data-reveal>
+      <h3 class="player__title">{newest.label}</h3>
       <a class="player__poster" href={newest.url} target="_blank" rel="noopener noreferrer" data-video-id={newest.id}>
         <img src={`https://i.ytimg.com/vi/${newest.id}/sddefault.jpg`} alt="" />
         <span class="player__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5v14l11-7z" fill="currentColor" /></svg></span>
-        <span class="sr-only">Play {newest.title}</span>
+        <span class="sr-only">Play {newest.label}</span>
       </a>
-      <p class="player__title">{newest.title}</p>
     </div>
     {earlier.length > 0 && (
       <ul class="earlier" data-reveal>
         {earlier.map((v) => (
           <li>
             <a href={v.url} target="_blank" rel="noopener noreferrer">
+              <h3 class="earlier__title">{v.label}</h3>
               <img src={v.thumbnail} alt="" loading="lazy" />
-              <span class="earlier__title">{v.title}</span>
-              <span class="earlier__date">{fmtDate(v.date)}</span>
+              {!v.shortLabel && <span class="earlier__date">{fmtDate(v.date)}</span>}
             </a>
           </li>
         ))}
       </ul>
     )}
     <div class="mt-2" data-reveal><Buttons list={s.buttons} solid={0} /></div>
-  </Section>
-)}
-
 <script is:inline>
   // Swap the poster for YouTube's player (privacy-enhanced embed) when someone presses play.
   document.addEventListener('click', function (e) {
@@ -54,6 +55,8 @@ const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 
     poster.replaceWith(frame);
   });
 </script>
+  </Section>
+)}
 
 <style>
   .player { max-width: 860px; }
@@ -65,11 +68,11 @@ const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 
     transition: transform 0.15s ease;
   }
   .player__poster:hover .player__play { transform: scale(1.06); }
-  .player__title { margin-top: 0.8rem; font-family: var(--display); font-weight: 600; font-size: 1.1rem; color: var(--navy); }
+  .player__title { margin-bottom: 0.8rem; font-size: 1.1rem; color: var(--navy); }
   .earlier { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 1.25rem; margin-top: 2rem; }
   .earlier a { display: block; text-decoration: none; }
   .earlier img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; }
-  .earlier__title { display: block; margin-top: 0.6rem; font-family: var(--display); font-weight: 600; font-size: 0.95rem; color: var(--navy); }
+  .earlier__title { margin-bottom: 0.8rem; font-size: 1.1rem; color: var(--navy); }
   .earlier a:hover .earlier__title { color: var(--blue); }
   .earlier__date { display: block; font-size: 0.85rem; color: var(--mid); }
 </style>

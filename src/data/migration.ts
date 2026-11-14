@@ -12,6 +12,7 @@ import { site, nav } from './site';
 import * as c from './content';
 import { bylaws } from './bylaws';
 import { rhythm } from '../lib/calendar';
+import { defaultHomeSections } from '../lib/home';
 
 export type SanityDoc = { _id: string; _type: string; [field: string]: unknown };
 
@@ -142,6 +143,14 @@ function siteSettings(): SanityDoc {
     churchName: site.name,
     tagline: site.tagline,
     description: site.description,
+    branding: {
+      headerLogo: img('/images/logo-full-blue.png', 'Chelsea Community Church logo'),
+      footerMark: img('/images/icon-white.png', 'Chelsea Community Church mark'),
+      accentMark: img('/images/icon-gold.png', 'Chelsea Community Church mark'),
+      favicon: img('/favicon-32.png', 'Chelsea Community Church icon'),
+      touchIcon: img('/apple-touch-icon.png', 'Chelsea Community Church icon'),
+    },
+    integrations: { churchCenterHost: cc.subdomain, calendarPage: cc.calendarPage, givingBase: cc.giving, podcastFeed: site.media.podcastFeed, youtubeChannelId: site.media.youtubeChannelId },
     giveButton: one(btn.cc('Give', cc.giving)),
     menu: nav.map((item) => ({
       _type: 'menuItem',
@@ -168,7 +177,7 @@ function siteSettings(): SanityDoc {
       btn.url('Text updates', site.textSignup),
       btn.url('Church Center app', cc.appSetup),
     ],
-    deaconCardText: 'Serving and praying over this ministry — reach out anytime.',
+    deaconCardText: 'Serving and praying over this ministry.',
     notFound: {
       heading: "We couldn't find that page",
       text: "The link may be old or mistyped — but you're still welcome here. Let's get you back on track.",
@@ -183,12 +192,14 @@ function home(): SanityDoc {
   return {
     _id: 'home',
     _type: 'home',
+    sections: defaultHomeSections.map((s) => ({ ...s })),
     hero: {
+      showVideo: true,
       title: 'Pursuing God.\nPursuing others.',
       text: 'Our heart is to live life together by worshiping the Father, growing in faith, and sharing in fellowship and ministry with each other.',
       image: img(h.hero.image, h.hero.imageAlt),
       photos: [photo(c.students.photo.src, c.students.photo.alt), photo(c.women.photo.src, c.women.photo.alt)],
-      buttons: [btn.page('Find your place', 'page-serve'), btn.page("I'm New", 'page-imnew')],
+      buttons: [btn.page('Explore Ministries', 'page-serve'), btn.page("I'm New", 'page-imnew')],
     },
     quickLinks: [
       quick('visit', btn.page("I'm New", 'page-imnew'), 'What to expect'),
@@ -209,10 +220,14 @@ function home(): SanityDoc {
     },
     currentSeries: {
       eyebrow: 'Current sermon series',
+      latestLabel: 'Latest message',
+      browseLabel: 'Watch & Listen',
+      listenLabel: 'Listen to this message',
+      expiresOn: '2026-11-28',
       title: h.series.title,
       description: h.series.body,
       image: img(h.series.art, h.series.artAlt),
-      buttons: [btn.url('Watch Service', site.media.seriesPlaylist), btn.url('Listen on Spotify', site.social.spotify)],
+      buttons: [btn.page('Watch & Listen', 'fixed-media'), btn.url('Listen on Spotify', site.social.spotify)],
     },
     app: {
       eyebrow: h.app.eyebrow,
@@ -432,12 +447,13 @@ function pages(): SanityDoc[] {
         section('visitSection', {
           label: 'This Sunday',
           subline: c.home.hero.sub,
-          note: 'Programming for kids and students at both hours',
+          note: 'Preschool and Kids at both hours; Students at 9:00 AM',
           buttons: [btn.cc("Let us know you're coming!", planVisit)],
           directionsLabel: 'Get directions',
         }),
         section('weeklyRhythmSection', { eyebrow: 'Every week', heading: 'The rhythm of our week' }),
         section('cardsSection', {
+          heading: 'Planning your first visit',
           columns: 2,
           background: 'plain',
           cards: [imnew.dress, imnew.whereToGo].map((x) => ({ _type: 'card', _key: key(), title: x.title, text: x.body })),
@@ -511,9 +527,9 @@ function pages(): SanityDoc[] {
     }),
 
     // The Ministry page: its address changed from /serve (which redirects), its ID did not.
-    page('/ministry', 'Serve', {
+    page('/ministry', 'Ministries', {
       _id: 'page-serve',
-      header: header({ eyebrow: 'Ministries', title: 'Serve', intro: `${serve.verse.text} (${serve.verse.ref})` }),
+      header: header({ eyebrow: 'Ministries', title: 'Ministries', intro: `${serve.verse.text} (${serve.verse.ref})` }),
       sections: [
         placesSection(),
         section('textPhotoSection', {
@@ -526,6 +542,7 @@ function pages(): SanityDoc[] {
           background: 'plain',
         }),
         section('cardsSection', {
+          heading: 'Understanding your gifts',
           columns: 2,
           background: 'tinted',
           cards: [
@@ -613,6 +630,7 @@ function pages(): SanityDoc[] {
           background: 'navy',
         }),
         section('cardsSection', {
+          heading: 'Friendship and service',
           columns: 2,
           background: 'plain',
           cards: [men.relationships, men.service].map((x) => ({ _type: 'card', _key: key(), title: x.title, text: x.body })),
@@ -627,7 +645,7 @@ function pages(): SanityDoc[] {
       header: header({ eyebrow: 'Ministries', title: 'Missions', intro: `${missions.verse.text} (${missions.verse.ref})`, ministry: ref('ministry-missions') }),
       sections: [
         section('textPhotoSection', {
-          eyebrow: 'Monthly missions highlight',
+          eyebrow: 'Pray, give, and go',
           heading: missions.highlight.title,
           body: paras(missions.highlight.body),
           photoSide: 'right',
@@ -657,7 +675,7 @@ function pages(): SanityDoc[] {
           heading: 'How to get involved',
           steps: prayer.joinSteps.map((s) => ({ _type: 'step', _key: key(), text: s })),
         }),
-        section('cardsSection', { columns: 2, background: 'plain', cards: [{ _type: 'card', _key: key(), title: 'A note on privacy', text: prayer.note }] }),
+        section('cardsSection', { heading: 'Sharing prayer requests', columns: 2, background: 'plain', cards: [{ _type: 'card', _key: key(), title: 'A note on privacy', text: prayer.note }] }),
         upcoming('Prayer'),
         cta('How can we pray with you?', "Whatever you're carrying — a burden or a blessing — we'd be honored to pray with you. Share as much or as little as you'd like.", btn.cc('Share a prayer request', cc.forms.prayer)),
       ],
@@ -696,6 +714,7 @@ function pages(): SanityDoc[] {
       header: header({ eyebrow: 'Ministries', title: students.title, intro: students.intro, ministry: ref('ministry-students') }),
       sections: [
         section('textPhotoSection', {
+          heading: 'When we meet',
           body: students.schedule.flatMap((s) => [block(s.when, 'h3'), block(s.what)]),
           photos: [photo(students.photo.src, students.photo.alt)],
           photoSide: 'left',
@@ -764,7 +783,7 @@ function pages(): SanityDoc[] {
           background: 'tinted',
         }),
         section('textPhotoSection', {
-          eyebrow: '5th through 12th grade',
+          eyebrow: 'Middle and high school',
           heading: 'Students',
           body: paras(students.intro),
           photos: [photo(students.photo.src, students.photo.alt)],
@@ -787,8 +806,8 @@ function pages(): SanityDoc[] {
     page('/announcements', 'Announcements', {
       header: header({ eyebrow: "What's happening", title: 'Announcements' }),
       sections: [
-        section('playlistSection', { heading: "This week's video", playlist: site.media.announcementsPlaylist, count: 2 }),
-        section('announcementsSection', { emptyText: paras('There are no announcements right now. Check back soon!') }),
+        section('playlistSection', { heading: 'Video announcements', playlist: site.media.announcementsPlaylist, count: 2, videoLabels: ['This week', 'Last week', 'Two weeks ago'] }),
+        section('announcementsSection', { heading: 'Latest announcements', emptyText: paras('There are no announcements right now. Check back soon!') }),
       ],
       seo: seo('The latest announcements from Chelsea Community Church — events, sign-ups and ways to get involved.'),
     }),
@@ -798,6 +817,7 @@ function pages(): SanityDoc[] {
       header: header({ eyebrow: 'Ministries', title: "But wait, there's more!" }),
       sections: [
         section('cardsSection', {
+          heading: 'Ways to connect and serve',
           columns: 3,
           background: 'plain',
           cards: [

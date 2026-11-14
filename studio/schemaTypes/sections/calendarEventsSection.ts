@@ -10,6 +10,7 @@ export default defineType({
     eyebrow,
     heading,
     defineField({ name: 'emptyText', title: 'When there are no events', type: 'blockContent', description: 'Shown instead of the calendar when Church Center has nothing upcoming.' }),
+    defineField({ name: 'unavailableMessage', title: 'When the calendar cannot load', type: 'string', initialValue: 'We could not load the calendar right now.' }),
     defineField({ name: 'note', title: 'Note below the calendar', type: 'blockContent', description: 'Optional.' }),
     background,
   ],

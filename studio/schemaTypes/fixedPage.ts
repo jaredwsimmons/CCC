@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity';
-import { sectionMembers } from './sections';
+import { sectionMembers, sectionMenu } from './sections';
 
 // The pages at fixed addresses (Calendar, Groups, Media, Give, Leaders). There is one
 // document per page, made by the Studio structure (sanity.config.ts). They're built from
@@ -16,6 +16,7 @@ export default defineType({
       title: 'Sections',
       type: 'array',
       of: sectionMembers,
+      options: sectionMenu,
     }),
     defineField({
       name: 'seo',
