@@ -233,8 +233,10 @@ p + p { margin-top: 0.9em; }
 /* Every section sits on the paper page (navy and tinted ones as panels), so two in a row
    share one gap instead of doubling it. */
 .section:not(.section--white) + .section:not(.section--white) { padding-top: 0; }
-.section-head { margin-bottom: 2rem; max-width: 46rem; }
-.center .section-head, .section-head.center { margin-inline: auto; }
+.section-head { margin: 0 0 2rem; max-width: 46rem; text-align: left; }
+.section-head .eyebrow { justify-content: flex-start; }
+.section-head .eyebrow::after { content: none; }
+.section-head .lead { margin-inline: 0; }
 
 /* blue band motif — announcements / section breaks */
 .band {
