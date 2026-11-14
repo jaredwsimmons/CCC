@@ -2,7 +2,7 @@
 
 ## Current release state
 
-The staff-management implementation is on the review branch. It has not been deployed or applied to a church dataset. This workspace has no configured Sanity project, Studio/preview URLs or preview read token. Connected preview, church account permissions, publication timing and staff acceptance therefore remain unverified.
+The staff-management implementation is on the review branch. It has not been deployed or applied to a church dataset. The repository identifies an existing Studio host, `chelseachurch.sanity.studio`, which leads to Sanity sign-in. This workspace has no configured Sanity project, Studio/preview environment URLs or preview read token. Connected preview, church account permissions, publication timing and staff acceptance therefore remain unverified.
 
 The existing dataset remains compatible when new fields are absent. Branding/source/wording fields fall back to existing values; a missing Home sections array uses the original three sections. An empty array intentionally hides all body sections.
 
@@ -39,6 +39,7 @@ The supported podcast hosts are Anchor, Buzzsprout, Simplecast, Megaphone and Po
 ## Validation and release gates
 
 - Run website type checks/build, deterministic unit/component regressions, Studio TypeScript/build, and browser interaction checks. CI builds Studio with a fixture project ID; that proves it compiles, not that it connects to the church project.
+- Studio and the website share plain defaults/URL validators in `shared/`, with their own TypeScript configuration. Studio uses relative imports and disables Vite's unused path-alias scanning so an independent install does not require the parent website's Astro configuration.
 - Review all existing routes at 1440, 768, 390 and 320 pixels, then repeat relevant checks with actual staged CMS content and a newly staff-built page. Inspect headings, overflow, image crop, long labels and hidden/reordered sections.
 - Follow the staff acceptance exercise in the implementation plan. Record who tested, account roles, addresses, measured publication/cache delay and any failed steps. Include sitemap delay: it currently permits a one-hour browser/shared cache.
 - Confirm anonymous visitors cannot read drafts; invalid/expired preview cookies remain public; unpublishing and restoring behave as documented; operational changes appear from Planning Center without duplicate entry.

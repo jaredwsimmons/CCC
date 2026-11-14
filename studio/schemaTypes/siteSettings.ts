@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { imageWithAlt } from './fields';
-import { churchCenterUrl, podcastFeedUrl } from '../../src/lib/integrations';
+import { churchCenterUrl, podcastFeedUrl } from '../../shared/public-sources';
 
 const pageRef = defineField({
   name: 'page',

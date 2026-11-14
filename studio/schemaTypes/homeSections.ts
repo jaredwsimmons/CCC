@@ -13,4 +13,4 @@ export const homeSectionTypes = [
   preview: { select: { hidden: 'hidden' }, prepare: ({ hidden }) => ({ title, subtitle: hidden ? 'Hidden' : description }) },
 }));
 
-export { defaultHomeSections } from '../../src/lib/home';
+export { defaultHomeSections } from '../../shared/home-sections';
