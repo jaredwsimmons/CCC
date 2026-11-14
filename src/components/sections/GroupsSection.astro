@@ -28,9 +28,6 @@ const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label
     <p class="note" data-no-matches role="status" hidden>{s.noMatchesMessage || 'No groups match this filter. Choose All to see the other groups.'}</p>
     {s.note?.length > 0 && <div class="note" data-reveal><RichText value={s.note} /></div>}
     </div>
-  </Section>
-)}
-
 <script is:inline>
   (function () {
     document.querySelectorAll('[data-group-section]').forEach(function (root) {
@@ -55,6 +52,8 @@ const tabs = [{ key: 'all', label: 'All' }, ...TYPES.map((t) => ({ key: t, label
     });
   })();
 </script>
+  </Section>
+)}
 
 <style>
   .viewtoggle { display: inline-flex; flex-wrap: wrap; background: #fff; border: 1px solid var(--hair); border-radius: 999px; padding: 0.2rem; box-shadow: var(--shadow); margin-bottom: 2rem; }

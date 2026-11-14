@@ -36,9 +36,6 @@ const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 
       </ul>
     )}
     <div class="mt-2" data-reveal><Buttons list={s.buttons} solid={0} /></div>
-  </Section>
-)}
-
 <script is:inline>
   // Swap the poster for YouTube's player (privacy-enhanced embed) when someone presses play.
   document.addEventListener('click', function (e) {
@@ -54,6 +51,8 @@ const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 
     poster.replaceWith(frame);
   });
 </script>
+  </Section>
+)}
 
 <style>
   .player { max-width: 860px; }

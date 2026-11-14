@@ -68,8 +68,6 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     {s.note?.length > 0 && <div class="note" data-reveal><RichText value={s.note} /></div>}
   </div>
-</Section>
-
 <script is:inline>
   (function () {
     document.querySelectorAll('[data-calendar-section]').forEach(function (root) {
@@ -87,6 +85,7 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     });
   })();
 </script>
+</Section>
 
 <style>
   /* view toggle */
