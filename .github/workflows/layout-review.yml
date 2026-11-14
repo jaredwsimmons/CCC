@@ -6,6 +6,10 @@ on:
       - '.github/workflows/layout-review.yml'
       - 'playwright.layout-review.config.ts'
       - 'scripts/review/**'
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
   workflow_dispatch:
 
 permissions:
