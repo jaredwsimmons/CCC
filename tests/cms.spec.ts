@@ -12,6 +12,15 @@ import { churchCenterHost, churchCenterUrl, podcastFeedUrl } from '../src/lib/in
 import { staffCmsDefaults } from '../scripts/upgrade-staff-cms';
 import { ccGet } from '../src/lib/churchcenter';
 import { getPodcastEpisodes } from '../src/lib/feeds';
+import { createClient } from '@sanity/client';
+
+test('Sanity accepts the staff-page query, including a missing address', async () => {
+  const projectId = process.env.SANITY_LIVE_PROJECT_ID;
+  test.skip(!projectId, 'Set SANITY_LIVE_PROJECT_ID for the connected Content Lake check.');
+  const client = createClient({ projectId: projectId!, dataset: process.env.SANITY_LIVE_DATASET || 'production', apiVersion: '2024-10-01', useCdn: false, perspective: 'published', timeout: 15_000, maxRetries: 0 });
+  expect((await client.fetch(pageQuery, { slug: 'announcements' }))?.slug).toBe('announcements');
+  expect(await client.fetch(pageQuery, { slug: 'ccc-query-check-missing-address' })).toBeNull();
+});
 
 async function query(source: string, documents: unknown[], params: Record<string, unknown> = {}) {
   return (await evaluate(parse(source), { dataset: documents, params })).get();

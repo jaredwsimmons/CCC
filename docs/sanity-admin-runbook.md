@@ -2,7 +2,9 @@
 
 ## Current release state
 
-The staff-management implementation is on the review branch. It has not been deployed or applied to a church dataset. The repository identifies an existing Studio host, `chelseachurch.sanity.studio`, which leads to Sanity sign-in. This workspace has no configured Sanity project, Studio/preview environment URLs or preview read token. Connected preview, church account permissions, publication timing and staff acceptance therefore remain unverified.
+PR #9 was merged on November 14, 2026. The website is deployed to the existing review site, `https://chelsea-church-website.chelsea-church-website.workers.dev/`, using project `nrlmdamv`, dataset `production`. Additional version-preview URLs are disabled. The church's public domain has not been changed.
+
+The hosted Studio at `https://chelseachurch.sanity.studio` still needs the repository's updated build and schema deployed. Compatible heading and wording corrections were published on ten documents; pre-existing staff drafts were left unpublished. New Home controls, weekly video labels and the remaining guarded content updates depend on the Studio/schema deployment. Actual editing, permissions, draft isolation, publication timing and staff acceptance still need verification. The saved content snapshot includes drafts and CDN image renditions; it is not a native export of original assets.
 
 The existing dataset remains compatible when new fields are absent. Branding/source/wording fields fall back to existing values; a missing Home sections array uses the original three sections. An empty array intentionally hides all body sections.
 
@@ -39,6 +41,7 @@ The supported podcast hosts are Anchor, Buzzsprout, Simplecast, Megaphone and Po
 ## Validation and release gates
 
 - Run website type checks/build, deterministic unit/component regressions, Studio TypeScript/build, and browser interaction checks. CI builds Studio with a fixture project ID; that proves it compiles, not that it connects to the church project.
+- Run `SANITY_LIVE_PROJECT_ID=nrlmdamv npm run test:unit -- --grep 'Sanity accepts'` for the connected page-query check (override `SANITY_LIVE_DATASET` when appropriate). The local GROQ parser can accept syntax rejected by Content Lake; this check verifies both a real page and a missing address against Sanity's parser.
 - Studio and the website share plain defaults/URL validators in `shared/`, with their own TypeScript configuration. Studio uses relative imports and disables Vite's unused path-alias scanning so an independent install does not require the parent website's Astro configuration.
 - Review all existing routes at 1440, 768, 390 and 320 pixels, then repeat relevant checks with actual staged CMS content and a newly staff-built page. Inspect headings, overflow, image crop, long labels and hidden/reordered sections.
 - Follow the staff acceptance exercise in the implementation plan. Record who tested, account roles, addresses, measured publication/cache delay and any failed steps. Include sitemap delay: it currently permits a one-hour browser/shared cache.

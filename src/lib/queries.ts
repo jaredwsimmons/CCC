@@ -43,7 +43,7 @@ export const homeQuery = /* groq */ `
 export const seriesArtQuery = /* groq */ `*[_id == "home"][0].currentSeries.image`;
 
 export const pageQuery = /* groq */ `
-  *[_type == "page" && (slug.current == $slug || $slug in previousSlugs)] | order(slug.current == $slug desc)[0]{ title, "slug": slug.current, ${HEADER}, ${SECTIONS}, seo }
+  *[_type == "page" && (slug.current == $slug || $slug in previousSlugs)] | order((slug.current == $slug) desc)[0]{ title, "slug": slug.current, ${HEADER}, ${SECTIONS}, seo }
 `;
 
 export const fixedPageQuery = /* groq */ `*[_id == $id][0]{ title, ${HEADER}, ${SECTIONS}, seo }`;
