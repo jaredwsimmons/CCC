@@ -8,6 +8,11 @@
 # Free key from https://api.esv.org/  →  create an API Application (register it to the church).
 ESV_API_KEY=
 
+# YouTube Data API key (the video sections). OPTIONAL: without it, videos come from YouTube's public
+# RSS feed, which goes down for hours at a time. Free: https://console.cloud.google.com/apis/credentials
+# → create an API key, restricted to "YouTube Data API v3" (turn that API on for the project first).
+YOUTUBE_API_KEY=
+
 # Planning Center Personal Access Token, used by scripts/pco-fields.mjs (for the custom forms,
 # not in use yet). Get these at: https://api.planningcenteronline.com/personal_access_tokens
 PCO_APP_ID=PCO_APP_ID

@@ -100,7 +100,7 @@ Only a cookie signed by the server unlocks drafts (`src/lib/preview.ts`), and dr
 
 1. Create a free Cloudflare account under the church's shared address.
 2. Either deploy from a machine (`npx wrangler login`, then `npm run build && npx wrangler deploy`), or connect the GitHub repo under **Workers & Pages** (Workers Builds) with build command `npm run build` and deploy command `npx wrangler deploy`.
-3. Set build variables `PUBLIC_SANITY_PROJECT_ID` / `PUBLIC_SANITY_DATASET`, and secrets with `npx wrangler secret put ESV_API_KEY` and `npx wrangler secret put SANITY_API_READ_TOKEN`.
+3. Set build variables `PUBLIC_SANITY_PROJECT_ID` / `PUBLIC_SANITY_DATASET`, and secrets with `npx wrangler secret put ESV_API_KEY`, `npx wrangler secret put YOUTUBE_API_KEY` and `npx wrangler secret put SANITY_API_READ_TOKEN` (see `.dev.vars.example` for where each comes from).
 4. Add the custom domain `chelseachurch.com` to the Worker. Cloudflare requires the domain's DNS to be hosted on Cloudflare (registration stays at GoDaddy; only nameservers change). **Recreate the Google Workspace MX, SPF and verification records exactly** during the DNS move or email breaks — see the staff asks doc.
 
 ## Project structure
