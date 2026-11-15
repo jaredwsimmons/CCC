@@ -46,6 +46,7 @@ export default defineType({
         imageWithAlt('accentMark', 'Accent mark', 'Used on deacon badges, group placeholders and the not-found page.'),
         imageWithAlt('favicon', 'Browser icon', 'A square image, at least 32 × 32 pixels.'),
         imageWithAlt('touchIcon', 'Phone home-screen icon', 'A square image, at least 180 × 180 pixels.'),
+        imageWithAlt('shareImage', 'Shared-link picture', 'Shown when a page without its own header photo is shared in a text or on social media. A wide photo, at least 1200 × 630 pixels.'),
       ],
     }),
     defineField({

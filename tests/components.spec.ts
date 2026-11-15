@@ -130,3 +130,14 @@ test('a playlist feed outage keeps the heading and staff-configured platform but
     expect(html).not.toMatch(/<a\b[^>]*data-video-id=/);
   } finally { globalThis.fetch = realFetch; }
 });
+
+test('the directions link follows the button link rules', async () => {
+  const address = (mapsUrl: string) => ({ address: { line1: '101 Chelsea Park Dr.', city: 'Chelsea', state: 'AL', zip: '35043', mapsUrl }, serviceTimes: ['9:00 AM'] });
+  for (const path of ['src/components/Footer.astro', 'src/components/sections/VisitSection.astro']) {
+    const props = (mapsUrl: string) => ({ settings: address(mapsUrl), s: { directionsLabel: 'Get directions' } });
+    expect(await render(path, props('https://maps.app.goo.gl/x')), path).toContain('href="https://maps.app.goo.gl/x"');
+    const unsafe = await render(path, props('javascript:alert(1)'));
+    expect(unsafe, path).not.toContain('javascript:');
+    expect(unsafe, path).toContain('101 Chelsea Park Dr.');
+  }
+});

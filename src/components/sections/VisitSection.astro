@@ -3,11 +3,12 @@
 // and a directions link. It overlaps the page header above it (.lift).
 import Buttons from '../Buttons.astro';
 import { shortTimes } from '../../lib/format';
+import { safeUrl } from '../../lib/links';
 const { s, settings } = Astro.props;
 const a = settings?.address;
 const address = a ? [a.line1, a.city && `${a.city}, ${[a.state, a.zip].filter(Boolean).join(' ')}`].filter(Boolean).join(', ') : '';
 const times = shortTimes(settings?.serviceTimes);
-const directions = a?.mapsUrl && s.directionsLabel ? a.mapsUrl : null;
+const directions = safeUrl(a?.mapsUrl) && s.directionsLabel ? a.mapsUrl : null;
 ---
 {(times || address) && (
   <section class="lift visit">

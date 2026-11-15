@@ -4,13 +4,16 @@
 //   verse the first time someone hovers or taps it, and each passage is cached at
 //   the edge for 30 days (src/lib/cache.ts). Rendering a page fetching every verse
 //   would exceed a free Workers request's 50 subrequests on Bylaws (~27 passages).
+// - /api/esv is public, so new lookups are capped per hour (LOOKUPS_PER_HOUR) and a
+//   reference with no text ("John 99:99") is remembered as empty: nobody can spend the
+//   church's ESV allowance by asking for made-up references.
 // - NEVER throws: if the key is missing or a fetch fails, returns null and the
 //   reference stays plain text.
 //
 // ESV text © Crossway; used per the api.esv.org terms. Required attribution is shown
 // on-page (see the Beliefs page). Server-only — do not import into client code.
 import { ESV_API_KEY } from 'astro:env/server';
-import { cached } from './cache';
+import { cached, withinBudget } from './cache';
 import { passageText } from './format';
 
 /** Whether scripture references should be interactive (an ESV key is configured). */
@@ -29,6 +32,11 @@ const PARAMS = new URLSearchParams({
   'indent-paragraphs': '0',
 });
 
+// The site cites about 60 passages, each fetched once a month, so this is far more than
+// visitors need and keeps a day's total under the ESV API's free allowance.
+const LOOKUPS_PER_HOUR = 200;
+
+// The passage text; '' when the ESV has none for this reference; null when the lookup failed.
 async function fetchESV(ref: string): Promise<string | null> {
   if (!ESV_API_KEY) return null;
   // The timeout covers reading the reply too, so a stalled response can't hang the request.
@@ -41,7 +49,7 @@ async function fetchESV(ref: string): Promise<string | null> {
       headers: { Authorization: `Token ${ESV_API_KEY}` },
     });
     if (!res.ok) return null;
-    return passageText(await res.json()) || null;
+    return passageText(await res.json());
   } catch {
     return null;
   } finally {
@@ -53,7 +61,10 @@ async function fetchESV(ref: string): Promise<string | null> {
 export async function getPassage(ref: string): Promise<string | null> {
   const key = ref.trim();
   if (!key || !ESV_API_KEY) return null;
-  return cached(`esv:${key}`, 30 * 24 * 60 * 60, () => fetchESV(key));
+  const text = await cached(`esv:${key}`, 30 * 24 * 60 * 60, async () =>
+    (await withinBudget('esv', LOOKUPS_PER_HOUR, 60 * 60)) ? fetchESV(key) : null,
+  );
+  return text || null;
 }
 
 /** Split a "ref; ref; ref" string (as stored in content.ts) into individual references. */

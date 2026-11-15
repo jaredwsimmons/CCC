@@ -76,6 +76,8 @@ The **Verify website** GitHub workflow runs type checks, build, source/component
 and deterministic desktop/mobile interaction tests. The full `npm test` suite additionally
 exercises the Workers app, live feeds, and saved visual/content baselines. After an intended
 copy change, inspect the full-page screenshot differences before updating image baselines.
+`npm test` always renders the repository's own content (`src/data/migration.ts`), even when
+`.env` names a Sanity project, so the baselines do not change when staff edit the live site.
 
 ### Live Preview
 

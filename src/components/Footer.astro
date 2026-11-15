@@ -4,7 +4,7 @@
 import { withBase } from '../data/site';
 import { hasEsvKey } from '../lib/esv';
 import { shortTimes, telHref } from '../lib/format';
-import { buttonLink, type Button } from '../lib/links';
+import { buttonLink, safeUrl, type Button } from '../lib/links';
 import { imageUrl } from '../lib/image';
 interface Props { settings: any; } // Site Settings, from Base.astro
 const { settings } = Astro.props;
@@ -43,7 +43,7 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
         {address && (
           <li>
             <span class="label">{settings?.wording?.addressLabel || 'Address'}</span>
-            {a.mapsUrl ? <a href={a.mapsUrl} {...ext}>{address}</a> : address}
+            {safeUrl(a.mapsUrl) ? <a href={a.mapsUrl} {...ext}>{address}</a> : address}
           </li>
         )}
         {settings?.phone && (

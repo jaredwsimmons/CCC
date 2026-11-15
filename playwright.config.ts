@@ -40,7 +40,9 @@ export default defineConfig({
       `npm run build && node -e "fs.rmSync('dist/server/.dev.vars',{force:true})" && ` +
       `npm run preview -- --host 127.0.0.1 --port ${port} --ignore-lock`,
     url: `http://127.0.0.1:${port}`,
-    env: { ESV_API_KEY: '' },
+    // PUBLIC_CONTENT=repo: render the repo's content (src/data/migration.ts), not the church's
+    // live Sanity content, which staff change and which would turn these baselines red.
+    env: { ESV_API_KEY: '', PUBLIC_CONTENT: 'repo' },
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
   },

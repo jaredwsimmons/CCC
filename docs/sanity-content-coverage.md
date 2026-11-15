@@ -9,6 +9,7 @@ Implementation inventory, updated November 15, 2026. The website and Studio are 
 | Menu/dropdowns, giving button | siteSettings.menu / giveButton | settingsQuery → Base / Header | Editable; unresolved page destinations omitted |
 | Header logo, footer mark, shared accent mark | siteSettings.branding | settingsQuery → Header / Footer / DeaconNote / GroupCards / 404 | Editable images; existing assets remain fallbacks |
 | Browser and phone icons | siteSettings.branding.favicon / touchIcon | settingsQuery → Base | Editable images |
+| Picture shown with shared links | Page header photo, else siteSettings.branding.shareImage | page queries / settingsQuery → Base | Editable images; the worship photo remains the fallback |
 | Church name, tagline, search default, address, map, phone, email, services | siteSettings church fields | settingsQuery → Base / Footer / VisitSection | Editable |
 | Footer headings, links, prayer action | siteSettings footer fields | settingsQuery → Footer | Editable |
 | Public shared labels | siteSettings.wording | settingsQuery → Footer / DeaconNote / GroupCards / Calendar / RegistrationCard / EventList / AnnouncementList / LongText | Editable, with existing wording as fallback |

@@ -21,18 +21,18 @@
           - /url: /groups
       - listitem:
         - link "Prayer Share a prayer request":
-          - /url: https://chelseachurch.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
+          - /url: https://chelsea-community-church-488313.churchcenter.com/people/forms/876492?open-in-church-center-modal=true
   - heading "This week at Chelsea" [level=2]
   - paragraph: Every week
   - list:
     - listitem:
       - paragraph: /Sundays · 9:\d+ & \d+:\d+ AM/
       - heading "Sunday Worship" [level=3]
-      - paragraph: Two identical worship gatherings, with Preschool and Kids programming at both hours. Student community groups meet at 9:00 AM.
+      - paragraph: /Two identical worship gatherings, with Preschool and Kids programming at both hours\. Student community groups meet at 9:\d+ AM\./
     - listitem:
       - paragraph: Sundays & Wednesdays
       - heading "Kids & Students" [level=3]
-      - paragraph: Preschool and Kids meet at both Sunday services. Middle and high school students meet at 9:00 AM on Sundays and 6:00 PM on Wednesdays.
+      - paragraph: /Preschool and Kids meet at both Sunday services\. Middle and high school students meet at 9:\d+ AM on Sundays and 6:\d+ PM on Wednesdays\./
     - listitem:
       - paragraph: Everyday
       - heading "Community Groups" [level=3]

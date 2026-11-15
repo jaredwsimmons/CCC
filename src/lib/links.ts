@@ -36,8 +36,8 @@ export function pathFor(doc: LinkTarget): string | null {
   return doc.slug ? `/${doc.slug}` : null;
 }
 
-// Typed-in links may be web, email or phone links or site paths — never javascript: and the like.
-const safe = (url?: string): url is string => Boolean(url && /^(https?:|mailto:|tel:|\/(?!\/))/i.test(url));
+/** Typed-in links may be web, email or phone links or site paths — never javascript: and the like. */
+export const safeUrl = (url?: string): url is string => Boolean(url && /^(https?:|mailto:|tel:|\/(?!\/))/i.test(url));
 
 /** Church Center links open in its pop-up (a new tab on phones). */
 export const inModal = (url: string) => `${url}${url.includes('?') ? '&' : '?'}open-in-church-center-modal=true`;
@@ -51,7 +51,7 @@ export function buttonLink(b: Button | null | undefined): { href: string; newTab
       return path ? { href: withBase(path), newTab: false } : null;
     }
     case 'churchCenter':
-      return safe(b.churchCenterUrl) ? { href: inModal(b.churchCenterUrl), newTab: false } : null;
+      return safeUrl(b.churchCenterUrl) ? { href: inModal(b.churchCenterUrl), newTab: false } : null;
     case 'give': {
       if (!b.fund || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(b.fund)) return null;
       const url = new URL(`${churchCenterUrl(b.givingBase) || site.churchCenter.giving}/to/${b.fund}`);
@@ -62,7 +62,7 @@ export function buttonLink(b: Button | null | undefined): { href: string; newTab
     case 'email':
       return b.ministry?.email ? { href: `mailto:${b.ministry.email}`, newTab: false } : null;
     case 'url':
-      if (!safe(b.url)) return null;
+      if (!safeUrl(b.url)) return null;
       return b.url.startsWith('/')
         ? { href: withBase(b.url), newTab: false }
         : { href: b.url, newTab: /^https?:/.test(b.url) };

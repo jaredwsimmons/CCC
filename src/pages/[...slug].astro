@@ -15,7 +15,7 @@ if (!page) return Astro.rewrite('/404');
 if (page.slug && page.slug !== slug) return Astro.redirect(withBase(`/${page.slug}`) + Astro.url.search, 301);
 const settings = await sanityFetch<any>(settingsQuery, {}, Astro.cookies);
 ---
-<Base title={page.title} description={page.seo?.description}>
+<Base title={page.title} description={page.seo?.description} image={page.header?.image}>
   <PageHeader header={page.header} title={page.title} />
   <Sections list={page.sections} settings={settings} />
 </Base>

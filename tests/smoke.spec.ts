@@ -93,3 +93,16 @@ test('internal links all resolve', async ({ page, request }, testInfo) => {
     expect(res.status(), h).toBeLessThan(400);
   }
 });
+
+test('each page names one address for search engines and a picture for shared links', async ({ request }) => {
+  const head = async (path: string) => (await (await request.get(path)).text()).split('</head>')[0];
+  for (const path of ['/about', '/about/']) {
+    const html = await head(path);
+    expect(html, path).toContain('<link rel="canonical" href="https://chelseachurch.com/about">');
+    expect(html, path).toContain('<meta property="og:url" content="https://chelseachurch.com/about">');
+    expect(html, path).toMatch(/<meta property="og:image" content="https:\/\/[^"]+">/);
+  }
+  expect(await head('/')).toContain('<link rel="canonical" href="https://chelseachurch.com/">');
+  // A missing page has no address of its own to recommend.
+  expect(await head('/no-such-page')).not.toContain('rel="canonical"');
+});

@@ -9,7 +9,8 @@ import { site } from '../data/site';
 import { podcastFeedUrl, youtubeChannelId } from './integrations';
 import { cached } from './cache';
 
-const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
+// parseTagValue: false keeps text as text, so a title like "1984" isn't read as a number.
+const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_', parseTagValue: false });
 
 async function fetchText(url: string, timeoutMs = 8000): Promise<string | null> {
   const ctrl = new AbortController();
@@ -105,10 +106,15 @@ export function playlistIdFrom(link?: string | null): string | null {
   return s.match(/[?&]list=([\w-]+)/)?.[1] ?? s.match(/^((?:PL|UU)[\w-]{10,})$/)?.[1] ?? null;
 }
 
-/** The videos in a playlist, newest first as YouTube lists them; [] for a bad link or no answer. */
+/**
+ * The videos in a playlist, newest first; [] for a bad link or no answer. YouTube lists them
+ * in the playlist's own order, which may be oldest first, so they're sorted here.
+ */
 export async function getPlaylistVideos(link?: string | null, limit = FEED_ITEMS): Promise<Video[]> {
   const id = playlistIdFrom(link);
-  return id ? youtubeFeed(`ytpl:${id}:${limit}`, `https://www.youtube.com/feeds/videos.xml?playlist_id=${id}`, limit) : [];
+  if (!id) return [];
+  const videos = await youtubeFeed(`ytpl:${id}:${limit}`, `https://www.youtube.com/feeds/videos.xml?playlist_id=${id}`, limit);
+  return videos.sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
 }
 
 export interface Episode {
