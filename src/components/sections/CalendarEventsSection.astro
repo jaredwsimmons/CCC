@@ -3,8 +3,8 @@
 import Section from '../Section.astro';
 import EventList from '../EventList.astro';
 import RichText from '../RichText.astro';
-import { inModal, variantFor } from '../../lib/links';
-import { getUpcomingEventsResult, buildMonthGrids, onePerSeries, fullDate } from '../../lib/calendar';
+import { churchCenterLink, variantFor } from '../../lib/links';
+import { getUpcomingEventsResult, buildMonthGrids, onePerSeries, fullDate, type ChurchEvent } from '../../lib/calendar';
 import { churchCenterUrl } from '../../lib/integrations';
 import { site } from '../../data/site';
 const { s, settings } = Astro.props;
@@ -12,6 +12,8 @@ const result = await getUpcomingEventsResult(settings?.integrations?.churchCente
 const events = result ?? [];
 const monthGrids = buildMonthGrids(events);
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+// A day's event links to its registration (see churchCenterLink), else its Church Center page.
+const eventLink = (e: ChurchEvent) => (e.register ? churchCenterLink(e.register) : e.publicUrl ? { href: e.publicUrl, newTab: true } : null);
 ---
 <Section variant={variantFor(s.background)}>
   <div data-calendar-section>
@@ -47,16 +49,16 @@ const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                 <div class={`cal-cell${cell.events.length ? ' has-ev' : ''}`}>
                   <span class="cal-day">{cell.day}</span>
                   {cell.events.slice(0, 3).map((e) => {
-                    const href = e.register ? inModal(e.register) : e.publicUrl;
-                    return href
-                      ? <a class="cal-ev" href={href} target={e.register ? undefined : '_blank'} rel="noopener noreferrer" title={e.title} aria-label={`${e.title}, ${fullDate(e.date)}, ${e.timeLabel}`}>{e.title}</a>
+                    const link = eventLink(e);
+                    return link
+                      ? <a class="cal-ev" href={link.href} target={link.newTab ? '_blank' : undefined} rel="noopener noreferrer" title={e.title} aria-label={`${e.title}, ${fullDate(e.date)}, ${e.timeLabel}`}>{e.title}</a>
                       : <span class="cal-ev" title={e.title}>{e.title}</span>;
                   })}
                   {cell.events.length > 3 && <details class="cal-extra">
                     <summary class="cal-more" aria-label={`${cell.events.length - 3} more events on ${fullDate(cell.date)}`}>+{cell.events.length - 3} more</summary>
                     {cell.events.slice(3).map((e) => {
-                      const href = e.register ? inModal(e.register) : e.publicUrl;
-                      return href ? <a class="cal-ev" href={href} target={e.register ? undefined : '_blank'} rel="noopener noreferrer" aria-label={`${e.title}, ${fullDate(e.date)}, ${e.timeLabel}`}>{e.title}</a> : <span class="cal-ev">{e.title}</span>;
+                      const link = eventLink(e);
+                      return link ? <a class="cal-ev" href={link.href} target={link.newTab ? '_blank' : undefined} rel="noopener noreferrer" aria-label={`${e.title}, ${fullDate(e.date)}, ${e.timeLabel}`}>{e.title}</a> : <span class="cal-ev">{e.title}</span>;
                     })}
                   </details>}
                 </div>

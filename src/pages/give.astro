@@ -11,7 +11,7 @@ const [page, settings] = await Promise.all([
   sanityFetch<any>(settingsQuery, {}, Astro.cookies),
 ]);
 ---
-<Base title={page?.title ?? 'Give'} description={page?.seo?.description}>
+<Base title={page?.title ?? 'Give'} description={page?.seo?.description} image={page?.header?.image}>
   <PageHeader header={page?.header} title={page?.title ?? 'Give'} />
   <Sections list={page?.sections} settings={settings} />
 </Base>

@@ -130,3 +130,28 @@ test('a playlist feed outage keeps the heading and staff-configured platform but
     expect(html).not.toMatch(/<a\b[^>]*data-video-id=/);
   } finally { globalThis.fetch = realFetch; }
 });
+
+test('the directions link follows the button link rules', async () => {
+  const address = (mapsUrl: string) => ({ address: { line1: '101 Chelsea Park Dr.', city: 'Chelsea', state: 'AL', zip: '35043', mapsUrl }, serviceTimes: ['9:00 AM'] });
+  for (const path of ['src/components/Footer.astro', 'src/components/sections/VisitSection.astro']) {
+    const props = (mapsUrl: string) => ({ settings: address(mapsUrl), s: { directionsLabel: 'Get directions' } });
+    expect(await render(path, props('https://maps.app.goo.gl/x')), path).toContain('href="https://maps.app.goo.gl/x"');
+    const unsafe = await render(path, props('javascript:alert(1)'));
+    expect(unsafe, path).not.toContain('javascript:');
+    expect(unsafe, path).toContain('101 Chelsea Park Dr.');
+  }
+});
+
+test('registration buttons open Church Center in a new tab, never its pop-up', async () => {
+  const url = 'https://chelseachurch.churchcenter.com/registrations/events/3975973';
+  const card = await render('src/components/RegistrationCard.astro', { reg: { id: '3975973', name: 'Christmas Party', open: true, full: false, url } });
+  expect(card).toMatch(new RegExp(`href="${url}"[^>]*target="_blank"`));
+  expect(card).not.toContain('open-in-church-center-modal');
+
+  const events = await render('src/components/EventList.astro', { events: [
+    { id: '1', title: 'Party', date: '2099-12-01', timeLabel: '6:00 PM', register: url },
+    { id: '2', title: 'Sign-up', date: '2099-12-02', timeLabel: '6:00 PM', register: 'https://chelseachurch.churchcenter.com/people/forms/1335938' },
+  ] });
+  expect(events).toMatch(new RegExp(`href="${url}"[^>]*target="_blank"`));
+  expect(events).toContain('href="https://chelseachurch.churchcenter.com/people/forms/1335938?open-in-church-center-modal=true"');
+});

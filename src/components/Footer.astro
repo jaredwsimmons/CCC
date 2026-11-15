@@ -4,7 +4,7 @@
 import { withBase } from '../data/site';
 import { hasEsvKey } from '../lib/esv';
 import { shortTimes, telHref } from '../lib/format';
-import { buttonLink, type Button } from '../lib/links';
+import { buttonLink, safeUrl, type Button } from '../lib/links';
 import { imageUrl } from '../lib/image';
 interface Props { settings: any; } // Site Settings, from Base.astro
 const { settings } = Astro.props;
@@ -43,7 +43,7 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
         {address && (
           <li>
             <span class="label">{settings?.wording?.addressLabel || 'Address'}</span>
-            {a.mapsUrl ? <a href={a.mapsUrl} {...ext}>{address}</a> : address}
+            {safeUrl(a.mapsUrl) ? <a href={a.mapsUrl} {...ext}>{address}</a> : address}
           </li>
         )}
         {settings?.phone && (
@@ -83,12 +83,14 @@ const taglineEnd = tagline.length > 1 ? tagline.pop() : '';
   </div>
 </footer>
 
-<!-- Links marked data-small-window, anywhere on the page: TxtSignal and Church Center's group
-     pages refuse to load inside another site, so a small window is the closest thing to a
-     pop-up. Phones keep the new tab. -->
+<!-- Links marked data-small-window, and new-tab links to Church Center registrations and groups,
+     anywhere on the page: TxtSignal and those Church Center pages refuse to load inside another
+     site (see churchCenterLink in src/lib/links.ts), so a small window is the closest thing to a
+     pop-up. Phones keep the new tab, which opens the Church Center app when it's installed. -->
 <script is:inline>
+  var SMALL_WINDOW = 'a[data-small-window], a[target="_blank"][href*=".churchcenter.com/registrations/"], a[target="_blank"][href*=".churchcenter.com/groups/"]';
   document.addEventListener('click', function (e) {
-    var link = e.target.closest && e.target.closest('a[data-small-window]');
+    var link = e.target.closest && e.target.closest(SMALL_WINDOW);
     if (!link || e.ctrlKey || e.metaKey || e.shiftKey || window.matchMedia('(max-width: 700px)').matches) return;
     var left = Math.round(window.screenX + (window.outerWidth - 480) / 2);
     var top = Math.round(window.screenY + 60);

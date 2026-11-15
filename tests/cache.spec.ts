@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { cached, clearMemoryCache } from '../src/lib/cache';
+import { cached, clearMemoryCache, withinBudget } from '../src/lib/cache';
 
 // The edge cache's behavior when upstreams (Church Center, feeds, ESV) succeed and fail,
 // against an in-memory stand-in for Cloudflare's caches.default and a controllable clock.
@@ -107,4 +107,26 @@ test('short-ttl failures still wait a full minute before retrying', async () => 
   expect(load.calls).toBe(1);
   now += 31_000;
   expect(await cached('k', 10, load)).toEqual(['recovered']);
+});
+
+test('a ttl longer than a week is honored (scripture passages keep for 30 days)', async () => {
+  const load = loader('verse', 'verse again');
+  const month = 30 * 86_400;
+  expect(await cached('k', month, load)).toBe('verse');
+  now += 29 * 86_400_000;
+  clearMemoryCache(); // a new Worker reads it back from the edge cache
+  expect(await cached('k', month, load)).toBe('verse');
+  expect(load.calls).toBe(1);
+  now += 2 * 86_400_000;
+  expect(await cached('k', month, load)).toBe('verse again');
+});
+
+test('a budget allows only so many uses in each window', async () => {
+  expect(await withinBudget('b', 2, 3600)).toBe(true);
+  expect(await withinBudget('b', 2, 3600)).toBe(true);
+  expect(await withinBudget('b', 2, 3600)).toBe(false);
+  clearMemoryCache(); // the count survives a new Worker
+  expect(await withinBudget('b', 2, 3600)).toBe(false);
+  now += 3_600_000;
+  expect(await withinBudget('b', 2, 3600)).toBe(true);
 });

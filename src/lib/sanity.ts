@@ -5,7 +5,10 @@ import { perspectiveCookieName } from '@sanity/preview-url-secret/constants';
 import { cached } from './cache';
 import { PREVIEW_COOKIE, clickToEdit, verifyPreview } from './preview';
 
-const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID as string | undefined;
+// `npm test` sets PUBLIC_CONTENT=repo (playwright.config.ts) so the tests always render the
+// repo's own content, whatever project a local .env names (.env wins over any other override).
+const projectId =
+  import.meta.env.PUBLIC_CONTENT === 'repo' ? undefined : (import.meta.env.PUBLIC_SANITY_PROJECT_ID as string | undefined);
 const dataset = (import.meta.env.PUBLIC_SANITY_DATASET as string) || 'production';
 const apiVersion = (import.meta.env.PUBLIC_SANITY_API_VERSION as string) || '2024-10-01';
 

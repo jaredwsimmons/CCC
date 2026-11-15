@@ -26,7 +26,7 @@ async function component(path: string, documents?: unknown[]) {
             return { contents: compiled.code, loader: 'ts', resolveDir: resolve(path, '..') };
           });
           builder.onResolve({ filter: /^astro:env\/server$/ }, () => ({ path: 'secrets', namespace: 'test-env' }));
-          builder.onLoad({ filter: /.*/, namespace: 'test-env' }, () => ({ contents: 'export const ESV_API_KEY = undefined; export const SANITY_API_READ_TOKEN = undefined;', loader: 'js' }));
+          builder.onLoad({ filter: /.*/, namespace: 'test-env' }, () => ({ contents: 'export const ESV_API_KEY = undefined; export const SANITY_API_READ_TOKEN = undefined; export const YOUTUBE_API_KEY = undefined;', loader: 'js' }));
           builder.onLoad({ filter: /\.css$/ }, () => ({ contents: '', loader: 'js' }));
         },
       }],

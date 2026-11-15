@@ -36,7 +36,7 @@ const ICONS: Record<string, string> = {
   give: '<rect x="3.5" y="9" width="17" height="11" rx="2"/><path d="M12 9v11M3.5 13h17M12 9c-1.5-3-5-3.5-5-1.5S10 9 12 9zm0 0c1.5-3 5-3.5 5-1.5S14 9 12 9z"/>',
 };
 ---
-<Base description={home?.seo?.description}>
+<Base description={home?.seo?.description} image={hero.image}>
   {home?.announcement && (
     <div class="announcement" role="status">
       <div class="wrap"><span class="dot" aria-hidden="true"></span>{home.announcement}</div>

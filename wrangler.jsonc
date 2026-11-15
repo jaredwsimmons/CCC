@@ -2,5 +2,7 @@
 // Secrets (ESV_API_KEY) are set with `npx wrangler secret put <NAME>`; locally they go in .dev.vars.
 {
   "name": "chelsea-church-website",
-  "compatibility_date": "2026-11-01"
+  "compatibility_date": "2026-11-01",
+  // One review address only: a deploy without this turns per-version preview URLs back on.
+  "preview_urls": false
 }

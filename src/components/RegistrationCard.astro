@@ -1,10 +1,11 @@
 ---
 // One Church Center registration: image, name, when, price, status, Register button.
-import { inModal } from '../lib/links';
+import { churchCenterLink } from '../lib/links';
 import type { Registration } from '../lib/registrations';
 
 interface Props { reg: Registration; settings?: any; }
 const { reg, settings } = Astro.props;
+const link = churchCenterLink(reg.url);
 ---
 <article class="card reg" data-reveal>
   {reg.image && <div class="reg__img"><img src={reg.image} alt="" loading="lazy" /></div>}
@@ -13,7 +14,7 @@ const { reg, settings } = Astro.props;
     {reg.when && <p class="reg__when">{reg.when}</p>}
     <p class="reg__meta">{[reg.price, !reg.open ? 'Closed' : reg.full ? 'Full' : 'Open'].filter(Boolean).join(' · ')}</p>
     {reg.summary && <p>{reg.summary}</p>}
-    <a class="btn btn--blue mt-1" href={inModal(reg.url)}>{reg.full || !reg.open ? settings?.wording?.registrationDetailsLabel || 'View registration details' : settings?.wording?.registerLabel || 'Register'}</a>
+    <a class="btn btn--blue mt-1" href={link.href} target={link.newTab ? '_blank' : undefined} rel={link.newTab ? 'noopener noreferrer' : undefined}>{reg.full || !reg.open ? settings?.wording?.registrationDetailsLabel || 'View registration details' : settings?.wording?.registerLabel || 'Register'}</a>
   </div>
 </article>
 

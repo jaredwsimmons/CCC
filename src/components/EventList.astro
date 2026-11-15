@@ -2,7 +2,7 @@
 // Upcoming Church Center events grouped by month (the Calendar list view and the
 // Featured events section).
 import { groupByMonth, dateParts, fullDate, type ChurchEvent } from '../lib/calendar';
-import { inModal } from '../lib/links';
+import { churchCenterLink } from '../lib/links';
 
 interface Props { events: ChurchEvent[]; settings?: any; }
 const { settings } = Astro.props;
@@ -14,6 +14,7 @@ const months = groupByMonth(Astro.props.events);
     <ul class="events">
       {m.events.map((e) => {
         const d = dateParts(e.date);
+        const register = e.register ? churchCenterLink(e.register) : null;
         return (
           <li class="event">
             <div class="event__date" aria-hidden="true">
@@ -29,8 +30,8 @@ const months = groupByMonth(Astro.props.events);
               </div>
               <p class="event__meta">{e.timeLabel}{e.location && ` · ${e.location}`}</p>
               {e.description && <p class="event__desc">{e.description}</p>}
-              {e.register ? (
-                <a class="event__rsvp" href={inModal(e.register)}>{settings?.wording?.eventRegisterLabel || 'Register →'}</a>
+              {register ? (
+                <a class="event__rsvp" href={register.href} target={register.newTab ? '_blank' : undefined} rel={register.newTab ? 'noopener noreferrer' : undefined}>{settings?.wording?.eventRegisterLabel || 'Register →'}</a>
               ) : e.publicUrl ? (
                 <a class="event__rsvp" href={e.publicUrl} target="_blank" rel="noopener noreferrer">{settings?.wording?.eventDetailsLabel || 'Details →'}</a>
               ) : null}
