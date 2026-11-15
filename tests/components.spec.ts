@@ -2,6 +2,34 @@ import { test, expect } from '@playwright/test';
 import { render } from './render';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import { transformSync } from 'esbuild';
+
+test('live preview waits for rapid edits to settle and manual refresh stays immediate', () => {
+  const source = readFileSync('src/components/VisualEditing.astro', 'utf8').match(/<script>([\s\S]*?)<\/script>/)![1];
+  let options: any;
+  let reloads = 0;
+  let nextTimer = 0;
+  const timers = new Map<number, () => void>();
+  vm.runInNewContext(transformSync(source, { loader: 'ts', format: 'cjs' }).code, {
+    require: (name: string) => name === '@sanity/visual-editing' ? { enableVisualEditing: (value: unknown) => { options = value; } } : { perspectiveCookieName: 'perspective' },
+    window: { self: {}, top: {} },
+    document: { cookie: '' },
+    location: { pathname: '/', search: '', hash: '', reload: () => { reloads++; } },
+    setTimeout: (callback: () => void) => { timers.set(++nextTimer, callback); return nextTimer; },
+    clearTimeout: (id: number) => timers.delete(id),
+  });
+  for (let i = 0; i < 3; i++) options.refresh({ source: 'mutation' });
+  expect(reloads).toBe(0);
+  expect(timers.size).toBe(1);
+  const pending = [...timers.values()];
+  timers.clear();
+  pending.forEach((callback) => callback());
+  expect(reloads).toBe(1);
+  options.refresh({ source: 'mutation' });
+  options.refresh({ source: 'manual' });
+  expect(reloads).toBe(2);
+  expect(timers.size).toBe(0);
+});
 
 test('one-off calendar events expose a machine-readable full date', async () => {
   const html = await render('src/components/EventList.astro', { events: [

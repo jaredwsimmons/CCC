@@ -27,6 +27,7 @@
     },
   };
 
+  let refreshTimer: ReturnType<typeof setTimeout> | undefined;
   enableVisualEditing({
     history,
     onPerspectiveChange(perspective) {
@@ -35,9 +36,11 @@
       document.cookie = `${perspectiveCookieName}=${next}; path=/; SameSite=None; Secure${framed ? '; Partitioned' : ''}`;
       location.reload();
     },
-    // Pages are rendered on the server, so showing an edit means loading the page again.
-    refresh: () => {
-      location.reload();
+    // Wait for typing to settle so a reload cannot miss later edits while reconnecting.
+    refresh: ({ source }) => {
+      clearTimeout(refreshTimer);
+      if (source === 'manual') location.reload();
+      else refreshTimer = setTimeout(() => location.reload(), 500);
       return Promise.resolve();
     },
   });
