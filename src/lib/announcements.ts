@@ -6,7 +6,7 @@ import { churchCenterHost } from './integrations';
 
 import { cached } from './cache';
 import { ccGet } from './churchcenter';
-import { inModal } from './links';
+import { churchCenterLink } from './links';
 
 
 export interface Announcement {
@@ -52,8 +52,10 @@ function linkFor(raw: unknown, host: string): Announcement['link'] {
   const ORG = `https://${host}`;
   const href = raw.startsWith('/') ? ORG + raw : raw;
   if (!/^https?:\/\//.test(href)) return undefined;
-  // Church Center pages open in its pop-up, like every other Church Center link on the site.
-  return href.startsWith(ORG) ? { href: inModal(href), external: false } : { href, external: true };
+  // Church Center pages follow the site's Church Center rule: forms in its pop-up, the rest in a new tab.
+  if (!href.startsWith(ORG)) return { href, external: true };
+  const link = churchCenterLink(href);
+  return { href: link.href, external: link.newTab };
 }
 
 // null = the fetch failed (as opposed to [] = no announcements).

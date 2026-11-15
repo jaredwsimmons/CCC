@@ -45,3 +45,31 @@ test.describe('YouTube playlist links', () => {
     expect(playlistIdFrom('')).toBeNull();
   });
 });
+
+// "Learn more" on an announcement, against a stand-in for Church Center's API: a form opens
+// in Church Center's pop-up, a registration (which it won't show there) in a new tab.
+test.describe('announcement links', () => {
+  test.beforeEach(({}, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'no browser involved; run once');
+  });
+  const realFetch = globalThis.fetch;
+  test.afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+
+  test('open forms in the pop-up and registrations in a new tab', async () => {
+    const { getAnnouncementsResult } = await import('../src/lib/announcements');
+    const ann = (id: string, title: string, link: string) => ({ id, attributes: { title, link } });
+    globalThis.fetch = (async (input: string | URL | Request) => String(input).includes('/sessions/tokens')
+      ? Response.json({ data: { attributes: { token: 'test' } } })
+      : Response.json({ data: [
+        ann('1', 'Friendsgiving', 'https://chelseachurch.churchcenter.com/people/forms/1335938'),
+        ann('2', 'Christmas Party', '/registrations/events/3975973'),
+        ann('3', 'Elsewhere', 'https://example.com/page'),
+      ] })) as typeof fetch;
+    const links = Object.fromEntries((await getAnnouncementsResult())!.map((a) => [a.title, a.link]));
+    expect(links['Friendsgiving']).toEqual({ href: 'https://chelseachurch.churchcenter.com/people/forms/1335938?open-in-church-center-modal=true', external: false });
+    expect(links['Christmas Party']).toEqual({ href: 'https://chelseachurch.churchcenter.com/registrations/events/3975973', external: true });
+    expect(links['Elsewhere']).toEqual({ href: 'https://example.com/page', external: true });
+  });
+});

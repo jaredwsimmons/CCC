@@ -141,3 +141,17 @@ test('the directions link follows the button link rules', async () => {
     expect(unsafe, path).toContain('101 Chelsea Park Dr.');
   }
 });
+
+test('registration buttons open Church Center in a new tab, never its pop-up', async () => {
+  const url = 'https://chelseachurch.churchcenter.com/registrations/events/3975973';
+  const card = await render('src/components/RegistrationCard.astro', { reg: { id: '3975973', name: 'Christmas Party', open: true, full: false, url } });
+  expect(card).toMatch(new RegExp(`href="${url}"[^>]*target="_blank"`));
+  expect(card).not.toContain('open-in-church-center-modal');
+
+  const events = await render('src/components/EventList.astro', { events: [
+    { id: '1', title: 'Party', date: '2099-12-01', timeLabel: '6:00 PM', register: url },
+    { id: '2', title: 'Sign-up', date: '2099-12-02', timeLabel: '6:00 PM', register: 'https://chelseachurch.churchcenter.com/people/forms/1335938' },
+  ] });
+  expect(events).toMatch(new RegExp(`href="${url}"[^>]*target="_blank"`));
+  expect(events).toContain('href="https://chelseachurch.churchcenter.com/people/forms/1335938?open-in-church-center-modal=true"');
+});

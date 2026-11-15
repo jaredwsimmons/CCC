@@ -4,7 +4,7 @@
 import Buttons from './Buttons.astro';
 import AnnouncementList from './AnnouncementList.astro';
 import { imagePosition, imageUrl } from '../lib/image';
-import { buttonLink, inModal, type Button } from '../lib/links';
+import { buttonLink, churchCenterLink, type Button } from '../lib/links';
 import { dateParts, fullDate, getUpcomingEvents, onePerSeries } from '../lib/calendar';
 import { localDate } from '../lib/churchcenter';
 import { fmtDuration, getPodcastEpisodes } from '../lib/feeds';
@@ -41,10 +41,13 @@ const linkFor = (b?: Button | null) => {
   return link && b?.label ? { label: b.label, attrs: { href: link.href, ...(link.newTab ? ext : {}) } } : null;
 };
 const rhythm = (settings?.weeklyRhythm ?? []) as { title?: string; time?: string; description?: string }[];
-const events = onePerSeries(upcoming).slice(0, 4).map((e) => ({
-  ...e, d: dateParts(e.date), href: e.register ? inModal(e.register) : e.publicUrl,
-  external: !e.register && Boolean(e.publicUrl),
-}));
+const events = onePerSeries(upcoming).slice(0, 4).map((e) => {
+  const register = e.register ? churchCenterLink(e.register) : null;
+  return {
+    ...e, d: dateParts(e.date), href: register ? register.href : e.publicUrl,
+    external: register ? register.newTab : Boolean(e.publicUrl),
+  };
+});
 const calendarLink = linkFor(week.calendarLink);
 const newsLink = linkFor(news.link);
 const newsVideoLink = linkFor(news.videoLink);

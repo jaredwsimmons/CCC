@@ -42,6 +42,25 @@ export const safeUrl = (url?: string): url is string => Boolean(url && /^(https?
 /** Church Center links open in its pop-up (a new tab on phones). */
 export const inModal = (url: string) => `${url}${url.includes('?') ? '&' : '?'}open-in-church-center-modal=true`;
 
+// The only Church Center pages it will show inside another site. Registrations, groups and the
+// rest refuse (X-Frame-Options), which would leave its pop-up spinning forever.
+const MODAL_PAGES = /^\/(?:people\/forms|giving)(?:\/|$)/;
+
+/**
+ * A Church Center link: in its pop-up for forms and giving; anything else in a new tab, which
+ * Footer.astro turns into a small window on computers for registrations and groups. Phones hand
+ * either kind to the Church Center app when it's installed.
+ */
+export function churchCenterLink(url: string): { href: string; newTab: boolean } {
+  let path = '';
+  try {
+    path = new URL(url).pathname;
+  } catch {
+    // Not a full address: treat it as a page the pop-up can't show.
+  }
+  return MODAL_PAGES.test(path) ? { href: inModal(url), newTab: false } : { href: url, newTab: true };
+}
+
 /** Where a button goes, and whether in a new tab; null if it isn't filled in. */
 export function buttonLink(b: Button | null | undefined): { href: string; newTab: boolean } | null {
   if (!b) return null;
@@ -51,7 +70,7 @@ export function buttonLink(b: Button | null | undefined): { href: string; newTab
       return path ? { href: withBase(path), newTab: false } : null;
     }
     case 'churchCenter':
-      return safeUrl(b.churchCenterUrl) ? { href: inModal(b.churchCenterUrl), newTab: false } : null;
+      return safeUrl(b.churchCenterUrl) ? churchCenterLink(b.churchCenterUrl) : null;
     case 'give': {
       if (!b.fund || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(b.fund)) return null;
       const url = new URL(`${churchCenterUrl(b.givingBase) || site.churchCenter.giving}/to/${b.fund}`);

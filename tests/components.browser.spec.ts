@@ -134,3 +134,27 @@ test('a staff-built page keeps section order, image focal points and mobile layo
   await expect(page.getByRole('link', { name: 'Ask about the ministry' })).toHaveAttribute('href', 'mailto:fixture@example.com');
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });
+
+test('Church Center registration links open in a small window on computers and a new tab on phones', async ({ page }, testInfo) => {
+  const footer = await render('src/components/Footer.astro', { settings: {} });
+  const url = 'https://chelseachurch.churchcenter.com/registrations/events/3975973';
+  // With the site's viewport tag (Base.astro), so a phone lays the page out at phone width.
+  const html = documentFor(`<main><a id="reg" href="${url}" target="_blank" rel="noopener noreferrer">Register</a></main>${footer}`);
+  await page.setContent(html.replace('<head>', '<head><meta name="viewport" content="width=device-width, initial-scale=1">'));
+  await page.evaluate(() => {
+    window.open = ((...args: string[]) => {
+      (window as unknown as { opened: string[] }).opened = args;
+      return {} as Window;
+    }) as typeof window.open;
+  });
+  // Stop the phone's real new tab from loading Church Center.
+  await page.context().route('https://chelseachurch.churchcenter.com/**', (route) => route.fulfill({ body: 'Church Center' }));
+  await page.locator('#reg').click();
+  const opened = await page.evaluate(() => (window as unknown as { opened?: string[] }).opened);
+  if (testInfo.project.name === 'mobile') {
+    expect(opened).toBeUndefined();
+  } else {
+    expect(opened?.[0]).toBe(url);
+    expect(opened?.[2]).toContain('width=480');
+  }
+});
