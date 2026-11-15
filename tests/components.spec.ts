@@ -115,3 +115,18 @@ test('announcement videos use short H3 labels while other playlists retain their
     expect(normal).toContain('Convoluted upload title 2');
   } finally { globalThis.fetch = realFetch; }
 });
+
+test('a playlist feed outage keeps the heading and staff-configured platform button', async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = (async () => new Response('Unavailable', { status: 503 })) as typeof fetch;
+  try {
+    const html = await render('src/components/sections/PlaylistSection.astro', { s: {
+      heading: 'Video announcements', playlist: 'PLoutagefixture12345',
+      buttons: [{ kind: 'url', label: 'Watch video announcements', url: 'https://www.youtube.com/playlist?list=PLoutagefixture12345' }],
+    } });
+    expect(html).toContain('Video announcements');
+    expect(html).toContain('Watch video announcements');
+    expect(html).toContain('https://www.youtube.com/playlist?list=PLoutagefixture12345');
+    expect(html).not.toMatch(/<a\b[^>]*data-video-id=/);
+  } finally { globalThis.fetch = realFetch; }
+});

@@ -130,7 +130,7 @@ Use the [staff editing guide](docs/sanity-staff-guide.md), [administrator runboo
 
 For an **existing dataset**, export a backup, run `npm run cms:upgrade` to review its dry run, then use `npm run cms:upgrade -- --apply` with `SANITY_API_WRITE_TOKEN` in the environment. This initializes the homepage section list and video switch only where absent; it preserves existing sections, words, photos and staff choices. Do not reimport the seed dataset over staff content. New projects can use the initial import described above.
 
-Run `npm run cms:check` after configuration. It verifies project/dataset agreement, required published documents and authenticated reading; browser preview, permissions and staff acceptance still need a connected test. See the administrator runbook for the existing preview address and remaining Studio deployment/handoff steps.
+Run `npm run cms:check` after configuration. It verifies project/dataset agreement, required published documents and authenticated reading; browser preview, permissions and staff acceptance need separate checks. See the administrator runbook for the verified installation, existing preview address, media-feed limitation and staff handoff steps.
 
 ---
 

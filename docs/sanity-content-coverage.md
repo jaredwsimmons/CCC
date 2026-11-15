@@ -1,6 +1,6 @@
 # Website content coverage inventory
 
-Implementation inventory, November 14, 2026. Code coverage is implemented on the review branch; live Sanity/staff verification is pending configuration. Common fields and nested objects are shared, so they are listed once below rather than repeated for each block.
+Implementation inventory, updated November 15, 2026. The website and Studio are deployed at their existing addresses. Connected editing, preview, publishing and draft recovery were checked with an administrator account; staff acceptance under their own accounts remains required. See the administrator runbook for the media-feed limitation. Common fields and nested objects are shared, so they are listed once below rather than repeated for each block.
 
 ## Global and page-level controls
 

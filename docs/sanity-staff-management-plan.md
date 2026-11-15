@@ -1,8 +1,8 @@
 # Staff-managed Sanity website: implementation plan
 
-Status: implementation in review; connected handoff pending. Prepared November 14, 2026, against the website review branch at `4b6a2f1` in PR #9.
+Status: implementation merged and deployed to the existing website preview and Sanity Studio. Connected verification completed November 15, 2026; staff acceptance under their own accounts remains pending.
 
-Implementation update: the review branch now includes the editing controls, homepage builder, validation, source settings, guarded upgrade/preflight scripts and staff/admin guides described in the [coverage inventory](sanity-content-coverage.md). Connected staging, account permissions and the staff acceptance exercise remain pending Sanity configuration. The phases below remain the release checklist; code completion alone does not complete the handoff.
+Implementation update: editing controls, homepage builder, validation, source settings, guarded upgrades and staff/admin guides are deployed. The existing preview is the only website preview. The administrator runbook records the native backup, connected draft/publish/recovery checks, preserved staff drafts and YouTube RSS limitation. The phases below remain the staff acceptance and future production-domain release checklist.
 
 ## Goal and completion standard
 
@@ -10,7 +10,7 @@ Staff can maintain routine website content through Sanity: update words, photos,
 
 Keep the staff-directed page format and the consistent headings, alignment and spacing established in the website review. The editor should provide useful choices within that design. New component types, application behavior and changes to the design system remain development work.
 
-The existing foundation includes 25 section types, four page templates, dynamic page routing, editable navigation, shared church details and a draft-preview implementation. The homepage still has a fixed structure, several assets and labels remain in code, and some editor fields do not appear on the website. A live Sanity editing round trip has not been verified in this workspace. Existing layout checks used seeded content, not a connected church dataset.
+The deployed editor includes 25 section types, four page templates, dynamic page routing, editable navigation and shared church details. Home sections, branding, source connections and common labels are editable. A connected Sanity editing round trip has been verified, in addition to the seeded responsive layout checks and a review of all 22 existing live routes.
 
 ## Content ownership
 

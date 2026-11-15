@@ -16,8 +16,9 @@ const [newest, ...rest] = videos;
 const earlier = rest.slice(0, s.count ?? 3);
 const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
 ---
-{newest && (
+{(newest || (s.buttons?.length ?? 0) > 0) && (
   <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading} id="videos" class="live-data">
+    {newest && (
     <div class="player" data-reveal>
       <h3 class="player__title">{newest.label}</h3>
       <a class="player__poster" href={newest.url} target="_blank" rel="noopener noreferrer" data-video-id={newest.id}>
@@ -26,6 +27,7 @@ const fmtDate = (d: Date | null) => (d ? d.toLocaleDateString('en-US', { month: 
         <span class="sr-only">Play {newest.label}</span>
       </a>
     </div>
+    )}
     {earlier.length > 0 && (
       <ul class="earlier" data-reveal>
         {earlier.map((v) => (

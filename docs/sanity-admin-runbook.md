@@ -4,17 +4,23 @@
 
 PR #9 was merged on November 14, 2026. The website is deployed to the existing review site, `https://chelsea-church-website.chelsea-church-website.workers.dev/`, using project `nrlmdamv`, dataset `production`. Additional version-preview URLs are disabled. The church's public domain has not been changed.
 
-The hosted Studio at `https://chelseachurch.sanity.studio` still needs the repository's updated build and schema deployed. Compatible heading and wording corrections were published on ten documents; pre-existing staff drafts were left unpublished. New Home controls, weekly video labels and the remaining guarded content updates depend on the Studio/schema deployment. Actual editing, permissions, draft isolation, publication timing and staff acceptance still need verification. The saved content snapshot includes drafts and CDN image renditions; it is not a native export of original assets.
+The hosted Studio at `https://chelseachurch.sanity.studio` has the updated build and schema. Home controls and weekly video labels are initialized; current branding assets and public source settings are populated in Sanity. The guarded copy updates were applied to published content and matching drafts without publishing the three pre-existing staff drafts.
+
+Connected verification on November 15 covered section selection, custom validation, draft preview, publishing, a draft-only edit, automatic preview refresh after rapid typing, and discarding that edit to recover the published content. Anonymous Content Lake reads could not see the draft. The temporary verification page was unpublished and removed. Live document validation, including custom callbacks, reported no errors. This used an administrator account; staff must still rehearse with their own accounts and approve the handoff. No account roles were changed.
+
+A native pre-rollout backup contains 53 content documents (including three staff drafts) and all 50 original image files, each checked against its original SHA-1. Temporary preview secrets were excluded. This replaces the earlier CDN-rendition snapshot as the recovery backup. The approved one-hour rollout token was revoked after use; a subsequent authenticated request returned 401.
+
+The configured YouTube playlist and channel RSS endpoints returned 404 during verification. Keep the staff-configured YouTube button visible when a playlist feed is unavailable. The three short weekly labels are stored in Sanity and apply when video entries are available; this does not certify the upstream media feed.
 
 The existing dataset remains compatible when new fields are absent. Branding/source/wording fields fall back to existing values; a missing Home sections array uses the original three sections. An empty array intentionally hides all body sections.
 
-## Connect staging first
+## Connect the existing preview
 
 1. Identify the church-owned project and current dataset; inspect its existing content. Confirm church account ownership and the staff who edit, publish and administer it. Check available role/history/approval features against the actual subscription before promising them.
-2. Use a separate staging dataset or a verified copy of the current dataset. Keep a matching export before any import or patch. Do not overwrite a populated dataset with the repository's seed import.
-3. Set website `PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET` and `PUBLIC_SANITY_STUDIO_URL`; set Studio `SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET` and `SANITY_STUDIO_PREVIEW_URL` to the matching staging installation. Use a server-side read token as `SANITY_API_READ_TOKEN`. See README for preview origin/CORS setup.
+2. Keep one website preview and a verified dataset export before any import or patch. The existing preview uses the `production` Sanity dataset; it is not an isolated copy of church content. Test future destructive migrations on a separate dataset or verified copy without creating another preview website. Do not overwrite a populated dataset with the repository's seed import.
+3. Set website `PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET` and `PUBLIC_SANITY_STUDIO_URL`; set Studio `SANITY_STUDIO_PROJECT_ID`, `SANITY_STUDIO_DATASET` and `SANITY_STUDIO_PREVIEW_URL` to the matching existing installation. Use a server-side read token as `SANITY_API_READ_TOKEN`. See README for preview origin/CORS setup.
 4. Run `npm run cms:check` from the repository root. It reads local `.env`, `.dev.vars` and `studio/.env` when present. A passing result confirms matching project/dataset, required published documents and authenticated reading, not the browser workflow.
-5. Deploy the reviewed application and Studio to the staging addresses through the church's hosting process. Test Studio login, preview navigation, click-to-edit, CORS, public-vs-draft isolation and publishing with real staff accounts.
+5. Deploy the reviewed application and Studio to their existing addresses through the church's hosting process. Test Studio login, preview navigation, click-to-edit, CORS, public-vs-draft isolation and publishing with real staff accounts.
 
 Project IDs and public URLs are configuration; tokens remain hosting secrets. Never put credentials in Sanity documents or commit environment files.
 
@@ -50,6 +56,6 @@ The supported podcast hosts are Anchor, Buzzsprout, Simplecast, Megaphone and Po
 
 ## Recovery
 
-For an isolated edit, use the verified Studio history/restore workflow. For an application regression, roll back the deployment to the recorded compatible revision. If content migration is involved, inspect its field log and prefer a narrow corrective patch; restore a full backup only after accounting for newer staff edits. Rehearse recovery on staging before production, and check both published and draft content afterwards.
+For an unpublished edit, discard changes to recover the last published content; use Refresh preview if the recovered view lags. For older published content, verify the available history/restore controls against the account and subscription. For an application regression, roll back to the recorded compatible revision. If content migration is involved, inspect its field log and prefer a narrow corrective patch; restore a full backup only after accounting for newer staff edits. Rehearse recovery before production, and check both published and draft content afterwards.
 
 Do not delete the previous dataset or overwrite a newer export during troubleshooting. Assign a named church administrator to retain account access, exports and the verified recovery procedure.

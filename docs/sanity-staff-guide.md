@@ -1,6 +1,6 @@
 # Website editing guide
 
-Use the church's Studio address supplied by the administrator. The connected editing workflow must pass the acceptance exercise before this guide is handed over as a verified live process.
+Open [Chelsea Community Church Studio](https://chelseachurch.sanity.studio/). The connected create/edit/preview/publish/discard workflow was checked with an administrator account on November 15, 2026. Staff should rehearse the acceptance exercise with their own accounts before taking over publishing.
 
 ## Where to make a change
 
@@ -23,7 +23,7 @@ Use the church's Studio address supplied by the administrator. The connected edi
 3. Check buttons. Prefer a page reference for another page on this website; use a Church Center link for a form or registration. For a giving fund, copy its slug from the existing Church Center link after `/to/`.
 4. Review the draft at desktop and phone widths. Fix validation errors. Publish when the result is ready.
 
-Changes require no website rebuild. Public content has a short application cache plus Sanity CDN caching; it may take more than ten seconds to appear. If a feed is unavailable, the website may show older data or an unavailable message. Ask the administrator about the measured timing for this installation.
+Changes require no website rebuild. Live Preview waits briefly for typing to settle before reloading. Use Refresh preview if it lags, especially after discarding changes. Public content has a short application cache plus Sanity CDN caching; it may take more than ten seconds to appear. If a feed is unavailable, the website may show older data or an unavailable message. Playlist sections retain their configured platform button, so visitors can follow it while inline videos are unavailable.
 
 ## Build a new page
 
@@ -42,7 +42,7 @@ The hero stays at the top. Its title, photos, buttons and background video are e
 
 Use **Page sections** to reorder This week, Announcements and Message & app spotlight, hide them, or add other approved sections. Each original Home layout reads the content fields farther down the same document. Use each Home layout once. An explicitly empty section list leaves only the hero and quick links; it does not restore the old sections. Quick links have their own hide switch.
 
-Existing datasets need the administrator's guarded CMS upgrade before staff rearranges this list. The upgrade initializes the current three-section order without replacing copy.
+The current installation's guarded CMS upgrade is complete. Its three original sections are initialized without replacing staff copy. Future dataset imports still need the administrator's upgrade check.
 
 ## Change addresses, retire pages and recover edits
 
