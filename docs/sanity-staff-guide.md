@@ -20,7 +20,7 @@ Open [Chelsea Community Church Studio](https://chelseachurch.sanity.studio/). Th
 
 1. Open the page in Live Preview or the content list. Select the text/image in preview when a click-to-edit control is available; otherwise use its labeled form field.
 2. Change the words, choose an existing image or upload a replacement, and describe the image in Alt text. Set its crop/focal point to keep the subject visible on phones.
-3. Check buttons. Prefer a page reference for another page on this website; use a Church Center link for a form or registration. For a giving fund, copy its slug from the existing Church Center link after `/to/`.
+3. Check buttons. Prefer a page reference for another page on this website; use a Church Center link for a form or registration. For a giving fund, copy its slug from the existing Church Center link after `/to/`. To list a person’s contact details, use An email address or A phone number (cards’ deacon and member badges each take one button).
 4. Review the draft at desktop and phone widths. Fix validation errors. Publish when the result is ready.
 
 Changes require no website rebuild. Live Preview waits briefly for typing to settle before reloading. Use Refresh preview if it lags, especially after discarding changes. Public content has a short application cache plus Sanity CDN caching; it may take more than ten seconds to appear. If a feed is unavailable, the website may show older data or an unavailable message. Playlist sections retain their configured platform button, so visitors can follow it while inline videos are unavailable.

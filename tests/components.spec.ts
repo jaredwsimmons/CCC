@@ -179,10 +179,10 @@ test('a card can carry a free-text member badge with the white emblem, beside or
 test('each card badge can carry its own contact button, and a half-filled button shows nothing', async () => {
   const html = await render('src/components/sections/CardsSection.astro', { settings: {}, s: { cards: [{
     _key: 'a', title: 'Partner',
-    ministry: { deacons: ['Bob Ray'] }, deaconButton: { label: 'Call Bob', kind: 'url', url: 'tel:+17345550100' },
-    memberBadge: 'Jane Doe', memberButton: { label: 'Email Jane', kind: 'url', url: 'mailto:jane@example.com' },
+    ministry: { deacons: ['Bob Ray'] }, deaconButton: { label: 'Call Bob', kind: 'phone', phone: '+1 734-555-0100' },
+    memberBadge: 'Jane Doe', memberButton: { label: 'Email Jane', kind: 'emailAddress', emailAddress: 'jane@example.com' },
   }, {
-    _key: 'b', title: 'Other', memberBadge: 'Sam Lee', memberButton: { label: 'Email Sam', kind: 'url' },
+    _key: 'b', title: 'Other', memberBadge: 'Sam Lee', memberButton: { label: 'Email Sam', kind: 'emailAddress' },
   }] } });
   expect(html).toMatch(/<a[^>]*href="tel:\+17345550100"[^>]*>Call Bob<\/a>/);
   expect(html).toMatch(/<a[^>]*href="mailto:jane@example.com"[^>]*>Email Jane<\/a>/);

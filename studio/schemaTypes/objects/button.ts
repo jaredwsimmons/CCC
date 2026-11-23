@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity';
+import { mailtoHref, telHref } from '../../../shared/contact-links';
 
 // One button that works the same way in every section. Staff pick its kind; the
 // site builds the link (Church Center pop-up, giving fund, ministry email, ...).
@@ -24,6 +25,8 @@ export default defineType({
           { title: 'Church Center (form, registration, …)', value: 'churchCenter' },
           { title: 'Give to a fund', value: 'give' },
           { title: 'Email a ministry', value: 'email' },
+          { title: 'An email address', value: 'emailAddress' },
+          { title: 'A phone number', value: 'phone' },
           { title: 'Another website', value: 'url' },
         ],
         layout: 'radio',
@@ -83,6 +86,28 @@ export default defineType({
       validation: (Rule) => Rule.custom(requiredFor('email', 'Pick a ministry.')),
     }),
     defineField({
+      name: 'emailAddress',
+      title: 'Email address',
+      type: 'string',
+      description: 'e.g. jane@example.com. Opens the visitor’s email app.',
+      hidden: ({ parent }) => parent?.kind !== 'emailAddress',
+      validation: (Rule) =>
+        Rule.custom(requiredFor('emailAddress', 'Enter an email address.')).custom((value) =>
+          !value || mailtoHref(value as string) ? true : 'Enter one email address, like jane@example.com.',
+        ),
+    }),
+    defineField({
+      name: 'phone',
+      title: 'Phone number',
+      type: 'string',
+      description: 'With area code, e.g. 734-555-0100. Phones dial it when tapped.',
+      hidden: ({ parent }) => parent?.kind !== 'phone',
+      validation: (Rule) =>
+        Rule.custom(requiredFor('phone', 'Enter a phone number.')).custom((value) =>
+          !value || telHref(value as string) ? true : 'Enter a phone number with its area code, using only numbers, spaces, dashes, dots and brackets.',
+        ),
+    }),
+    defineField({
       name: 'url',
       title: 'Website address',
       type: 'url',
@@ -99,7 +124,7 @@ export default defineType({
     select: { title: 'label', kind: 'kind' },
     prepare: ({ title, kind }) => ({
       title: title || 'Button',
-      subtitle: { page: 'Page', churchCenter: 'Church Center', give: 'Give', email: 'Email', url: 'Website' }[
+      subtitle: { page: 'Page', churchCenter: 'Church Center', give: 'Give', email: 'Email', emailAddress: 'Email address', phone: 'Phone', url: 'Website' }[
         kind as string
       ],
     }),

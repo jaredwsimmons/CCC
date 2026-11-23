@@ -57,7 +57,7 @@ export default defineType({
               name: 'deaconButton',
               title: 'Deacon badge button',
               type: 'button',
-              description: 'Optional link inside the deacon badge, e.g. “Email Jane” → Another website → mailto:jane@example.com, or “Call Jane” → tel:+17345551234.',
+              description: 'Optional link inside the deacon badge, e.g. “Email Jane” (An email address) or “Call Jane” (A phone number).',
               hidden: ({ parent }) => !parent?.ministry,
             }),
             defineField({
@@ -70,7 +70,7 @@ export default defineType({
               name: 'memberButton',
               title: 'Member badge button',
               type: 'button',
-              description: 'Optional link inside the member badge, e.g. “Email Jane” → Another website → mailto:jane@example.com, or “Call Jane” → tel:+17345551234.',
+              description: 'Optional link inside the member badge, e.g. “Email Jane” (An email address) or “Call Jane” (A phone number).',
               hidden: ({ parent }) => !parent?.memberBadge,
             }),
           ],
