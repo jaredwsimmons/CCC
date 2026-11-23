@@ -155,3 +155,37 @@ test('registration buttons open Church Center in a new tab, never its pop-up', a
   expect(events).toMatch(new RegExp(`href="${url}"[^>]*target="_blank"`));
   expect(events).toContain('href="https://chelseachurch.churchcenter.com/people/forms/1335938?open-in-church-center-modal=true"');
 });
+
+test('a card can carry a free-text member badge with the white emblem, beside or without a deacon badge', async () => {
+  const card = (extra: Record<string, unknown>) => ({ s: { cards: [{ _key: 'a', title: 'Partner', ...extra }] }, settings: {} });
+  const one = await render('src/components/sections/CardsSection.astro', card({ memberBadge: ' Jane Doe ' }));
+  expect(one).toMatch(/deacon__label[^>]*>Member</);
+  expect(one).toContain('Jane Doe');
+  expect(one).toContain('/images/icon-white.png');
+  expect(one).not.toContain('/images/icon-gold.png');
+
+  const couple = await render('src/components/sections/CardsSection.astro', card({ memberBadge: 'John & Jane Smith' }));
+  expect(couple).toMatch(/deacon__label[^>]*>Members</);
+
+  const both = await render('src/components/sections/CardsSection.astro', card({ memberBadge: 'Jane Doe', ministry: { deacons: ['Bob Ray'] } }));
+  expect(both).toMatch(/deacon__label[^>]*>Deacon</);
+  expect(both).toMatch(/deacon__label[^>]*>Member</);
+  expect(both.match(/class="deacon-slot/g)).toHaveLength(1);
+
+  const blank = await render('src/components/sections/CardsSection.astro', card({ memberBadge: '   ' }));
+  expect(blank).not.toContain('deacon__label');
+});
+
+test('each card badge can carry its own contact button, and a half-filled button shows nothing', async () => {
+  const html = await render('src/components/sections/CardsSection.astro', { settings: {}, s: { cards: [{
+    _key: 'a', title: 'Partner',
+    ministry: { deacons: ['Bob Ray'] }, deaconButton: { label: 'Call Bob', kind: 'phone', phone: '+1 734-555-0100' },
+    memberBadge: 'Jane Doe', memberButton: { label: 'Email Jane', kind: 'emailAddress', emailAddress: 'jane@example.com' },
+  }, {
+    _key: 'b', title: 'Other', memberBadge: 'Sam Lee', memberButton: { label: 'Email Sam', kind: 'emailAddress' },
+  }] } });
+  expect(html).toMatch(/<a[^>]*href="tel:\+17345550100"[^>]*>Call Bob<\/a>/);
+  expect(html).toMatch(/<a[^>]*href="mailto:jane@example.com"[^>]*>Email Jane<\/a>/);
+  expect(html).not.toMatch(/href="(?:tel|mailto):[^"]*"[^>]*target="_blank"/);
+  expect(html).not.toContain('Email Sam');
+});

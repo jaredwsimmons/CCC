@@ -6,15 +6,21 @@ import DeaconNote from '../DeaconNote.astro';
 import { imageUrl, type SanityImage } from '../../lib/image';
 import { buttonLink, variantFor, type Button } from '../../lib/links';
 const { s, settings } = Astro.props;
-type Card = { _key: string; label?: string; title?: string; text?: string; bullets?: string[]; buttons?: Button[] | null; ministry?: { deacons?: string[] } | null; logo?: SanityImage; logoOnDark?: boolean };
+type Card = { _key: string; label?: string; title?: string; text?: string; bullets?: string[]; buttons?: Button[] | null; ministry?: { deacons?: string[] } | null; deaconButton?: Button | null; memberBadge?: string; memberButton?: Button | null; logo?: SanityImage; logoOnDark?: boolean };
+// A button that is filled in enough to link somewhere, with its words; null otherwise.
+const labelled = (b?: Button | null) => {
+  const link = buttonLink(b);
+  return link && b?.label ? { label: b.label, ...link } : null;
+};
 const cards = ((s.cards ?? []) as Card[]).map((c) => ({
   ...c,
   logoSrc: imageUrl(c.logo, 600),
-  links: (c.buttons ?? []).flatMap((b) => {
-    const link = buttonLink(b);
-    return link && b.label ? [{ label: b.label, ...link }] : [];
-  }),
+  members: (c.memberBadge ?? '').split(',').map((name) => name.trim()).filter(Boolean),
+  deaconLink: labelled(c.deaconButton),
+  memberLink: labelled(c.memberButton),
+  links: (c.buttons ?? []).flatMap((b) => labelled(b) ?? []),
 }));
+const memberLabels: [string, string] = [settings?.wording?.memberLabel || 'Member', settings?.wording?.membersLabel || 'Members'];
 ---
 <Section variant={variantFor(s.background)} eyebrow={s.eyebrow} title={s.heading} lead={s.intro} center={Boolean(s.heading)}>
   <div class={`grid cols-${s.columns ?? 3}`}>
@@ -37,7 +43,12 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
             ))}
           </p>
         )}
-        {c.ministry?.deacons?.length ? <div class="deacon-slot"><DeaconNote deacons={c.ministry.deacons} mark={settings?.branding?.accentMark} wording={settings?.wording} /></div> : null}
+        {c.ministry?.deacons?.length || c.members.length ? (
+          <div class="deacon-slot">
+            <DeaconNote deacons={c.ministry?.deacons} link={c.deaconLink} mark={settings?.branding?.accentMark} wording={settings?.wording} />
+            <DeaconNote deacons={c.members} labels={memberLabels} link={c.memberLink} mark={settings?.branding?.footerMark} fallbackMark="/images/icon-white.png" />
+          </div>
+        ) : null}
         </div>
       </div>
     ))}
@@ -74,7 +85,7 @@ const cards = ((s.cards ?? []) as Card[]).map((c) => ({
   .card--logo .card__body { padding: 1.25rem 1.4rem 1.4rem; }
   .card--logo .links { justify-content: center; margin-top: auto; padding-top: 0.9rem; }
 
-  /* a card with a deacon badge keeps the badge at its foot, level across the row */
-  .deacon-slot { margin-top: auto; padding-top: 1.1rem; }
+  /* a card with a deacon or member badge keeps the badges at its foot, level across the row */
+  .deacon-slot { margin-top: auto; padding-top: 1.1rem; display: grid; gap: 0.6rem; }
   .deacon-slot :global(.deacon) { width: 100%; }
 </style>

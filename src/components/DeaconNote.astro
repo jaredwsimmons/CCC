@@ -1,22 +1,25 @@
 ---
 // Small on-brand card naming the deacon(s) who serve a ministry (the page header's
-// "Deacon card" in Sanity).
+// "Deacon card" in Sanity). Cards also use it for the free-text member badge, with
+// their own labels and the white emblem.
 import { withBase } from '../data/site';
 import { imageUrl, type SanityImage } from '../lib/image';
-interface Props { deacons?: string[] | null; blurb?: string; mark?: SanityImage; wording?: Record<string, string>; }
-const { deacons, blurb, mark, wording } = Astro.props;
+interface Props { deacons?: string[] | null; blurb?: string; mark?: SanityImage; fallbackMark?: string; labels?: [string, string]; link?: { label: string; href: string; newTab: boolean } | null; wording?: Record<string, string>; }
+const { deacons, blurb, mark, fallbackMark = '/images/icon-gold.png', link, wording } = Astro.props;
+const [one, many] = Astro.props.labels ?? [wording?.deaconLabel || 'Deacon', wording?.deaconsLabel || 'Deacons'];
 // A married couple is one entry ("Mike & Georgia Gabriel") but two deacons.
 const plural = (deacons?.length ?? 0) > 1 || Boolean(deacons?.some((d) => d.includes(' & ')));
 ---
 {deacons && deacons.length > 0 && (
   <div class="deacon" data-reveal>
     <div class="deacon__mark" aria-hidden="true">
-      <img src={imageUrl(mark, 80) || withBase('/images/icon-gold.png')} alt="" width="30" height="30" />
+      <img src={imageUrl(mark, 80) || withBase(fallbackMark)} alt="" width="30" height="30" />
     </div>
     <div>
-      <p class="deacon__label">{plural ? wording?.deaconsLabel || 'Deacons' : wording?.deaconLabel || 'Deacon'}</p>
+      <p class="deacon__label">{plural ? many : one}</p>
       <p class="deacon__names">{deacons.join(', ')}</p>
       {blurb && <p class="deacon__blurb">{blurb}</p>}
+      {link && <a class="deacon__link" href={link.href} target={link.newTab ? '_blank' : undefined} rel={link.newTab ? 'noopener noreferrer' : undefined}>{link.label}</a>}
     </div>
   </div>
 )}
@@ -50,4 +53,5 @@ const plural = (deacons?.length ?? 0) > 1 || Boolean(deacons?.some((d) => d.incl
   }
   .deacon__names { font-family: var(--display); font-weight: 600; color: var(--navy); font-size: 1.1rem; margin-top: 0.05rem; }
   .deacon__blurb { font-size: 0.9rem; color: var(--mid); margin-top: 0.2rem; }
+  .deacon__link { display: inline-block; font-size: 0.9rem; margin-top: 0.2rem; overflow-wrap: anywhere; }
 </style>

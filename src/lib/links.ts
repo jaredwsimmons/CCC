@@ -1,14 +1,15 @@
 import { site, withBase } from '../data/site';
 import { churchCenterUrl } from './integrations';
+import { mailtoHref, telHref } from '../../shared/contact-links';
 
 // Turns Sanity buttons and menu items into links. Every kind of button is handled here,
-// so the rules (Church Center pop-ups, giving funds, ministry email) live in one place.
+// so the rules (Church Center pop-ups, giving funds, email and phone) live in one place.
 
 export type LinkTarget = { _type?: string; _id?: string; slug?: string | null } | null | undefined;
 
 export type Button = {
   label?: string;
-  kind?: 'page' | 'churchCenter' | 'give' | 'email' | 'url';
+  kind?: 'page' | 'churchCenter' | 'give' | 'email' | 'emailAddress' | 'phone' | 'url';
   page?: LinkTarget;
   churchCenterUrl?: string;
   fund?: string;
@@ -16,6 +17,8 @@ export type Button = {
   recurring?: boolean;
   givingBase?: string;
   ministry?: { email?: string } | null;
+  emailAddress?: string;
+  phone?: string;
   url?: string;
 };
 
@@ -80,6 +83,14 @@ export function buttonLink(b: Button | null | undefined): { href: string; newTab
     }
     case 'email':
       return b.ministry?.email ? { href: `mailto:${b.ministry.email}`, newTab: false } : null;
+    case 'emailAddress': {
+      const href = mailtoHref(b.emailAddress);
+      return href ? { href, newTab: false } : null;
+    }
+    case 'phone': {
+      const href = telHref(b.phone);
+      return href ? { href, newTab: false } : null;
+    }
     case 'url':
       if (!safeUrl(b.url)) return null;
       return b.url.startsWith('/')

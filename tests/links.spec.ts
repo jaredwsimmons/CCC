@@ -24,6 +24,18 @@ test('buttons link to site pages, web addresses and giving funds', () => {
   expect(buttonLink({ kind: 'email', ministry: null })).toBeNull();
 });
 
+test('buttons link to a typed email address or phone number, and nothing for malformed ones', () => {
+  expect(buttonLink({ kind: 'emailAddress', emailAddress: ' jane@example.com ' })).toEqual({ href: 'mailto:jane@example.com', newTab: false });
+  expect(buttonLink({ kind: 'phone', phone: '(734) 555-0100' })).toEqual({ href: 'tel:7345550100', newTab: false });
+  expect(buttonLink({ kind: 'phone', phone: '+1 734.555.0100' })).toEqual({ href: 'tel:+17345550100', newTab: false });
+  for (const emailAddress of [undefined, 'jane', 'jane@example', 'a b@example.com', 'jane@example.com?bcc=x@example.com']) {
+    expect(buttonLink({ kind: 'emailAddress', emailAddress }), String(emailAddress)).toBeNull();
+  }
+  for (const phone of [undefined, '555-0100', 'call 734-555-0100', '734+555-0100']) {
+    expect(buttonLink({ kind: 'phone', phone }), String(phone)).toBeNull();
+  }
+});
+
 // Church Center refuses to show its registration and group pages (and most others) inside
 // another site, so its pop-up would spin forever on them. Only forms and giving go there.
 test('Church Center links use its pop-up only for forms and giving', () => {
