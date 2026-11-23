@@ -46,7 +46,7 @@ Every section includes a Hide this section control. Most share eyebrow, heading,
 | Tap-to-open list | `accordionSection` | `intro`, `items`, `item`, `title`, `label`, `body`, `closing` | Sanity | [AccordionSection.astro](../src/components/sections/AccordionSection.astro) |
 | Announcements | `announcementsSection` | `unavailableMessage`, `emptyText` | Sanity layout/settings; Church Center records | [AnnouncementsSection.astro](../src/components/sections/AnnouncementsSection.astro) |
 | Calendar | `calendarEventsSection` | `emptyText`, `unavailableMessage`, `note` | Sanity layout/settings; Church Center records | [CalendarEventsSection.astro](../src/components/sections/CalendarEventsSection.astro) |
-| Cards | `cardsSection` | `intro`, `columns`, `cards`, `card`, `logoOnDark`, `label`, `title`, `text`, `bullets`, `ministry` | Sanity | [CardsSection.astro](../src/components/sections/CardsSection.astro) |
+| Cards | `cardsSection` | `intro`, `columns`, `cards`, `card`, `logoOnDark`, `label`, `title`, `text`, `bullets`, `ministry`, `deaconButton`, `memberBadge`, `memberButton` | Sanity | [CardsSection.astro](../src/components/sections/CardsSection.astro) |
 | Call-to-action band | `ctaBandSection` | `heading`, `text` | Sanity | [CtaBandSection.astro](../src/components/sections/CtaBandSection.astro) |
 | Deacons | `deaconsSection` | `note` | Sanity ministry documents | [DeaconsSection.astro](../src/components/sections/DeaconsSection.astro) |
 | Featured events | `featuredEventsSection` | Shared fields | Sanity layout/settings; Church Center records | [FeaturedEventsSection.astro](../src/components/sections/FeaturedEventsSection.astro) |

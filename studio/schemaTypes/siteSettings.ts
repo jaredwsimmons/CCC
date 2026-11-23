@@ -55,7 +55,7 @@ export default defineType({
       fields: [
         ['addressLabel', 'Address label'], ['phoneLabel', 'Phone label'], ['emailLabel', 'Email label'],
         ['prayerLabel', 'Prayer label'], ['sundaysLabel', 'Sunday services label'], ['deaconLabel', 'One deacon'],
-        ['deaconsLabel', 'Several deacons'], ['viewGroupLabel', 'View group button'], ['joinGroupLabel', 'Join group button'],
+        ['deaconsLabel', 'Several deacons'], ['memberLabel', 'Member badge, one name'], ['membersLabel', 'Member badge, several names'], ['viewGroupLabel', 'View group button'], ['joinGroupLabel', 'Join group button'],
         ['groupOpenLabel', 'Open group badge'], ['contentsLabel', 'Document contents heading'],
         ['registerLabel', 'Registration button'], ['registrationDetailsLabel', 'Full/closed registration button'],
         ['eventRegisterLabel', 'Calendar registration link'], ['eventDetailsLabel', 'Calendar details link'],

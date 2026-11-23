@@ -10,7 +10,7 @@ const SECTIONS = `sections[]{
   ...,
   ${BUTTONS},
   "cardLink": cardLink${BUTTON},
-  "cards": cards[]{ ..., ${BUTTONS}, ministry->{ name, deacons } },
+  "cards": cards[]{ ..., ${BUTTONS}, ministry->{ name, deacons }, "deaconButton": deaconButton${BUTTON}, "memberButton": memberButton${BUTTON} },
   "tiles": tiles[]{ ..., "link": link${BUTTON} },
   "moreLinks": moreLinks[]${BUTTON}
 }`;
